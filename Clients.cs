@@ -59,7 +59,6 @@ namespace Clients
         {
             this.Name = _name;
         }
-
         public Device(ushort _name, string _State)
         {
             this.Name = _name;
@@ -70,12 +69,10 @@ namespace Clients
             this.Name = _name;
             this.Sckt = _S;
         }
-
         public ushort GetName()
         {
             return this.Name;
         }
-
         public Socket GetSocket()
         {
             return this.Sckt;
@@ -86,34 +83,28 @@ namespace Clients
             this.T.Enabled = true;                                         //Timer
             T.AutoReset = false;
         }
-
         void T_Elapsed(object sender, ElapsedEventArgs e)                  //Timer event
         {
-            Console.WriteLine(" Watchdog not recieved ");                   //Timer
+            Console.WriteLine(" Watchdog not recieved for device: "+ this.Name);                   //Timer
             ConnectionManager.CurrentDeviceList.Remove(this.Name);          //Timer
             Console.WriteLine("Device: " + this.Name + " is disconnected"); //Timer
         }
-
         public void resetTimer()                                          //Timer
         {
             this.T.Interval = WDInterval;                                   //Timer
         }
-
         public string GetState()
         {
             return this.State;
         }
-
         public void BindSocket(Socket _S)
         {
             this.Sckt = _S;
         }
-
         public void ChangeName(ushort _name)
         {
             this.Name = _name;
         }
-
         public void SetState(string _State)
         {
             this.State = _State;
