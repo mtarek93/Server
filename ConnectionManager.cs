@@ -250,5 +250,13 @@ namespace ConnectionManager
 
     }
 
-    //AssignName!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        /*AssignName!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            public static ushort AssignName()
+        {
+            ushort name;
+            //name = length of database;     //ex: if database has 0,1 then name =2 (length of database)
+            return name;
+        }
+          
+        */
 }
