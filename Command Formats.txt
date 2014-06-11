@@ -1,0 +1,33 @@
+Recieved Commands Unified Format
+
+Type, SourceID?, DestinationID?, State | Action?, username?, password?.
+
+Types: 
+Device_FirstConnection,  			0,  ,      ,      ,        ,    .
+Device_Reconnection,      			1,ID,      ,      ,        ,    .
+Device_WatchDog,	  			2,ID,      ,      ,        ,    .
+Device_Acknowledgement,   			3,ID,DestID,State ,        ,    .
+User_FirstConnection_SignIn,			4,  ,      ,      ,username,pass.
+User_Reconnection_SignIn,			5,ID,      ,      ,username,pass.
+User_FirstConnection_SignUp,			6,  ,      ,      ,username,pass.
+User_Reconnection_SignUp,			7,ID,      ,      ,username,pass.
+User_Action,					8,ID,DestID,Action,	   ,    .
+User_Locate,					TBA XD
+
+
+
+
+Sent Commands Unified Format
+
+
+Types:
+Invalid					       0,
+Action					       1,UserID,Action.
+
+
+
+
+
+
+
+
