@@ -124,6 +124,7 @@ namespace ConnectionManager
             {
                 if (DatabaseHandler.UserIsAuthenticated(Cmd.UserName, Cmd.Password))
                 {
+                    U.BindSocket(UserSocket);
                     CurrentUserList.Add(Cmd.SourceID, U);
                     U.Send(Encoder.GetBytes("Login Successfull!"));
                     SendDeviceList(U);
@@ -152,14 +153,15 @@ namespace ConnectionManager
             {
                 if (DatabaseHandler.UsernameExists(Cmd.UserName))
                 {
-                    U.Send(Encoder.GetBytes("Username already exists!"));
+                    UserSocket.Send(Encoder.GetBytes("Username already exists!"));
                     return;
                 }
                 else
                 {
                     DatabaseHandler.AddUserAccount(Cmd.UserName, Cmd.Password);
 
-                    //Add to current list
+                    //Bind new socket and add to current list
+                    U.BindSocket(UserSocket);
                     CurrentUserList.Add(Cmd.SourceID, U);
 
                     //Send DeviceList, and wait for new commands in HandleConnection()
