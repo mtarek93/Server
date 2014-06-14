@@ -36,23 +36,45 @@ namespace ConnectionManager
         
         private static void HandleConnection(User U)
         {
+            Command Cmd;
+            byte [] ReceivedData = new byte[100];
+            while (true)
+            {
+                if (U.Receive(ReceivedData))
+                {
+                    Cmd = CommandParser.ParseCommand(Tools.ByteArrayToString(ReceivedData));
+                    switch (Cmd.Type)
+                    {
+                        case CommandType.User_Action:
+                            Send_Action(Cmd);
+                            break;
+                        case CommandType.User_Locate:
+                            Locate(Cmd);
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            }
         }
 
         private static void FirstConnection_SignIn(Socket UserSocket, Command Cmd)
         {
             ASCIIEncoding Encoder = new ASCIIEncoding();
-            ushort AssignedID = Tools.AssignID();
+           
             if (DatabaseHandler.UserIsAuthenticated(Cmd.UserName, Cmd.Password))
             {
-                User U = new User(AssignedID, UserSocket);
+                //Assign ID to user's device
+                ushort AssignedID = Tools.AssignID();
 
                 //Add to database and current list
+                User U = new User(AssignedID, UserSocket);
                 CurrentUserList.Add(AssignedID, U);
                 DatabaseHandler.AddNewUser(AssignedID.ToString());
 
                 //Send assignedID, devicelist, and wait for new commands in HandleConnection()
-                Send(U, Encoder.GetBytes("Login Successfull!, " + AssignedID.ToString() + "."));
-                SendDeviceList();
+                U.Send(Encoder.GetBytes("Login Successful!, " + AssignedID.ToString() + "."));
+                SendDeviceList(U);
                 HandleConnection(U);
             }
             else
@@ -65,26 +87,29 @@ namespace ConnectionManager
         private static void FirstConnection_SignUp(Socket UserSocket, Command Cmd)
         {
             ASCIIEncoding Encoder = new ASCIIEncoding();
-            ushort AssignedID = Tools.AssignID();
-            User U = new User(AssignedID, UserSocket);
 
             //Create new User Account
             if (DatabaseHandler.UsernameExists(Cmd.UserName))
             {
-                Send(U, Encoder.GetBytes("Username already exists!"));
+                UserSocket.Send(Encoder.GetBytes("Username already exists!"));
                 return;
             }
             else
             {
+                //Assign ID to user's device
+                ushort AssignedID = Tools.AssignID();
+
+                //Create new user account
                 DatabaseHandler.AddUserAccount(Cmd.UserName, Cmd.Password);
 
                 //Add to database and current list
+                User U = new User(AssignedID, UserSocket);
                 CurrentUserList.Add(AssignedID, U);
                 DatabaseHandler.AddNewUser(AssignedID.ToString());
 
                 //Send assignedID, devicelist, and wait for new commands in HandleConnection()
-                Send(U, Encoder.GetBytes(AssignedID.ToString() + "."));
-                SendDeviceList();
+                U.Send(Encoder.GetBytes("Sign Up Successful!," + AssignedID.ToString() + "."));
+                SendDeviceList(U);
                 HandleConnection(U);
             }
         }
@@ -100,8 +125,8 @@ namespace ConnectionManager
                 if (DatabaseHandler.UserIsAuthenticated(Cmd.UserName, Cmd.Password))
                 {
                     CurrentUserList.Add(Cmd.SourceID, U);
-                    Send(U, Encoder.GetBytes("Login Successfull!"));
-                    SendDeviceList();
+                    U.Send(Encoder.GetBytes("Login Successfull!"));
+                    SendDeviceList(U);
                     HandleConnection(U);
                 }
                 else
@@ -127,7 +152,7 @@ namespace ConnectionManager
             {
                 if (DatabaseHandler.UsernameExists(Cmd.UserName))
                 {
-                    Send(U, Encoder.GetBytes("Username already exists!"));
+                    U.Send(Encoder.GetBytes("Username already exists!"));
                     return;
                 }
                 else
@@ -137,9 +162,9 @@ namespace ConnectionManager
                     //Add to current list
                     CurrentUserList.Add(Cmd.SourceID, U);
 
-                    //Send assignedID, devicelist, and wait for new commands in HandleConnection()
-                    Send(U, Encoder.GetBytes(AssignedID.ToString() + "."));
-                    SendDeviceList();
+                    //Send DeviceList, and wait for new commands in HandleConnection()
+                    U.Send(Encoder.GetBytes("Sign Up Successful!"));
+                    SendDeviceList(U);
                     HandleConnection(U);
                 }
             }
@@ -150,38 +175,31 @@ namespace ConnectionManager
             }
         }
 
-        private static void SendDeviceList()
+        private static void SendDeviceList(User U)
         {
+            ASCIIEncoding Encoder = new ASCIIEncoding();
+            string DeviceList = "";
+            foreach (var Device in DeviceConnection.CurrentDeviceList)
+                DeviceList += (Device.Key + ",off,");    //state is assumed to be off for now.....
+
+            DeviceList += ".";
+            U.Send(Encoder.GetBytes(DeviceList));
         }
 
-        public static bool Send(User _User, byte[] Data)
+        private static void Send_Action(Command Cmd)
         {
-            try
-            {
-                Socket S = _User.GetSocket();
-                S.Send(Data);
-                return true;
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine("Exception in UserConnection.Send " + e.Message);
-                return false;
-            }
+            ASCIIEncoding Encoder = new ASCIIEncoding();
+            Device D;
+
+            //if destination device is currently connected
+            if (DeviceConnection.CurrentDeviceList.TryGetValue(Cmd.DestinationID, out D))
+                D.Send(Encoder.GetBytes("1," + Cmd.SourceID.ToString() + Cmd.Action_State + "."));
+            else
+                D.Send(Encoder.GetBytes("Device not connected!"));
         }
-        private static bool Receive(User _User, byte[] Buffer)
+
+        private static void Locate(Command Cmd)
         {
-            try
-            {
-                Socket S = _User.GetSocket();
-                S.Receive(Buffer);
-                return true;
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine("Exception in UserConnection.Receive " + e.Message);
-                Array.Clear(Buffer, 0, 100);
-                return false;
-            }
         }
     }
     class DeviceConnection
@@ -275,7 +293,7 @@ namespace ConnectionManager
                 try
                 {
                     //if command not recieved successfully
-                    if (!Receive(D, ReceivedData))
+                    if (!D.Receive(ReceivedData))
                     {
                         //Console.WriteLine("Recieve(D): " + D.GetName() + " is disconnected!");
                         //CurrentDeviceList.Remove(D.GetName()); 
@@ -283,7 +301,7 @@ namespace ConnectionManager
                     }
                     else
                     {
-                        Command = ByteArrayToString(ReceivedData);
+                        Command = Tools.ByteArrayToString(ReceivedData);
                         Console.WriteLine("Command received was: " + Command);
                         Cmd = CommandParser.ParseCommand(Command);
                  
@@ -314,37 +332,6 @@ namespace ConnectionManager
             }
         }
         
-        //Tools----------------------------------------------------------------------------------------
-        private static bool Send(Device _Device, byte[] Data)
-        {
-            try
-            {
-                Socket S = _Device.GetSocket();
-                S.Send(Data);
-                return true;
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine("Exception in DeviceConnection.Send: "+e.Message);
-                return false;
-            }
-        }
-        private static bool Receive(Device _Device, byte[] Buffer)
-        {
-            try
-            {
-                Socket S = _Device.GetSocket();
-                S.Receive(Buffer);
-                return true;
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine("Exception in DeviceConnection.Recieve: "+e.Message);
-                Array.Clear(Buffer, 0, 100);
-                return false;
-            }
-        }
-        
         //Actions--------------------------------------------------------------------------------------
         private static bool Device_Acknowledgement_Action(Command Cmd)
         {
@@ -357,7 +344,7 @@ namespace ConnectionManager
             if (UserConnection.CurrentUserList.TryGetValue(Cmd.DestinationID, out U))
             {
                 msg = Convert.ToString(Cmd.DestinationID) + ',' + Convert.ToString(Cmd.SourceID) + ',' + Convert.ToString(Cmd.Action_State) + '.';  
-                UserConnection.Send(U, State.GetBytes(msg));
+                U.Send(State.GetBytes(msg));
                 Console.WriteLine("State sent to User: "+ Cmd.DestinationID+ " From Device: "+ Cmd.SourceID);
                 flag = true;
             }

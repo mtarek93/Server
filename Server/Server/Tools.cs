@@ -7,6 +7,7 @@ using System.Net;
 using System.Net.Sockets;
 using CommandHandler;
 using ConnectionManager;
+using Clients;
 
 namespace ServerTools
 {
@@ -21,7 +22,7 @@ namespace ServerTools
             CommandParser.InitializeCommandsDictionary();
             byte[] ReceivedData = new byte[100];
 
-            //Recieving and parsing a command from Device------------------------------------------------
+            //Recieving and parsing a command -----------------------------------------------------------
             S.Receive(ReceivedData);
             Command = ByteArrayToString(ReceivedData);
             Console.WriteLine("Tools.AcceptConnection: Command received was: " + Command);
@@ -35,7 +36,6 @@ namespace ServerTools
             else
                 Console.WriteLine("Tools.AcceptConnection: Connection not accepted!");
 
-
         }
 
         public static string ByteArrayToString(byte[] Data)
@@ -48,6 +48,6 @@ namespace ServerTools
             ushort ID = 0;
             //name = length of database;     //ex: if database has 0,1 then name =2 (length of database)
             return ID;
-        }     
+        }
     }
 }

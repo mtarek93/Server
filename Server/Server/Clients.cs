@@ -46,6 +46,35 @@ namespace Clients
         {
             this.Name = _name;
         }
+
+        public bool Send(byte[] Data)
+        {
+            try
+            {
+                this.Sckt.Send(Data);
+                return true;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Exception in User.Send " + e.Message);
+                return false;
+            }
+        }
+
+        public bool Receive(byte[] Buffer)
+        {
+            try
+            {
+                this.Sckt.Receive(Buffer);
+                return true;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Exception in User.Receive " + e.Message);
+                Array.Clear(Buffer, 0, 100);
+                return false;
+            }
+        }
     }
     public class Device
     {
@@ -108,6 +137,35 @@ namespace Clients
         public void SetState(string _State)
         {
             this.State = _State;
+        }
+
+        public bool Send(byte[] Data)
+        {
+            try
+            {
+                this.Sckt.Send(Data);
+                return true;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Exception in Device.Send " + e.Message);
+                return false;
+            }
+        }
+
+        public bool Receive(byte[] Buffer)
+        {
+            try
+            {
+                this.Sckt.Receive(Buffer);
+                return true;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Exception in Device.Receive " + e.Message);
+                Array.Clear(Buffer, 0, 100);
+                return false;
+            }
         }
     }
 }
