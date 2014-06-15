@@ -8,6 +8,7 @@ using System.Net.Sockets;
 using CommandHandler;
 using ConnectionManager;
 using Clients;
+using Database;
 
 namespace ServerTools
 {
@@ -46,8 +47,13 @@ namespace ServerTools
         public static ushort AssignID()
         {
             ushort ID = 0;
-            //name = length of database;     //ex: if database has 0,1 then name =2 (length of database)
-            return ID;
+            bool AssignedIDBefore;
+            AssignedIDBefore = DatabaseHandler.GetLatestAssignedID(out ID);
+
+            if (AssignedIDBefore)
+                return ++ID;
+            else
+                return ID;
         }
     }
 }
