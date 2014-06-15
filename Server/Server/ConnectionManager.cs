@@ -70,7 +70,7 @@ namespace ConnectionManager
                 //Add to database and current list
                 User U = new User(AssignedID, UserSocket);
                 CurrentUserList.Add(AssignedID, U);
-                DatabaseHandler.AddNewUser(AssignedID.ToString());
+                DatabaseHandler.AddNewUser(AssignedID);
 
                 //Send assignedID, devicelist, and wait for new commands in HandleConnection()
                 U.Send(Encoder.GetBytes("Login Successful!, " + AssignedID.ToString() + "."));
@@ -105,7 +105,7 @@ namespace ConnectionManager
                 //Add to database and current list
                 User U = new User(AssignedID, UserSocket);
                 CurrentUserList.Add(AssignedID, U);
-                DatabaseHandler.AddNewUser(AssignedID.ToString());
+                DatabaseHandler.AddNewUser(AssignedID);
 
                 //Send assignedID, devicelist, and wait for new commands in HandleConnection()
                 U.Send(Encoder.GetBytes("Sign Up Successful!," + AssignedID.ToString() + "."));
@@ -120,7 +120,7 @@ namespace ConnectionManager
             ASCIIEncoding Encoder = new ASCIIEncoding();
 
             //if user's device has connected before
-            if (DatabaseHandler.TryGetUser(Cmd.SourceID.ToString(), out U))
+            if (DatabaseHandler.TryGetUser(Cmd.SourceID, out U))
             {
                 if (DatabaseHandler.UserIsAuthenticated(Cmd.UserName, Cmd.Password))
                 {
@@ -149,7 +149,7 @@ namespace ConnectionManager
             ASCIIEncoding Encoder = new ASCIIEncoding();
 
             //if user's device has connected before
-            if (DatabaseHandler.TryGetUser(Cmd.SourceID.ToString(), out U))
+            if (DatabaseHandler.TryGetUser(Cmd.SourceID, out U))
             {
                 if (DatabaseHandler.UsernameExists(Cmd.UserName))
                 {
@@ -258,7 +258,7 @@ namespace ConnectionManager
             else if (Cmd.Type == CommandType.Device_FirstConnection)
             {
                 //Assign name for device
-                AssignedName = AssignName();
+                AssignedName = Tools.AssignID();
                 Device D = new Device(AssignedName, S);
 
                 Console.WriteLine("New name assigned to Device!");
@@ -266,10 +266,10 @@ namespace ConnectionManager
                     
                 //Add Device to both current devices list and database
                 CurrentDeviceList.Add(AssignedName, D);   
-                DatabaseHandler.AddNewDevice(AssignedName, "Off"); //assuming state is off for now
+                DatabaseHandler.AddNewDevice(AssignedName, 0); //assuming state is off for now
 
                 //Name notification message to device
-                Send(D, Encode.GetBytes(AssignedName + ",0,0."));  
+                D.Send(Encode.GetBytes(AssignedName + ",0,0."));  
                  
                 //Add to current devices list and start watchdog timer    
                 D.StartTimer();
