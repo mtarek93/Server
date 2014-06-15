@@ -79,7 +79,7 @@ namespace Clients
     public class Device
     {
         ushort Name;
-        string State;
+        byte State;
         Socket Sckt;
         public static int WDInterval = 5000;                            //Watchdog Interval
         System.Timers.Timer T = new System.Timers.Timer(WDInterval);    //Timer
@@ -88,7 +88,7 @@ namespace Clients
         {
             this.Name = _name;
         }
-        public Device(ushort _name, string _State)
+        public Device(ushort _name, byte _State)
         {
             this.Name = _name;
             this.State = _State;
@@ -115,14 +115,14 @@ namespace Clients
         void T_Elapsed(object sender, ElapsedEventArgs e)                  //Timer event
         {
             Console.WriteLine(" Watchdog not recieved for device: "+ this.Name);                   //Timer
-            ConnectionManager.CurrentDeviceList.Remove(this.Name);          //Timer
+            //ConnectionManager.CurrentDeviceList.Remove(this.Name);          //Timer
             Console.WriteLine("Device: " + this.Name + " is disconnected"); //Timer
         }
         public void resetTimer()                                          //Timer
         {
             this.T.Interval = WDInterval;                                   //Timer
         }
-        public string GetState()
+        public byte GetState()
         {
             return this.State;
         }
@@ -134,7 +134,7 @@ namespace Clients
         {
             this.Name = _name;
         }
-        public void SetState(string _State)
+        public void SetState(byte _State)
         {
             this.State = _State;
         }
