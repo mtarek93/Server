@@ -8,9 +8,31 @@ using Clients;
 
 namespace Database
 {
+
+    //class Test
+    //{
+    //    static void Main(string[] args)
+    //    {
+    //        ushort ID = 0;
+    //        DatabaseHandler.ConnectionString = @"Data Source=(LocalDB)\v11.0;AttachDbFilename=C:\Users\Mohamed\Documents\GitHub\Server\Server\Server\Database.mdf;Integrated Security=True;Connect Timeout=30";
+    //        bool flag = DatabaseHandler.GetLatestAssignedID(out ID);
+    //        if (flag)
+    //        {
+    //            ID++;
+    //            DatabaseHandler.AddNewID(ID);
+    //            DatabaseHandler.AddNewDevice(ID, 0);
+    //        }
+    //        else
+    //        {
+    //            DatabaseHandler.AddNewID(ID);
+    //            DatabaseHandler.AddNewDevice(ID, 0);
+    //        }
+                
+    //    }
+    //}
     class DatabaseHandler
     {
-        public static string ConnectionString, LoginTable = "LoginTable", UsersTable = "UsersTable", DevicesTable = "DevicesTable";
+        public static string ConnectionString, LoginTable = "LoginTable", UsersTable = "UsersTable", DevicesTable = "DevicesTable", IDTable = "IDTable";
 
         public static void AddUserAccount(string Username, string Password)
         {
@@ -67,16 +89,17 @@ namespace Database
             }
         }
 
-        public static void AddNewUser(string name)
+        public static void AddNewUser(ushort ID)
         {
+            int Id = Convert.ToInt32(ID);
             using (SqlConnection Database = new SqlConnection(ConnectionString))
             {
                 try
                 {
                     Database.Open();
-                    using (SqlCommand Command = new SqlCommand("INSERT INTO " + UsersTable + " (Name) VALUES (@Name);", Database))
+                    using (SqlCommand Command = new SqlCommand("INSERT INTO " + UsersTable + " (Id) VALUES (@Id);", Database))
                     {
-                        Command.Parameters.Add(new SqlParameter("@Name", name));
+                        Command.Parameters.Add(new SqlParameter("@Id", Id));
                         Command.ExecuteNonQuery();
                     }
                     Database.Close();
@@ -88,16 +111,17 @@ namespace Database
             }
         }
 
-        public static void AddNewDevice(string name, string State)
+        public static void AddNewDevice(ushort ID, int State)
         {
+            int Id = Convert.ToInt32(ID);
             using (SqlConnection Database = new SqlConnection(ConnectionString))
             {
                 try
                 {
                     Database.Open();
-                    using (SqlCommand Command = new SqlCommand("INSERT INTO " + DevicesTable + " (Name, State) VALUES (@Name, @State);", Database))
+                    using (SqlCommand Command = new SqlCommand("INSERT INTO " + DevicesTable + " (Id, State) VALUES (@Id, @State);", Database))
                     {
-                        Command.Parameters.Add(new SqlParameter("@Name", name));
+                        Command.Parameters.Add(new SqlParameter("@Id", Id));
                         Command.Parameters.Add(new SqlParameter("@State", State));
                         Command.ExecuteNonQuery();
                     }
@@ -110,21 +134,22 @@ namespace Database
             }
         }
 
-        public static bool TryGetDevice(string name, out Device D)
+        public static bool TryGetDevice(int ID, out Device D)
         {
+            int Id = Convert.ToInt32(ID);
             using (SqlConnection Database = new SqlConnection(ConnectionString))
             {
                 try
                 {
                     Database.Open();
-                    string Query = "SELECT Name, State FROM " + DevicesTable + " WHERE Name = " + "'" + name + "';";
+                    string Query = "SELECT Id, State FROM " + DevicesTable + " WHERE Id = " + "'" + Id + "';";
                     using (SqlCommand Command = new SqlCommand(Query, Database))
                     {
                         SqlDataReader Reader = Command.ExecuteReader();
                         if (Reader.Read())
                         {
                             //Console.WriteLine("Device found!");
-                            D = new Device(Convert.ToUInt16(Reader.GetString(0).Trim()), Reader.GetString(1).Trim());
+                            D = new Device(Convert.ToUInt16(Reader.GetInt32(0)), Reader.GetByte(1));
                             return true;
                         }
 
@@ -145,14 +170,15 @@ namespace Database
             }
         }
 
-        public static bool TryGetUser(string name, out User U)
+        public static bool TryGetUser(int ID, out User U)
         {
+            int Id = Convert.ToInt32(ID);
             using (SqlConnection Database = new SqlConnection(ConnectionString))
             {
                 try
                 {
                     Database.Open();
-                    string Query = "SELECT Name FROM " + UsersTable + " WHERE Name = " + "'" + name + "';";
+                    string Query = "SELECT Id FROM " + UsersTable + " WHERE Id = " + "'" + Id + "';";
 
                     using (SqlCommand Command = new SqlCommand(Query, Database))
                     {
@@ -160,7 +186,7 @@ namespace Database
                         if (Reader.Read())
                         {
                             //Console.WriteLine("User found!");
-                            U = new User(Convert.ToUInt16(Reader.GetString(0).Trim()));
+                            U = new User(Convert.ToUInt16(Reader.GetInt32(0)));
                             return true;
                         }
 
@@ -188,7 +214,7 @@ namespace Database
                 try
                 {
                     Database.Open();
-                    string Query = "SELECT Username FROM " + LoginTable + " WHERE UserName = " + "'" + Username + "';";
+                    string Query = "SELECT Username FROM " + LoginTable + " WHERE Username = " + "'" + Username + "';";
 
                     using (SqlCommand Command = new SqlCommand(Query, Database))
                     {
@@ -203,6 +229,60 @@ namespace Database
                 {
                     Console.WriteLine(e.Message);
                     return false;
+                }
+            }
+        }
+
+        public static bool GetLatestAssignedID(out ushort LatestAssignedID)
+        {
+            using (SqlConnection Database = new SqlConnection(ConnectionString))
+            {
+                try
+                {
+                    Database.Open();
+                    string Query = "SELECT TOP 1 Id FROM " + IDTable + " ORDER BY Id DESC;";
+                    using (SqlCommand Command = new SqlCommand(Query, Database))
+                    {
+                        SqlDataReader Reader = Command.ExecuteReader();
+                        if (Reader.Read())
+                        {
+                            LatestAssignedID = Convert.ToUInt16(Reader.GetInt32(0));
+                            return true;
+                        }
+                        else
+                        {
+                            LatestAssignedID = 0;
+                            return false;
+                        }
+                    }
+                }
+                catch (SqlException e)
+                {
+                    Console.WriteLine(e.Message);
+                    LatestAssignedID = 0;
+                    return false;
+                }
+            }
+        }
+
+        public static void AddNewID (ushort ID)
+        {
+            using (SqlConnection Database = new SqlConnection(ConnectionString))
+            {
+                try
+                {
+                    Database.Open();
+                    string Query = "INSERT INTO " + IDTable + " (Id) VALUES (@Id);";
+                    using (SqlCommand Command = new SqlCommand(Query, Database))
+                    {
+                        Command.Parameters.Add(new SqlParameter("@Id", Convert.ToInt32(ID)));
+                        Command.ExecuteNonQuery();
+                    }
+                    Database.Close();
+                }
+                catch (SqlException e)
+                {
+                    Console.WriteLine(e.Message);
                 }
             }
         }
