@@ -161,7 +161,7 @@ namespace ConnectionManager
 
                     //Bind new socket and add to current list
                     U.BindSocket(UserSocket);
-                    Tools.Tools.CurrentUserList.Add(Cmd.SourceID, U);
+                    Tools.CurrentUserList.Add(Cmd.SourceID, U);
 
                     //Send DeviceList, and wait for new commands in HandleConnection()
                     U.Send(Encoder.GetBytes("Sign Up Successful!"));
