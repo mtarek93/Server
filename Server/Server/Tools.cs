@@ -14,6 +14,10 @@ namespace ServerTools
 {
     class Tools
     {
+        //Lists of current Devices and Users---------------------------------------------------------------------------
+        public static SortedDictionary<ushort, User> CurrentUserList = new SortedDictionary<ushort, User>();
+        public static SortedDictionary<ushort, Device> CurrentDeviceList = new SortedDictionary<ushort, Device>();
+
         public static void AcceptConnection(object _Socket)
         {
             //Initialization----------------------------------------------------------------------------

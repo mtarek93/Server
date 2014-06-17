@@ -14,7 +14,6 @@ namespace ConnectionManager
 {
     class UserConnection
     {
-        public static SortedDictionary<ushort, User> CurrentUserList = new SortedDictionary<ushort, User>();  
         public static void StartConnection(Socket UserSocket, Command Cmd)
         {
             switch (Cmd.Type)
@@ -69,7 +68,7 @@ namespace ConnectionManager
 
                 //Add to database and current list
                 User U = new User(AssignedID, UserSocket);
-                CurrentUserList.Add(AssignedID, U);
+                Tools.CurrentUserList.Add(AssignedID, U);
                 DatabaseHandler.AddNewUser(AssignedID);
 
                 //Send assignedID, devicelist, and wait for new commands in HandleConnection()
@@ -104,7 +103,7 @@ namespace ConnectionManager
 
                 //Add to database and current list
                 User U = new User(AssignedID, UserSocket);
-                CurrentUserList.Add(AssignedID, U);
+                Tools.CurrentUserList.Add(AssignedID, U);
                 DatabaseHandler.AddNewUser(AssignedID);
 
                 //Send assignedID, devicelist, and wait for new commands in HandleConnection()
@@ -125,7 +124,7 @@ namespace ConnectionManager
                 if (DatabaseHandler.UserIsAuthenticated(Cmd.UserName, Cmd.Password))
                 {
                     U.BindSocket(UserSocket);
-                    CurrentUserList.Add(Cmd.SourceID, U);
+                    Tools.CurrentUserList.Add(Cmd.SourceID, U);
                     U.Send(Encoder.GetBytes("Login Successfull!"));
                     SendDeviceList(U);
                     HandleConnection(U);
@@ -162,7 +161,7 @@ namespace ConnectionManager
 
                     //Bind new socket and add to current list
                     U.BindSocket(UserSocket);
-                    CurrentUserList.Add(Cmd.SourceID, U);
+                    Tools.Tools.CurrentUserList.Add(Cmd.SourceID, U);
 
                     //Send DeviceList, and wait for new commands in HandleConnection()
                     U.Send(Encoder.GetBytes("Sign Up Successful!"));
@@ -205,10 +204,7 @@ namespace ConnectionManager
         }
     }
     class DeviceConnection
-    {
-        //List of current Devices----------------------------------------------------------------------
-        public static SortedDictionary<ushort, Device> CurrentDeviceList = new SortedDictionary<ushort, Device>();
-   
+    {   
         //Connection Managing functions----------------------------------------------------------------
         public static void StartConnection(Socket DeviceSocket, Command Cmd)
         {
@@ -323,7 +319,7 @@ namespace ConnectionManager
                     }
                 }
 
-            //Catching exceptions------------------------------------------------------------------------2
+                //Catching exceptions------------------------------------------------------------------------2
                 catch (Exception e)
                 {
                     Console.WriteLine("Exception in DeviceConnection.HandleConnection: " + e.Message);
@@ -343,7 +339,7 @@ namespace ConnectionManager
             string msg;
 
             //if User is in current users list
-            if (UserConnection.CurrentUserList.TryGetValue(Cmd.DestinationID, out U))
+            if (Tools.CurrentUserList.TryGetValue(Cmd.DestinationID, out U))
             {
                 msg = Convert.ToString(Cmd.DestinationID) + ',' + Convert.ToString(Cmd.SourceID) + ',' + Convert.ToString(Cmd.Action_State) + '.';  
                 U.Send(State.GetBytes(msg));
