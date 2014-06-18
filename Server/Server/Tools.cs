@@ -25,12 +25,17 @@ namespace ServerTools
             Socket S = (Socket)_Socket;
             string Command;
             Command Cmd;
-            CommandParser.InitializeCommandsDictionary();
-            byte[] ReceivedData = new byte[100];
+            byte[] ReceiveBuffer = new byte[1024];
+            byte[] Data;
+            int NumberofReceivedBytes = 0;
 
             //Recieving and parsing a command -----------------------------------------------------------
-            S.Receive(ReceivedData);
-            Command = ByteArrayToString(ReceivedData);
+            NumberofReceivedBytes = S.Receive(ReceiveBuffer);
+            Data = new byte[NumberofReceivedBytes];
+            for (int i = 0; i < NumberofReceivedBytes; i++)
+                Data[i] = ReceiveBuffer[i];
+
+            Command = ByteArrayToString(Data);
             Console.WriteLine("Tools.AcceptConnection: Command received was: " + Command);
             Cmd = CommandParser.ParseCommand(Command);
 

@@ -54,6 +54,12 @@ namespace ConnectionManager
                             break;
                     }
                 }
+                else
+                {
+                    Console.WriteLine("User is disconnected!");
+                    Tools.CurrentUserList.Remove(U.GetName());
+                    break;
+                }
             }
         }
 
@@ -70,7 +76,7 @@ namespace ConnectionManager
                 User U = new User(AssignedID, UserSocket);
                 Tools.CurrentUserList.Add(AssignedID, U);
                 DatabaseHandler.AddNewUser(AssignedID);
-
+                
                 //Send assignedID, devicelist, and wait for new commands in HandleConnection()
                 U.Send(Encoder.GetBytes("Login Successful!, " + AssignedID.ToString() + "."));
                 SendDeviceList(U);
@@ -196,7 +202,7 @@ namespace ConnectionManager
             if (Tools.CurrentDeviceList.TryGetValue(Cmd.DestinationID, out D))
                 D.Send(Encoder.GetBytes("1," + Cmd.SourceID.ToString() + Cmd.Action_State + "."));
             else
-                D.Send(Encoder.GetBytes("Device not connected!"));
+                D.Send(Encoder.GetBytes("Device not connected!")); //SEND TO USER NOT DEVICE!!! FIX!!
         }
 
         private static void Locate(Command Cmd)

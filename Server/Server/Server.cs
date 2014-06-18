@@ -35,6 +35,7 @@ namespace Server
             StatusThread.Start();
 
             DatabaseHandler.ConnectionString = @"Data Source=(LocalDB)\v11.0;AttachDbFilename=C:\Users\Mohamed\Documents\GitHub\Server\Server\Server\Database.mdf;Integrated Security=True;Connect Timeout=30";
+            CommandParser.InitializeCommandsDictionary();
 
             while (true)
             {

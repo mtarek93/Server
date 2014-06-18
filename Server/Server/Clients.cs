@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Net;
 using System.Net.Sockets;
 using System.IO;
+using ServerTools;
 
 namespace Clients
 {
@@ -115,7 +116,7 @@ namespace Clients
         void T_Elapsed(object sender, ElapsedEventArgs e)                  //Timer event
         {
             Console.WriteLine(" Watchdog not recieved for device: "+ this.Name);                   //Timer
-            //ConnectionManager.CurrentDeviceList.Remove(this.Name);          //Timer
+            Tools.CurrentDeviceList.Remove(this.Name);          //Timer
             Console.WriteLine("Device: " + this.Name + " is disconnected"); //Timer
         }
         public void resetTimer()                                          //Timer
