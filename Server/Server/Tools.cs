@@ -40,7 +40,6 @@ namespace ServerTools
                 UserConnection.StartConnection(S, Cmd);
             else
                 Console.WriteLine("Tools.AcceptConnection: Connection not accepted!");
-
         }
 
         public static string ByteArrayToString(byte[] Data)
