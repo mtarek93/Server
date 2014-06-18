@@ -7,26 +7,26 @@ using System.Text.RegularExpressions;
 
 namespace CommandHandler
 {
-    class Test
-    {
-        static void Main(string[] args)
-        {
-            string Command;
-            Command Cmd;
-            CommandParser.InitializeCommandsDictionary();
-            while (true)
-            {
-                Command = Console.ReadLine();
-                Cmd = CommandParser.ParseCommand(Command);
-                Console.WriteLine(Cmd.Type);
-                Console.WriteLine(Cmd.SourceID);
-                Console.WriteLine(Cmd.DestinationID);
-                Console.WriteLine(Cmd.Action_State);
-                Console.WriteLine(Cmd.UserName);
-                Console.WriteLine(Cmd.Password);
-            }
-        }
-    }
+    //class Test
+    //{
+    //    static void Main(string[] args)
+    //    {
+    //        string Command;
+    //        Command Cmd;
+    //        CommandParser.InitializeCommandsDictionary();
+    //        while (true)
+    //        {
+    //            Command = Console.ReadLine();
+    //            Cmd = CommandParser.ParseCommand(Command);
+    //            Console.WriteLine(Cmd.Type);
+    //            Console.WriteLine(Cmd.SourceID);
+    //            Console.WriteLine(Cmd.DestinationID);
+    //            Console.WriteLine(Cmd.Action_State);
+    //            Console.WriteLine(Cmd.UserName);
+    //            Console.WriteLine(Cmd.Password);
+    //        }
+    //    }
+    //}
     public enum CommandType
     {
         Device_FirstConnection,

@@ -9,6 +9,8 @@ using CommandHandler;
 using ConnectionManager;
 using Clients;
 using Database;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace ServerTools
 {
@@ -57,6 +59,21 @@ namespace ServerTools
                 return ++ID;
             else
                 return ID;
+        }
+        
+        public static IPAddress GetMyIPAddress()
+        {
+            return Dns.GetHostEntry(Dns.GetHostName()).AddressList.FirstOrDefault(ip => ip.AddressFamily == AddressFamily.InterNetwork);
+        }
+
+        public static void DisplayServerStatus()
+        {
+            while (true)
+            {
+                Console.WriteLine("Number of Users: " + Tools.CurrentUserList.Count.ToString());     ///
+                Console.WriteLine("Number of Devices: " + Tools.CurrentDeviceList.Count.ToString());     ///
+                Thread.Sleep(10000);
+            }
         }
     }
 }
