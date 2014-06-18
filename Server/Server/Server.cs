@@ -17,10 +17,10 @@ namespace Server
         public static void Main()
         {
 
-            //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!Additional Device for testing !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-            //Device DF = new Device("r?");                          //remove this
-            //ConnectionManager.CurrentDeviceList.Add("r?", DF);     //remove this
-            //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!Additional Device for testing !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!//remove this 
+            //Device DF = new Device("r?");                                                               //remove this
+            //ConnectionManager.CurrentDeviceList.Add("r?", DF);                                          //remove this
+            //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!//remove this
 
             const int Port = 14;
             IPAddress ipAd = Tools.GetMyIPAddress();
@@ -48,7 +48,7 @@ namespace Server
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine(e.Message);
+                    Console.WriteLine("Server.main: " + e.Message);
                 }
             }
         }

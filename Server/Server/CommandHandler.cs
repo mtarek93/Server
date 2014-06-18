@@ -41,7 +41,6 @@ namespace CommandHandler
         User_Locate,
         Invalid
     }
-
     class Command
     {
         public CommandType Type { get; set; }
@@ -65,7 +64,6 @@ namespace CommandHandler
         {
         }
     }
-
     class CommandParser
     {
         static Dictionary<Regex, CommandType> Dict = new Dictionary<Regex, CommandType>();

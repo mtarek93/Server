@@ -31,9 +31,9 @@ namespace ServerTools
 
             //Recieving and parsing a command -----------------------------------------------------------
             NumberofReceivedBytes = S.Receive(ReceiveBuffer);
-            Data = new byte[NumberofReceivedBytes];
-            for (int i = 0; i < NumberofReceivedBytes; i++)
-                Data[i] = ReceiveBuffer[i];
+            Data = new byte[NumberofReceivedBytes];  //?
+            for (int i = 0; i < NumberofReceivedBytes; i++)   //?
+                Data[i] = ReceiveBuffer[i];       //?
 
             Command = ByteArrayToString(Data);
             Console.WriteLine("Tools.AcceptConnection: Command received was: " + Command);
@@ -47,12 +47,10 @@ namespace ServerTools
             else
                 Console.WriteLine("Tools.AcceptConnection: Connection not accepted!");
         }
-
         public static string ByteArrayToString(byte[] Data)
         {
             return (System.Text.Encoding.ASCII.GetString(Data));
         }
-     
         public static ushort AssignID()
         {
             ushort ID = 0;
@@ -64,18 +62,16 @@ namespace ServerTools
             else
                 return ID;
         }
-        
         public static IPAddress GetMyIPAddress()
         {
             return Dns.GetHostEntry(Dns.GetHostName()).AddressList.FirstOrDefault(ip => ip.AddressFamily == AddressFamily.InterNetwork);
         }
-
         public static void DisplayServerStatus()
         {
             while (true)
             {
-                Console.WriteLine("Number of Users: " + Tools.CurrentUserList.Count.ToString());     ///
-                Console.WriteLine("Number of Devices: " + Tools.CurrentDeviceList.Count.ToString());     ///
+                Console.WriteLine("Number of Users: " + CurrentUserList.Count.ToString());    
+                Console.WriteLine("Number of Devices: " + CurrentDeviceList.Count.ToString());    
                 Thread.Sleep(10000);
             }
         }

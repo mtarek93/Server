@@ -55,7 +55,6 @@ namespace Database
                 }
             }
         }
-
         public static bool UserIsAuthenticated(string Username, string Password)
         {
             using (SqlConnection Database = new SqlConnection(ConnectionString))
@@ -88,7 +87,6 @@ namespace Database
                 }
             }
         }
-
         public static void AddNewUser(ushort ID)
         {
             int Id = Convert.ToInt32(ID);
@@ -110,7 +108,6 @@ namespace Database
                 }
             }
         }
-
         public static void AddNewDevice(ushort ID, int State)
         {
             int Id = Convert.ToInt32(ID);
@@ -133,7 +130,6 @@ namespace Database
                 }
             }
         }
-
         public static bool TryGetDevice(int ID, out Device D)
         {
             int Id = Convert.ToInt32(ID);
@@ -169,7 +165,6 @@ namespace Database
                 }
             }
         }
-
         public static bool TryGetUser(int ID, out User U)
         {
             int Id = Convert.ToInt32(ID);
@@ -206,7 +201,6 @@ namespace Database
                 }
             }
         }
-
         public static bool UsernameExists(string Username)
         {
             using (SqlConnection Database = new SqlConnection(ConnectionString))
@@ -232,7 +226,6 @@ namespace Database
                 }
             }
         }
-
         public static bool GetLatestAssignedID(out ushort LatestAssignedID)
         {
             using (SqlConnection Database = new SqlConnection(ConnectionString))
@@ -264,7 +257,6 @@ namespace Database
                 }
             }
         }
-
         public static void AddNewID (ushort ID)
         {
             using (SqlConnection Database = new SqlConnection(ConnectionString))

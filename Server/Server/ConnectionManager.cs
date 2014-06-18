@@ -32,7 +32,6 @@ namespace ConnectionManager
                     break;
             }
         }
-        
         private static void HandleConnection(User U)
         {
             Command Cmd;
@@ -62,7 +61,6 @@ namespace ConnectionManager
                 }
             }
         }
-
         private static void FirstConnection_SignIn(Socket UserSocket, Command Cmd)
         {
             ASCIIEncoding Encoder = new ASCIIEncoding();
@@ -88,7 +86,6 @@ namespace ConnectionManager
                 return;
             }
         }
-
         private static void FirstConnection_SignUp(Socket UserSocket, Command Cmd)
         {
             ASCIIEncoding Encoder = new ASCIIEncoding();
@@ -118,7 +115,6 @@ namespace ConnectionManager
                 HandleConnection(U);
             }
         }
-
         private static void Reconnection_SignIn(Socket UserSocket, Command Cmd)
         {
             User U;
@@ -147,7 +143,6 @@ namespace ConnectionManager
                 return;
             }
         }
-
         private static void Reconnection_SignUp(Socket UserSocket, Command Cmd)
         {
             User U;
@@ -181,7 +176,6 @@ namespace ConnectionManager
                 return;
             }
         }
-
         private static void SendDeviceList(User U)
         {
             ASCIIEncoding Encoder = new ASCIIEncoding();
@@ -192,7 +186,6 @@ namespace ConnectionManager
             DeviceList += ".";
             U.Send(Encoder.GetBytes(DeviceList));
         }
-
         private static void Send_Action(Command Cmd)
         {
             ASCIIEncoding Encoder = new ASCIIEncoding();
@@ -204,7 +197,6 @@ namespace ConnectionManager
             else
                 D.Send(Encoder.GetBytes("Device not connected!")); //SEND TO USER NOT DEVICE!!! FIX!!
         }
-
         private static void Locate(Command Cmd)
         {
         }
@@ -270,7 +262,6 @@ namespace ConnectionManager
                 Console.WriteLine("Connection was not accepted");
             }
         }
-        
         private static void HandleConnection(Device D)
         {
             //Initialization----------------------------------------------------------------------------0
@@ -320,8 +311,7 @@ namespace ConnectionManager
                     break;
                 }
             }
-        }
-        
+        }     
         //Actions--------------------------------------------------------------------------------------
         private static bool Device_Acknowledgement_Action(Command Cmd)
         {

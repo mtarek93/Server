@@ -21,33 +21,27 @@ namespace Clients
         {
             this.Name = _name;
         }
-
         public User(ushort _name, Socket S)
         {
             this.Name = _name;
             this.Sckt = S;
         }
-
         public ushort GetName()
         {
             return this.Name;
         }
-
         public Socket GetSocket()
         {
             return this.Sckt;
         }
-
         public void BindSocket(Socket _S)
         {
             this.Sckt = _S;
         }
-
         public void ChangeName(ushort _name)
         {
             this.Name = _name;
         }
-
         public bool Send(byte[] Data)
         {
             try
@@ -61,7 +55,6 @@ namespace Clients
                 return false;
             }
         }
-
         public bool Receive(byte[] Buffer)
         {
             try
@@ -139,7 +132,6 @@ namespace Clients
         {
             this.State = _State;
         }
-
         public bool Send(byte[] Data)
         {
             try
@@ -153,7 +145,6 @@ namespace Clients
                 return false;
             }
         }
-
         public bool Receive(byte[] Buffer)
         {
             try
