@@ -180,7 +180,7 @@ namespace ConnectionManager
         {
             ASCIIEncoding Encoder = new ASCIIEncoding();
             string DeviceList = "";
-            foreach (var Device in DeviceConnection.CurrentDeviceList)
+            foreach (var Device in Tools.CurrentDeviceList)
                 DeviceList += (Device.Key + ",off,");    //state is assumed to be off for now.....
 
             DeviceList += ".";
@@ -193,7 +193,7 @@ namespace ConnectionManager
             Device D;
 
             //if destination device is currently connected
-            if (DeviceConnection.CurrentDeviceList.TryGetValue(Cmd.DestinationID, out D))
+            if (Tools.CurrentDeviceList.TryGetValue(Cmd.DestinationID, out D))
                 D.Send(Encoder.GetBytes("1," + Cmd.SourceID.ToString() + Cmd.Action_State + "."));
             else
                 D.Send(Encoder.GetBytes("Device not connected!"));
@@ -223,7 +223,7 @@ namespace ConnectionManager
 
                     //bind new socket, add to current devices list, and start watchdog timer
                     D.BindSocket(S);
-                    CurrentDeviceList.Add(D.GetName(), D);
+                    Tools.CurrentDeviceList.Add(D.GetName(), D);
                     D.StartTimer();
 
                     HandleConnection(D);
@@ -246,7 +246,7 @@ namespace ConnectionManager
                 Console.WriteLine("Device Name: " + D.GetName());
 
                 //Add Device to both current devices list and database
-                CurrentDeviceList.Add(AssignedName, D);
+                Tools.CurrentDeviceList.Add(AssignedName, D);
                 DatabaseHandler.AddNewDevice(AssignedName, 0); //assuming state is off for now
 
                 //Name notification message to device
@@ -280,7 +280,7 @@ namespace ConnectionManager
                     if (!D.Receive(ReceivedData))
                     {
                         //Console.WriteLine("Recieve(D): " + D.GetName() + " is disconnected!");
-                        //CurrentDeviceList.Remove(D.GetName()); 
+                        //Tools.CurrentDeviceList.Remove(D.GetName()); 
                         //break;
                     }
                     else
@@ -310,7 +310,7 @@ namespace ConnectionManager
                 {
                     Console.WriteLine("Exception in DeviceConnection.HandleConnection: " + e.Message);
                     //Console.WriteLine("Device: " + D.GetName() + " was disconnected");
-                    //CurrentDeviceList.Remove(D.GetName());
+                    //Tools.CurrentDeviceList.Remove(D.GetName());
                     break;
                 }
             }
