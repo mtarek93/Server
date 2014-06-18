@@ -208,24 +208,9 @@ namespace ConnectionManager
         //Connection Managing functions----------------------------------------------------------------
         public static void StartConnection(Socket DeviceSocket, Command Cmd)
         {
-        }
-        public static void AcceptConnection(object _Socket)
-        {
-            //Initialization-----------------------------------------------------------------------------0
-            Socket S = (Socket) _Socket;
+            Socket S = (Socket) DeviceSocket;
             ushort AssignedName;
-            string Command;
-            Command Cmd;
-            CommandParser.InitializeCommandsDictionary();
             ASCIIEncoding Encode = new ASCIIEncoding();
-            byte[] ReceivedData = new byte[100];
-
-            //Recieving and parsing a command from Device------------------------------------------------
-            S.Receive(ReceivedData);
-            Command = Tools.ByteArrayToString(ReceivedData);
-            Console.WriteLine("Command received was: " + Command);
-            Cmd = CommandParser.ParseCommand(Command);
-
             //if Command was reconnect-------------------------------------------------------------------1
             if (Cmd.Type == CommandType.Device_Reconnection)
             {
@@ -245,7 +230,7 @@ namespace ConnectionManager
                 }
                 else
                 {
-                    Console.WriteLine("Name: "+ Cmd.SourceID +" Doesn't exist in Database!");
+                    Console.WriteLine("Name: " + Cmd.SourceID + " Doesn't exist in Database!");
                     Console.WriteLine("Device not connected!");
                 }
             }
@@ -259,14 +244,14 @@ namespace ConnectionManager
 
                 Console.WriteLine("New name assigned to Device!");
                 Console.WriteLine("Device Name: " + D.GetName());
-                    
+
                 //Add Device to both current devices list and database
-                CurrentDeviceList.Add(AssignedName, D);   
+                CurrentDeviceList.Add(AssignedName, D);
                 DatabaseHandler.AddNewDevice(AssignedName, 0); //assuming state is off for now
 
                 //Name notification message to device
-                D.Send(Encode.GetBytes(AssignedName + ",0,0."));  
-                 
+                D.Send(Encode.GetBytes(AssignedName + ",0,0."));
+
                 //Add to current devices list and start watchdog timer    
                 D.StartTimer();
                 HandleConnection(D);
@@ -279,6 +264,7 @@ namespace ConnectionManager
                 Console.WriteLine("Connection was not accepted");
             }
         }
+        
         private static void HandleConnection(Device D)
         {
             //Initialization----------------------------------------------------------------------------0
