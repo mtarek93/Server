@@ -40,11 +40,12 @@ namespace ConnectionManager
             {
                 if (U.Receive(ReceivedData))
                 {
+                    Console.WriteLine("Command Received: " + Tools.ByteArrayToString(ReceivedData));
                     Cmd = CommandParser.ParseCommand(Tools.ByteArrayToString(ReceivedData));
                     switch (Cmd.Type)
                     {
                         case CommandType.User_Action:
-                            Send_Action(Cmd);
+                            Send_Action(U, Cmd);
                             break;
                         case CommandType.User_Locate:
                             Locate(Cmd);
@@ -76,7 +77,7 @@ namespace ConnectionManager
                 DatabaseHandler.AddNewUser(AssignedID);
                 
                 //Send assignedID, devicelist, and wait for new commands in HandleConnection()
-                U.Send(Encoder.GetBytes("Login Successful!, " + AssignedID.ToString() + "."));
+                U.Send(Encoder.GetBytes("Login Successful!," + AssignedID.ToString() + "."));
                 SendDeviceList(U);
                 HandleConnection(U);
             }
@@ -186,7 +187,7 @@ namespace ConnectionManager
             DeviceList += ".";
             U.Send(Encoder.GetBytes(DeviceList));
         }
-        private static void Send_Action(Command Cmd)
+        private static void Send_Action(User U, Command Cmd)
         {
             ASCIIEncoding Encoder = new ASCIIEncoding();
             Device D;
@@ -195,7 +196,7 @@ namespace ConnectionManager
             if (Tools.CurrentDeviceList.TryGetValue(Cmd.DestinationID, out D))
                 D.Send(Encoder.GetBytes("1," + Cmd.SourceID.ToString() + Cmd.Action_State + "."));
             else
-                D.Send(Encoder.GetBytes("Device not connected!")); //SEND TO USER NOT DEVICE!!! FIX!!
+                U.Send(Encoder.GetBytes("Device not connected!"));
         }
         private static void Locate(Command Cmd)
         {
