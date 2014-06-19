@@ -21,8 +21,8 @@ namespace TCP_Client
                 Console.WriteLine("Connecting.....");
 
                 tcpSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-                tcpSocket.Connect("192.168.1.4", 14);
-                //use the ipaddress as in the server program
+                tcpSocket.Connect("192.168.1.6", 14);
+                // use the ipaddress as in the server program
 
                 Console.WriteLine("Connected");
                 SendThread = new Thread(new ThreadStart(SendFunction));
@@ -53,9 +53,24 @@ namespace TCP_Client
 
         static void ReceiveFunction()
         {
-            byte[] ReceivedData = new byte[1024];
-            tcpSocket.Receive(ReceivedData);
-            Console.WriteLine(Encoding.ASCII.GetString(ReceivedData));
+            while (true)
+            {
+                byte[] ReceivedData = new byte[1024];
+                byte[] Data;
+                int NumberofBytes = tcpSocket.Receive(ReceivedData);
+                Data = FormatData(ReceivedData, NumberofBytes);
+                Console.WriteLine(Encoding.ASCII.GetString(Data));
+            }
+        }
+
+        static byte[] FormatData(byte[] Data, int NumberofReceivedBytes)
+        {
+            byte[] FormattedData = new byte[NumberofReceivedBytes];
+            for (int i = 0; i < NumberofReceivedBytes; i++)
+            {
+                FormattedData[i] = Data[i];
+            }
+            return FormattedData;
         }
 
     }
