@@ -31,9 +31,9 @@ namespace ServerTools
 
             //Recieving and parsing a command -----------------------------------------------------------
             NumberofReceivedBytes = S.Receive(ReceiveBuffer);
-            Data = new byte[NumberofReceivedBytes];  //?
-            for (int i = 0; i < NumberofReceivedBytes; i++)   //?
-                Data[i] = ReceiveBuffer[i];       //?
+            Data = new byte[NumberofReceivedBytes];           
+            for (int i = 0; i < NumberofReceivedBytes; i++)   
+                Data[i] = ReceiveBuffer[i];                   
 
             Command = ByteArrayToString(Data);
             Console.WriteLine("Tools.AcceptConnection: Command received was: " + Command);
