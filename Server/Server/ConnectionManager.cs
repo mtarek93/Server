@@ -51,6 +51,7 @@ namespace ConnectionManager
                             Locate(Cmd);
                             break;
                         default:
+                            U.Send(Encoding.ASCII.GetBytes("Invalid Command!"));
                             break;
                     }
                 }
