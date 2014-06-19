@@ -21,8 +21,8 @@ namespace TCP_Client
                 Console.WriteLine("Connecting.....");
 
                 tcpSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-                tcpSocket.Connect("192.168.1.6", 14);
-                // use the ipaddress as in the server program
+                tcpSocket.Connect("192.168.1.4", 14);
+                //use the ipaddress as in the server program
 
                 Console.WriteLine("Connected");
                 SendThread = new Thread(new ThreadStart(SendFunction));

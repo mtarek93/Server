@@ -72,7 +72,7 @@ namespace ServerTools
             {
                 Console.WriteLine("Number of Users: " + CurrentUserList.Count.ToString());    
                 Console.WriteLine("Number of Devices: " + CurrentDeviceList.Count.ToString());    
-                Thread.Sleep(10000);
+                Thread.Sleep(80000);
             }
         }
     }
