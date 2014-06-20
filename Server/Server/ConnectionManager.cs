@@ -65,8 +65,6 @@ namespace ConnectionManager
         }
         private static void FirstConnection_SignIn(Socket UserSocket, Command Cmd)
         {
-            ASCIIEncoding Encoder = new ASCIIEncoding();
-           
             if (DatabaseHandler.UserIsAuthenticated(Cmd.UserName, Cmd.Password))
             {
                 //Assign ID to user's device
@@ -78,24 +76,22 @@ namespace ConnectionManager
                 DatabaseHandler.AddNewUser(AssignedID);
                 
                 //Send assignedID, devicelist, and wait for new commands in HandleConnection()
-                U.Send(Encoder.GetBytes("Login Successful!," + AssignedID.ToString() + "."));
+                U.Send(Encoding.ASCII.GetBytes("Login Successful!," + AssignedID.ToString() + "."));
                 SendDeviceList(U);
                 HandleConnection(U);
             }
             else
             {
-                UserSocket.Send(Encoder.GetBytes("Invalid credentials."));
+                UserSocket.Send(Encoding.ASCII.GetBytes("Invalid credentials."));
                 return;
             }
         }
         private static void FirstConnection_SignUp(Socket UserSocket, Command Cmd)
         {
-            ASCIIEncoding Encoder = new ASCIIEncoding();
-
-            //Create new User Account
+            //Check if username exists
             if (DatabaseHandler.UsernameExists(Cmd.UserName))
             {
-                UserSocket.Send(Encoder.GetBytes("Username already exists!"));
+                UserSocket.Send(Encoding.ASCII.GetBytes("Username already exists!"));
                 return;
             }
             else
@@ -112,7 +108,7 @@ namespace ConnectionManager
                 DatabaseHandler.AddNewUser(AssignedID);
 
                 //Send assignedID, devicelist, and wait for new commands in HandleConnection()
-                U.Send(Encoder.GetBytes("Sign Up Successful!," + AssignedID.ToString() + "."));
+                U.Send(Encoding.ASCII.GetBytes("Sign Up Successful!," + AssignedID.ToString() + "."));
                 SendDeviceList(U);
                 HandleConnection(U);
             }
@@ -120,7 +116,6 @@ namespace ConnectionManager
         private static void Reconnection_SignIn(Socket UserSocket, Command Cmd)
         {
             User U;
-            ASCIIEncoding Encoder = new ASCIIEncoding();
 
             //if user's device has connected before
             if (DatabaseHandler.TryGetUser(Cmd.SourceID, out U))
@@ -129,33 +124,32 @@ namespace ConnectionManager
                 {
                     U.BindSocket(UserSocket);
                     Tools.CurrentUserList.Add(Cmd.SourceID, U);
-                    U.Send(Encoder.GetBytes("Login Successfull!"));
+                    U.Send(Encoding.ASCII.GetBytes("Login Successfull!"));
                     SendDeviceList(U);
                     HandleConnection(U);
                 }
                 else
                 {
-                    UserSocket.Send(Encoder.GetBytes("Invalid credentials."));
+                    UserSocket.Send(Encoding.ASCII.GetBytes("Invalid credentials."));
                     return;
                 }
             }
             else
             {
-                UserSocket.Send(Encoder.GetBytes("This device has not connected to the server before."));
+                UserSocket.Send(Encoding.ASCII.GetBytes("This device has not connected to the server before."));
                 return;
             }
         }
         private static void Reconnection_SignUp(Socket UserSocket, Command Cmd)
         {
             User U;
-            ASCIIEncoding Encoder = new ASCIIEncoding();
 
             //if user's device has connected before
             if (DatabaseHandler.TryGetUser(Cmd.SourceID, out U))
             {
                 if (DatabaseHandler.UsernameExists(Cmd.UserName))
                 {
-                    UserSocket.Send(Encoder.GetBytes("Username already exists!"));
+                    UserSocket.Send(Encoding.ASCII.GetBytes("Username already exists!"));
                     return;
                 }
                 else
@@ -167,37 +161,35 @@ namespace ConnectionManager
                     Tools.CurrentUserList.Add(Cmd.SourceID, U);
 
                     //Send DeviceList, and wait for new commands in HandleConnection()
-                    U.Send(Encoder.GetBytes("Sign Up Successful!"));
+                    U.Send(Encoding.ASCII.GetBytes("Sign Up Successful!"));
                     SendDeviceList(U);
                     HandleConnection(U);
                 }
             }
             else
             {
-                UserSocket.Send(Encoder.GetBytes("This device has not connected to the server before."));
+                UserSocket.Send(Encoding.ASCII.GetBytes("This device has not connected to the server before."));
                 return;
             }
         }
         private static void SendDeviceList(User U)
         {
-            ASCIIEncoding Encoder = new ASCIIEncoding();
             string DeviceList = "";
             foreach (var Device in Tools.CurrentDeviceList)
-                DeviceList += (Device.Key + ",off,");    //state is assumed to be off for now.....
+                DeviceList += (Device.Key + Device.Value.GetState().ToString());    //state is assumed to be off for now.....
 
             DeviceList += ".";
-            U.Send(Encoder.GetBytes(DeviceList));
+            U.Send(Encoding.ASCII.GetBytes(DeviceList));
         }
         private static void Send_Action(User U, Command Cmd)
         {
-            ASCIIEncoding Encoder = new ASCIIEncoding();
             Device D;
 
             //if destination device is currently connected
             if (Tools.CurrentDeviceList.TryGetValue(Cmd.DestinationID, out D))
-                D.Send(Encoder.GetBytes("1," + Cmd.SourceID.ToString() + Cmd.Action_State + "."));
+                D.Send(Encoding.ASCII.GetBytes("1," + Cmd.SourceID.ToString() + Cmd.Action_State + "."));
             else
-                U.Send(Encoder.GetBytes("Device not connected!"));
+                U.Send(Encoding.ASCII.GetBytes("Device not connected!"));
         }
         private static void Locate(Command Cmd)
         {
