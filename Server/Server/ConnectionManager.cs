@@ -241,7 +241,7 @@ namespace ConnectionManager
                 DatabaseHandler.AddNewDevice(AssignedName, 0); //assuming state is off for now
 
                 //Name notification message to device
-                Message = (Encoding.ASCII.GetBytes(".1," + AssignedName.ToString() + ",23,M."));
+                byte[] Message = (Encoding.ASCII.GetBytes(".1," + AssignedName.ToString() + ",23,M."));
                 D.Send(Message);
 
                 //Add to current devices list and start watchdog timer    
