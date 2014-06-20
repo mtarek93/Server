@@ -241,10 +241,6 @@ namespace ConnectionManager
                 DatabaseHandler.AddNewDevice(AssignedName, 0); //assuming state is off for now
 
                 //Name notification message to device
-                var Arr = new List<byte>();
-                Arr.Add((byte) '.');
-                byte[] Message = new byte[11];
-                Array.Clear(Message, 0, 11);
                 Message = (Encoding.ASCII.GetBytes(".1," + AssignedName.ToString() + ",23,M."));
                 D.Send(Message);
 
