@@ -202,7 +202,7 @@ namespace ConnectionManager
         {
             Socket S = (Socket) DeviceSocket;
             ushort AssignedName;
-            ASCIIEncoding Encode = new ASCIIEncoding();
+
             //if Command was reconnect-------------------------------------------------------------------1
             if (Cmd.Type == CommandType.Device_Reconnection)
             {
@@ -242,7 +242,7 @@ namespace ConnectionManager
                 DatabaseHandler.AddNewDevice(AssignedName, 0); //assuming state is off for now
 
                 //Name notification message to device
-                D.Send(Encode.GetBytes(AssignedName + ",0,0."));
+                D.Send(Encoding.ASCII.GetBytes(AssignedName + ",0,0."));
 
                 //Add to current devices list and start watchdog timer    
                 D.StartTimer();
@@ -309,7 +309,6 @@ namespace ConnectionManager
         //Actions--------------------------------------------------------------------------------------
         private static bool Device_Acknowledgement_Action(Command Cmd)
         {
-            ASCIIEncoding State = new ASCIIEncoding(); 
             User U;
             bool flag = false;
             string msg;
@@ -317,8 +316,8 @@ namespace ConnectionManager
             //if User is in current users list
             if (Tools.CurrentUserList.TryGetValue(Cmd.DestinationID, out U))
             {
-                msg = Convert.ToString(Cmd.DestinationID) + ',' + Convert.ToString(Cmd.SourceID) + ',' + Convert.ToString(Cmd.Action_State) + '.';  
-                U.Send(State.GetBytes(msg));
+                msg = Convert.ToString(Cmd.DestinationID) + ',' + Convert.ToString(Cmd.SourceID) + ',' + Convert.ToString(Cmd.Action_State) + '.';
+                U.Send(Encoding.ASCII.GetBytes(msg));
                 Console.WriteLine("State sent to User: "+ Cmd.DestinationID+ " From Device: "+ Cmd.SourceID);
                 flag = true;
             }
