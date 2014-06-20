@@ -200,7 +200,6 @@ namespace ConnectionManager
         //Connection Managing functions----------------------------------------------------------------
         public static void StartConnection(Socket DeviceSocket, Command Cmd)
         {
-            Socket S = (Socket) DeviceSocket;
             ushort AssignedName;
 
             //if Command was reconnect-------------------------------------------------------------------1
@@ -214,7 +213,7 @@ namespace ConnectionManager
                     Console.WriteLine("Connection accepted from Device " + D.GetName());
 
                     //bind new socket, add to current devices list, and start watchdog timer
-                    D.BindSocket(S);
+                    D.BindSocket(DeviceSocket);
                     Tools.CurrentDeviceList.Add(D.GetName(), D);
                     D.StartTimer();
 
@@ -232,7 +231,7 @@ namespace ConnectionManager
             {
                 //Assign name for device
                 AssignedName = Tools.AssignID();
-                Device D = new Device(AssignedName, S);
+                Device D = new Device(AssignedName, DeviceSocket);
 
                 Console.WriteLine("New name assigned to Device!");
                 Console.WriteLine("Device Name: " + D.GetName());
@@ -242,7 +241,12 @@ namespace ConnectionManager
                 DatabaseHandler.AddNewDevice(AssignedName, 0); //assuming state is off for now
 
                 //Name notification message to device
-                D.Send(Encoding.ASCII.GetBytes(AssignedName + ",0,0."));
+                var Arr = new List<byte>();
+                Arr.Add((byte) '.');
+                byte[] Message = new byte[11];
+                Array.Clear(Message, 0, 11);
+                Message = (Encoding.ASCII.GetBytes(".1," + AssignedName.ToString() + ",23,M."));
+                D.Send(Message);
 
                 //Add to current devices list and start watchdog timer    
                 D.StartTimer();
@@ -336,8 +340,6 @@ namespace ConnectionManager
             Console.WriteLine("WatchDog recieved from device: " + Cmd.SourceID);
             D.resetTimer();
             return true;
-        }
-
-
+        }  
     }
 }
