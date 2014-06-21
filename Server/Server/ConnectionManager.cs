@@ -256,7 +256,7 @@ namespace ConnectionManager
                 DatabaseHandler.AddNewDevice(AssignedName, 0); //assuming state is off for now
 
                 //Name notification message to device
-                byte[] Message = (Encoding.ASCII.GetBytes(".1," + AssignedName.ToString() + ",23,M."));
+                byte[] Message = CreateNewNameMessage(AssignedName);
                 D.Send(Message);
 
                 //Add to current devices list and start watchdog timer    
@@ -351,6 +351,28 @@ namespace ConnectionManager
             Console.WriteLine("WatchDog recieved from device: " + Cmd.SourceID);
             D.resetTimer();
             return true;
-        }  
+        }
+
+        private static byte[] CreateNewNameMessage(ushort Name)
+        {
+            var ByteList = new List<byte>();
+            ByteList.Add(Convert.ToByte('.'));
+            ByteList.Add(Convert.ToByte('1'));
+            ByteList.Add(Convert.ToByte(','));
+
+            byte[] NameAsBytes = BitConverter.GetBytes(Name);
+            for (int i = 0; i < NameAsBytes.Length; i++)
+                ByteList.Add(NameAsBytes[i]);
+
+            ByteList.Add(Convert.ToByte(','));
+            ByteList.Add(Convert.ToByte('2'));
+            ByteList.Add(Convert.ToByte('3'));
+            ByteList.Add(Convert.ToByte(','));
+            ByteList.Add(Convert.ToByte('M'));
+            ByteList.Add(Convert.ToByte('.'));
+            byte[] Result = ByteList.ToArray();
+            //string s = Encoding.ASCII.GetString(Result);
+            return Result;
+        }
     }
 }
