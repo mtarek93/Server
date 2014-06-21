@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Timers;
 using System.IO;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,7 +14,7 @@ namespace TCP_Client
     public class Client
     {
         static Socket tcpSocket;
-        static Thread SendThread, ReceiveThread;
+        static Thread SendThread, ReceiveThread, WatchdogThread;
         public static void Main()
         {
             try
@@ -21,7 +22,7 @@ namespace TCP_Client
                 Console.WriteLine("Connecting.....");
 
                 tcpSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-                tcpSocket.Connect("192.168.1.4", 14);
+                tcpSocket.Connect("192.168.1.6", 14);
                 // use the ipaddress as in the server program
 
                 Console.WriteLine("Connected");
@@ -29,6 +30,8 @@ namespace TCP_Client
                 SendThread.Start();
                 ReceiveThread = new Thread(new ThreadStart(ReceiveFunction));
                 ReceiveThread.Start();
+                WatchdogThread = new Thread(new ThreadStart(WatchdogFunction));
+                WatchdogThread.Start();
             }
 
             catch (Exception e)
@@ -36,7 +39,6 @@ namespace TCP_Client
                 Console.WriteLine(e.Message);
             }
         }
-
         static void SendFunction()
         {
             byte[] Data = new byte[1024];
@@ -50,7 +52,6 @@ namespace TCP_Client
                 tcpSocket.Send(Data);
             }
         }
-
         static void ReceiveFunction()
         {
             while (true)
@@ -62,7 +63,15 @@ namespace TCP_Client
                 Console.WriteLine(Encoding.ASCII.GetString(Data));
             }
         }
-
+        static void WatchdogFunction()
+        {
+            while (true)
+            {
+                byte []Data = Encoding.ASCII.GetBytes("2,0,,,,.");
+                tcpSocket.Send(Data);
+                Thread.Sleep(4000);
+            }
+        }
         static byte[] FormatData(byte[] Data, int NumberofReceivedBytes)
         {
             byte[] FormattedData = new byte[NumberofReceivedBytes];
@@ -72,6 +81,5 @@ namespace TCP_Client
             }
             return FormattedData;
         }
-
     }
 }
