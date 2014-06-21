@@ -219,6 +219,7 @@ namespace ConnectionManager
 
                     HandleConnection(D);
                 }
+                //if not: assign new name, add to database, send NewName command to device
                 else
                 {
                     Console.WriteLine("Name: " + Cmd.SourceID + " Doesn't exist in Database!");

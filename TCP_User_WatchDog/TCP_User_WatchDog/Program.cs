@@ -19,10 +19,13 @@ namespace TCP_Client
         {
             try
             {
+                Console.Write("Enter Device ID: ");
+                string ID = Console.ReadLine();
+
                 Console.WriteLine("Connecting.....");
 
                 tcpSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-                tcpSocket.Connect("192.168.1.6", 14);
+                tcpSocket.Connect("192.168.1.4", 14);
                 // use the ipaddress as in the server program
 
                 Console.WriteLine("Connected");
@@ -30,8 +33,8 @@ namespace TCP_Client
                 SendThread.Start();
                 ReceiveThread = new Thread(new ThreadStart(ReceiveFunction));
                 ReceiveThread.Start();
-                WatchdogThread = new Thread(new ThreadStart(WatchdogFunction));
-                WatchdogThread.Start();
+                WatchdogThread = new Thread(new ThreadStart (WatchdogFunction));
+                WatchdogThread.Start(ID);
             }
 
             catch (Exception e)
@@ -63,11 +66,11 @@ namespace TCP_Client
                 Console.WriteLine(Encoding.ASCII.GetString(Data));
             }
         }
-        static void WatchdogFunction()
+        static void WatchdogFunction(string ID)
         {
             while (true)
             {
-                byte []Data = Encoding.ASCII.GetBytes("2,0,,,,.");
+                byte []Data = Encoding.ASCII.GetBytes("2,"+ ID +",,,,.");
                 Console.WriteLine("watchdogSent");
                 tcpSocket.Send(Data);
                 Thread.Sleep(4000);
