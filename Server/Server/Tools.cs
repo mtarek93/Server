@@ -45,12 +45,14 @@ namespace ServerTools
             else
                 Console.WriteLine("Tools.AcceptConnection: Connection not accepted!");
         }
-        
         public static string ByteArrayToString(byte[] Data)
         {
             return (System.Text.Encoding.ASCII.GetString(Data));
         }
-        
+        public static byte[] StringToByteArray(string data)
+        {
+            return Encoding.ASCII.GetBytes(data);      
+        }  //?
         public static ushort AssignID()
         {
             ushort ID = 0;
@@ -62,12 +64,10 @@ namespace ServerTools
             else
                 return ID;
         }
-        
         public static IPAddress GetMyIPAddress()
         {
             return Dns.GetHostEntry(Dns.GetHostName()).AddressList.FirstOrDefault(ip => ip.AddressFamily == AddressFamily.InterNetwork);
         }
-        
         public static void DisplayServerStatus()
         {
             while (true)
@@ -76,8 +76,7 @@ namespace ServerTools
                 Console.WriteLine("Number of Devices: " + CurrentDeviceList.Count.ToString());    
                 Thread.Sleep(80000);
             }
-        }
-        
+        }        
         public static byte[] FormatData(byte[] Data, int NumberofReceivedBytes)
         {
             byte[] FormattedData = new byte[NumberofReceivedBytes];
