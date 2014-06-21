@@ -52,7 +52,7 @@ namespace ServerTools
         public static byte[] StringToByteArray(string data)
         {
             return Encoding.ASCII.GetBytes(data);      
-        }  //?
+        } 
         public static ushort AssignID()
         {
             ushort ID = 0;
