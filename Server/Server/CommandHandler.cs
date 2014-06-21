@@ -100,14 +100,13 @@ namespace CommandHandler
                 {
                     Command = Command.Remove(Command.Length - 1);           //Remove delimiter
                     string[] SplittedCommand = Command.Split(',');
-                    if (!String.IsNullOrEmpty(SplittedCommand[1]))
-                        Cmd.SourceID = Convert.ToUInt16(SplittedCommand[1]);
-                    if (!String.IsNullOrEmpty(SplittedCommand[2]))
-                        Cmd.DestinationID = Convert.ToUInt16(SplittedCommand[2]);
-                    if (!String.IsNullOrEmpty(SplittedCommand[3]))
-                        Cmd.Action_State = Convert.ToUInt16(SplittedCommand[3]);
+                    
+                    Cmd.SourceID = BitConverter.ToUInt16(Encoding.ASCII.GetBytes(SplittedCommand[1]), 0);
+                    Cmd.DestinationID = BitConverter.ToUInt16(Encoding.ASCII.GetBytes(SplittedCommand[2]), 0);
+                    Cmd.Action_State = BitConverter.ToUInt16(Encoding.ASCII.GetBytes(SplittedCommand[3]), 0);
                     Cmd.UserName = SplittedCommand[4];
                     Cmd.Password = SplittedCommand[5];
+                    
                     return Cmd;
                 }
             }
