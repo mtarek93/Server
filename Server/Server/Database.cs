@@ -33,7 +33,6 @@ namespace Database
     class DatabaseHandler
     {
         public static string ConnectionString, LoginTable = "LoginTable", UsersTable = "UsersTable", DevicesTable = "DevicesTable", IDTable = "IDTable";
-
         public static void AddUserAccount(string Username, string Password)
         {
             using (SqlConnection Database = new SqlConnection(ConnectionString))
