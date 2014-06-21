@@ -8,28 +8,12 @@ using Clients;
 
 namespace Database
 {
-
-    //class Test
-    //{
-    //    static void Main(string[] args)
-    //    {
-    //        ushort ID = 0;
-    //        DatabaseHandler.ConnectionString = @"Data Source=(LocalDB)\v11.0;AttachDbFilename=C:\Users\Mohamed\Documents\GitHub\Server\Server\Server\Database.mdf;Integrated Security=True;Connect Timeout=30";
-    //        bool flag = DatabaseHandler.GetLatestAssignedID(out ID);
-    //        if (flag)
-    //        {
-    //            ID++;
-    //            DatabaseHandler.AddNewID(ID);
-    //            DatabaseHandler.AddNewDevice(ID, 0);
-    //        }
-    //        else
-    //        {
-    //            DatabaseHandler.AddNewID(ID);
-    //            DatabaseHandler.AddNewDevice(ID, 0);
-    //        }
-                
-    //    }
-    //}
+    class Test
+    {
+        //static void Main(string[] args)
+        //{
+        //}
+    }
     class DatabaseHandler
     {
         public static string ConnectionString, LoginTable = "LoginTable", UsersTable = "UsersTable", DevicesTable = "DevicesTable", IDTable = "IDTable";
@@ -106,6 +90,7 @@ namespace Database
                     Console.WriteLine(e.Message);
                 }
             }
+            AddNewID(ID);
         }
         public static void AddNewDevice(ushort ID, int State)
         {
@@ -128,6 +113,7 @@ namespace Database
                     Console.WriteLine(e.Message);
                 }
             }
+            AddNewID(ID);
         }
         public static bool TryGetDevice(int ID, out Device D)
         {
@@ -225,38 +211,31 @@ namespace Database
                 }
             }
         }
-        public static bool GetLatestAssignedID(out ushort LatestAssignedID)
+        public static ushort GetNumberofIDs()
         {
             using (SqlConnection Database = new SqlConnection(ConnectionString))
             {
                 try
                 {
                     Database.Open();
-                    string Query = "SELECT TOP 1 Id FROM " + IDTable + " ORDER BY Id DESC;";
+                    string Query = "SELECT COUNT (Id) FROM " + IDTable + ";";
                     using (SqlCommand Command = new SqlCommand(Query, Database))
                     {
                         SqlDataReader Reader = Command.ExecuteReader();
                         if (Reader.Read())
-                        {
-                            LatestAssignedID = Convert.ToUInt16(Reader.GetInt32(0));
-                            return true;
-                        }
+                            return Convert.ToUInt16(Reader.GetInt32(0));
                         else
-                        {
-                            LatestAssignedID = 0;
-                            return false;
-                        }
+                            return (ushort)0;
                     }
                 }
                 catch (SqlException e)
                 {
                     Console.WriteLine(e.Message);
-                    LatestAssignedID = 0;
-                    return false;
+                    return (ushort)0;
                 }
             }
         }
-        public static void AddNewID (ushort ID)
+        private static void AddNewID (ushort ID)
         {
             using (SqlConnection Database = new SqlConnection(ConnectionString))
             {

@@ -55,14 +55,7 @@ namespace ServerTools
         } 
         public static ushort AssignID()
         {
-            ushort ID = 0;
-            bool AssignedIDBefore;
-            AssignedIDBefore = DatabaseHandler.GetLatestAssignedID(out ID);
-
-            if (AssignedIDBefore)
-                return ++ID;
-            else
-                return ID;
+            return DatabaseHandler.GetNumberofIDs();
         }
 
         public static IPAddress GetMyIPAddress()
