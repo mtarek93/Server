@@ -1,8 +1,8 @@
-Recieved Commands Unified Format
+﻿Server Commands
 
 Type, SourceID?, DestinationID?, State | Action?, username?, password?.
 
-Types: 
+Commands: 
 Device_FirstConnection,  			0,  ,      ,      ,        ,    .
 Device_Reconnection,      			1,ID,      ,      ,        ,    .
 Device_WatchDog,	  			2,ID,      ,      ,        ,    .
@@ -12,20 +12,50 @@ User_Reconnection_SignIn,			5,ID,      ,      ,username,pass.
 User_FirstConnection_SignUp,			6,  ,      ,      ,username,pass.
 User_Reconnection_SignUp,			7,ID,      ,      ,username,pass.
 User_Action,					8,ID,DestID,Action,	   ,    .
+Device_Command_Not_Found			9,  ,      ,      ,        ,    .
 User_Locate,					TBA XD
+User_send_list of devices                       TBA XD
 
 
 
 
-Sent Commands Unified Format
+User Commands
 
 
-Types:
-Invalid					       0,
-Action					       1,UserID,Action.
+User Received Commands Unified Format
+
+
+Type, UserID, Y | N | Number of devices in the network, DestID,state.!
+
+Commands: 
+User_FirstConnection_SignIn_accept:			4,UserID,Y,      ,      .!
+
+User_FirstConnection_SignIn_reject:			4,UserID,N,      ,      .!
+User_Reconnection_SignIn_accept:			5,UserID,Y,      ,      .!
+
+User_Reconnection_SignIn_reject:			5,UserID,N,      ,      .!
+User_FirstConnection_SignUp_accept:			6,UserID,Y,      ,      .!
+
+User_FirstConnection_SignUp_reject:			6,UserID,N,      ,      .!
+User_Reconnection_SignUp_accept:			7,UserID,Y,      ,      .!
+
+User_Reconnection_SignUp_reject:			7,UserID,N,      ,      .!
+
+User_Recieve_list of devices:                           1,UserID,Number,DestID,state.!……….!
+
+User_recieve_confirmation:                              8,UserID,   ,DestID,state.!
 
 
 
+
+Device commands: ( 11 bytes)
+
+Command format: . 1byte , 2bytes , 2bytes , 1byte .
+
+Commands:
+First time name:  .1,name,         ,M      .
+Action         :  .2,name,Dev name ,Action .
+Change name    :  .3,name,new name ,       .
 
 
 
