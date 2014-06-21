@@ -222,7 +222,22 @@ namespace ConnectionManager
                 else
                 {
                     Console.WriteLine("Name: " + Cmd.SourceID + " Doesn't exist in Database!");
-                    Console.WriteLine("Device not connected!");
+                    AssignedName = Tools.AssignID();
+                    Console.WriteLine("New name assigned to Device!");
+                    Console.WriteLine("Device Name: " + AssignedName);
+
+                    D.ChangeName(AssignedName);
+                    D.BindSocket(DeviceSocket);
+
+                    Tools.CurrentDeviceList.Add(AssignedName, D);
+                    DatabaseHandler.AddNewDevice(AssignedName, 0); 
+
+                    byte[] Message = (Encoding.ASCII.GetBytes(".3," + Cmd.SourceID+ AssignedName.ToString() + ",M."));
+                    D.Send(Message);
+
+                    D.StartTimer();
+                    HandleConnection(D);
+
                 }
             }
 
