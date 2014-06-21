@@ -29,12 +29,11 @@ namespace TCP_Client
                 // use the ipaddress as in the server program
 
                 Console.WriteLine("Connected");
-                SendThread = new Thread(new ThreadStart(SendFunction));
-                SendThread.Start();
+                SendThread = new Thread(new ParameterizedThreadStart(SendFunction));
+                SendThread.Start(ID);
                 ReceiveThread = new Thread(new ThreadStart(ReceiveFunction));
                 ReceiveThread.Start();
-                WatchdogThread = new Thread(new ThreadStart (WatchdogFunction));
-                WatchdogThread.Start(ID);
+
             }
 
             catch (Exception e)
@@ -42,17 +41,25 @@ namespace TCP_Client
                 Console.WriteLine(e.Message);
             }
         }
-        static void SendFunction()
+        static void SendFunction(object _ID)
         {
+            string ID = (string)_ID;
             byte[] Data = new byte[1024];
             while (true)
             {
                 Console.Write("Enter the string to be transmitted : ");
                 String str = Console.ReadLine();
-                Data = Encoding.ASCII.GetBytes(str);
-
-                Console.WriteLine("Transmitting.....");
-                tcpSocket.Send(Data);
+                if (str.ElementAt(0) == 'w')
+                {
+                    WatchdogThread = new Thread(new ParameterizedThreadStart(WatchdogFunction));
+                    WatchdogThread.Start(ID);
+                }
+                else
+                {
+                    Data = Encoding.ASCII.GetBytes(str);
+                    Console.WriteLine("Transmitting.....");
+                    tcpSocket.Send(Data);
+                }
             }
         }
         static void ReceiveFunction()
@@ -63,11 +70,13 @@ namespace TCP_Client
                 byte[] Data;
                 int NumberofBytes = tcpSocket.Receive(ReceivedData);
                 Data = FormatData(ReceivedData, NumberofBytes);
-                Console.WriteLine(Encoding.ASCII.GetString(Data));
+                Console.WriteLine(" ");
+                Console.WriteLine("Received Command: " + Encoding.ASCII.GetString(Data));
             }
         }
-        static void WatchdogFunction(string ID)
+        static void WatchdogFunction(object _ID)
         {
+            string ID = (string)_ID;
             while (true)
             {
                 byte []Data = Encoding.ASCII.GetBytes("2,"+ ID +",,,,.");
