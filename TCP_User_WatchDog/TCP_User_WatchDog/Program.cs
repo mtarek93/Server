@@ -68,6 +68,7 @@ namespace TCP_Client
             while (true)
             {
                 byte []Data = Encoding.ASCII.GetBytes("2,0,,,,.");
+                Console.WriteLine("watchdogSent");
                 tcpSocket.Send(Data);
                 Thread.Sleep(4000);
             }
