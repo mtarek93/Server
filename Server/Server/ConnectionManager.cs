@@ -353,7 +353,6 @@ namespace ConnectionManager
             D.resetTimer();
             return true;
         }
-
         private static byte[] CreateNewNameMessage(ushort Name)
         {
             var ByteList = new List<byte>();
