@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -16,7 +16,7 @@ namespace Server
     {
         public static void Main()
         {
-            //github test for bahaa
+            
             const int Port = 14;
             IPAddress ipAd = Tools.GetMyIPAddress();
             //List<Socket> SocketList = new List<Socket>();
