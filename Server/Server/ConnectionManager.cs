@@ -184,6 +184,7 @@ namespace ConnectionManager
         private static void Send_Action(User U, Command Cmd)
         {
             Device D;
+            //String to be sent to device
             string ActionString = "";
 
             //if destination device is currently connected
