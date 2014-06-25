@@ -51,6 +51,12 @@ namespace ServerTools
         {
             return (System.Text.Encoding.ASCII.GetString(Data));
         }
+
+        public static string ushortToString(ushort Number)
+        {
+            return Encoding.ASCII.GetString(BitConverter.GetBytes(Number));
+        }
+
         public static byte[] StringToByteArray(string data)
         {
             return Encoding.ASCII.GetBytes(data);      
