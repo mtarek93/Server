@@ -47,11 +47,11 @@ namespace CommandHandler
         public CommandType Type { get; set; }
         public ushort SourceID { get; set; }
         public ushort DestinationID { get; set; }
-        public ushort Action_State { get; set; }
+        public byte Action_State { get; set; }
         public string UserName { get; set; }
         public string Password { get; set; }
 
-        public Command(CommandType _Type, ushort _SourceID, ushort _DestinationID, ushort _Action_State, string _UserName, string _Password)
+        public Command(CommandType _Type, ushort _SourceID, ushort _DestinationID, byte _Action_State, string _UserName, string _Password)
         {
             Type = _Type;
             SourceID = _SourceID;
@@ -107,7 +107,7 @@ namespace CommandHandler
                     if (!String.IsNullOrEmpty(SplittedCommand[2]))
                         Cmd.DestinationID = BitConverter.ToUInt16(Encoding.ASCII.GetBytes(SplittedCommand[2]), 0);
                     if (!String.IsNullOrEmpty(SplittedCommand[3]))
-                        Cmd.Action_State = BitConverter.ToUInt16(Encoding.ASCII.GetBytes(SplittedCommand[3]), 0);
+                        Cmd.Action_State = Encoding.ASCII.GetBytes(SplittedCommand[3])[0];
                     Cmd.UserName = SplittedCommand[4];
                     Cmd.Password = SplittedCommand[5];
 
