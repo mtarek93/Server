@@ -41,6 +41,8 @@ namespace TCP_Client
         static void SendFunction()
         {
             byte[] Data = new byte[1024];
+            string initialString = "135,\0\0,,,mt,mt.";
+            tcpSocket.Send(Encoding.ASCII.GetBytes(initialString));
             while (true)
             {
                 Console.Write("Enter the string to be transmitted : ");
