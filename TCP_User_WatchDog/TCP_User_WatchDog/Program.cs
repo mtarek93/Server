@@ -25,7 +25,7 @@ namespace TCP_Client
                 Console.WriteLine("Connecting.....");
 
                 tcpSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-                tcpSocket.Connect("192.168.1.4", 14);
+                tcpSocket.Connect("10.96.50.102", 14);
                 // use the ipaddress as in the server program
 
                 Console.WriteLine("Connected");
@@ -82,7 +82,7 @@ namespace TCP_Client
                 byte []Data = Encoding.ASCII.GetBytes("2,"+ ID +",,,,.");
                 Console.WriteLine("watchdogSent");
                 tcpSocket.Send(Data);
-                Thread.Sleep(4000);
+                Thread.Sleep(3000);
             }
         }
         static byte[] FormatData(byte[] Data, int NumberofReceivedBytes)

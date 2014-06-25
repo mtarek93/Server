@@ -57,7 +57,6 @@ namespace ServerTools
         {
             return DatabaseHandler.GetNumberofIDs();
         }
-
         public static IPAddress GetMyIPAddress()
         {
             return Dns.GetHostEntry(Dns.GetHostName()).AddressList.FirstOrDefault(ip => ip.AddressFamily == AddressFamily.InterNetwork);
