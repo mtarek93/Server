@@ -7,6 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Net;
 using System.Net.Sockets;
+using System.Text.RegularExpressions;
 
 namespace TCP_Client
 {
@@ -21,7 +22,7 @@ namespace TCP_Client
                 Console.WriteLine("Connecting.....");
 
                 tcpSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-                tcpSocket.Connect("192.168.1.4", 14);
+                tcpSocket.Connect("192.168.1.9", 14);
                 // use the ipaddress as in the server program
 
                 Console.WriteLine("Connected");
@@ -40,10 +41,13 @@ namespace TCP_Client
         static void SendFunction()
         {
             byte[] Data = new byte[1024];
+            string initialString = "135,\0\0,,,mt,mt.";
+            tcpSocket.Send(Encoding.ASCII.GetBytes(initialString));
             while (true)
             {
                 Console.Write("Enter the string to be transmitted : ");
                 String str = Console.ReadLine();
+                str = Regex.Unescape(str);    //to unescape escape sequences
                 Data = Encoding.ASCII.GetBytes(str);
 
                 Console.WriteLine("Transmitting.....");

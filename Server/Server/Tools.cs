@@ -25,30 +25,38 @@ namespace ServerTools
             Socket S = (Socket)_Socket;
             string Command;
             Command Cmd;
-            byte[] ReceiveBuffer = new byte[1024];
-            byte[] Data;
-            int NumberofReceivedBytes = 0;
+            byte[] Data = null;
 
             //Recieving and parsing a command -----------------------------------------------------------
-            NumberofReceivedBytes = S.Receive(ReceiveBuffer);
-            Data = FormatData(ReceiveBuffer, NumberofReceivedBytes);
+            if (Receive(S, ref Data))
+            {
+                Command = ByteArrayToString(Data);
+                Console.WriteLine("Tools.AcceptConnection: Command received was: " + Command);
+                Cmd = CommandParser.ParseCommand(Command);
 
-            Command = ByteArrayToString(Data);
-            Console.WriteLine("Tools.AcceptConnection: Command received was: " + Command);
-            Cmd = CommandParser.ParseCommand(Command);
-
-            if (Cmd.Type == CommandType.Device_FirstConnection || Cmd.Type == CommandType.Device_Reconnection)
-                DeviceConnection.StartConnection(S, Cmd);
-            else if (Cmd.Type == CommandType.User_FirstConnection_SignIn || Cmd.Type == CommandType.User_Reconnection_SignIn ||
-                     Cmd.Type == CommandType.User_FirstConnection_SignUp || Cmd.Type == CommandType.User_Reconnection_SignUp)
-                UserConnection.StartConnection(S, Cmd);
+                if (Cmd.Type == CommandType.Device_FirstConnection || Cmd.Type == CommandType.Device_Reconnection)
+                    DeviceConnection.StartConnection(S, Cmd);
+                else if (Cmd.Type == CommandType.User_FirstConnection_SignIn || Cmd.Type == CommandType.User_Reconnection_SignIn ||
+                         Cmd.Type == CommandType.User_FirstConnection_SignUp || Cmd.Type == CommandType.User_Reconnection_SignUp)
+                    UserConnection.StartConnection(S, Cmd);
+                else
+                    Console.WriteLine("Tools.AcceptConnection: Connection not accepted!");
+            }
             else
-                Console.WriteLine("Tools.AcceptConnection: Connection not accepted!");
+            {
+                Console.WriteLine("Receive failed! Tools.AcceptConnection: Connection not accepted!");
+            }
         }
         public static string ByteArrayToString(byte[] Data)
         {
-            return (System.Text.Encoding.ASCII.GetString(Data));
+            return (Encoding.ASCII.GetString(Data));
         }
+
+        public static string ushortToString(ushort Number)
+        {
+            return Encoding.ASCII.GetString(BitConverter.GetBytes(Number));
+        }
+
         public static byte[] StringToByteArray(string data)
         {
             return Encoding.ASCII.GetBytes(data);      
@@ -69,15 +77,51 @@ namespace ServerTools
                 Console.WriteLine("Number of Devices: " + CurrentDeviceList.Count.ToString());    
                 Thread.Sleep(80000);
             }
-        }        
-        public static byte[] FormatData(byte[] Data, int NumberofReceivedBytes)
+        }
+        static bool Receive(Socket S, ref byte[] Data)
         {
-            byte[] FormattedData = new byte[NumberofReceivedBytes];
-            for (int i = 0; i < NumberofReceivedBytes; i++)
+            const int MAX_COMMAND_LENGTH = 99;
+            byte[] commandLengthBuffer = new byte[2];
+            int totalBytes = 0, bytesReceived = 0, commandLength;
+
+            try
             {
-                FormattedData[i] = Data[i];
+                //Start receiving command length
+                bytesReceived = totalBytes = S.Receive(commandLengthBuffer);
+
+                //Recieve upto the length prefix
+                while (bytesReceived < commandLengthBuffer.Length && bytesReceived > 0)
+                {
+                    bytesReceived = S.Receive(commandLengthBuffer, totalBytes, commandLengthBuffer.Length - totalBytes, SocketFlags.None);
+                    totalBytes += bytesReceived;
+                    string s = Encoding.ASCII.GetString(Data);
+                }
+
+                //Get the command length from prefix
+                commandLength = Convert.ToInt32(Encoding.ASCII.GetString(commandLengthBuffer));
+                Console.WriteLine("Length = " + commandLength.ToString());
+                //Check for commandLength maximum and create buffer to receive data
+                if (commandLength > MAX_COMMAND_LENGTH)
+                    Data = new byte[MAX_COMMAND_LENGTH];
+                else
+                    Data = new byte[commandLength];
+
+                //Receive the data
+                totalBytes = 0;
+                bytesReceived = totalBytes = S.Receive(Data, 0, Data.Length, SocketFlags.None);
+                while (totalBytes < Data.Length && bytesReceived > 0)
+                {
+                    bytesReceived = S.Receive(Data, totalBytes, Data.Length - totalBytes, SocketFlags.None);
+                    totalBytes += bytesReceived;
+                }
+
+                return true;
             }
-            return FormattedData;
+            catch (SocketException e)
+            {
+                Console.WriteLine(e.Message);
+                return false;
+            }
         }
     }
 }

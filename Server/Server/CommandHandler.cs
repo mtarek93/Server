@@ -7,26 +7,27 @@ using System.Text.RegularExpressions;
 
 namespace CommandHandler
 {
-    //class Test
-    //{
-    //    static void Main(string[] args)
-    //    {
-    //        string Command;
-    //        Command Cmd;
-    //        CommandParser.InitializeCommandsDictionary();
-    //        while (true)
-    //        {
-    //            Command = Console.ReadLine();
-    //            Cmd = CommandParser.ParseCommand(Command);
-    //            Console.WriteLine(Cmd.Type);
-    //            Console.WriteLine(Cmd.SourceID);
-    //            Console.WriteLine(Cmd.DestinationID);
-    //            Console.WriteLine(Cmd.Action_State);
-    //            Console.WriteLine(Cmd.UserName);
-    //            Console.WriteLine(Cmd.Password);
-    //        }
-    //    }
-    //}
+    class Test
+    {
+        //static void Main(string[] args)
+        //{
+        //    string Command;
+        //    Command Cmd;
+        //    CommandParser.InitializeCommandsDictionary();
+        //    while (true)
+        //    {
+        //        Command = Console.ReadLine();
+        //        Command = Regex.Unescape(Command);
+        //        Cmd = CommandParser.ParseCommand(Command);
+        //        Console.WriteLine(Cmd.Type);
+        //        Console.WriteLine(Cmd.SourceID);
+        //        Console.WriteLine(Cmd.DestinationID);
+        //        Console.WriteLine(Cmd.Action_State);
+        //        Console.WriteLine(Cmd.UserName);
+        //        Console.WriteLine(Cmd.Password);
+        //    }
+        //}
+    }
     public enum CommandType
     {
         Device_FirstConnection,
@@ -46,11 +47,11 @@ namespace CommandHandler
         public CommandType Type { get; set; }
         public ushort SourceID { get; set; }
         public ushort DestinationID { get; set; }
-        public ushort Action_State { get; set; }
+        public byte Action_State { get; set; }
         public string UserName { get; set; }
         public string Password { get; set; }
 
-        public Command(CommandType _Type, ushort _SourceID, ushort _DestinationID, ushort _Action_State, string _UserName, string _Password)
+        public Command(CommandType _Type, ushort _SourceID, ushort _DestinationID, byte _Action_State, string _UserName, string _Password)
         {
             Type = _Type;
             SourceID = _SourceID;
@@ -70,7 +71,7 @@ namespace CommandHandler
 
         static bool isInCorrectFormat(string Command)
         {
-            Regex GeneralCommandFormat = new Regex(@"^(\d+(,)\d*(,)\d*(,)\d*(,)\w*(,)\w*\.)");
+            Regex GeneralCommandFormat = new Regex(@"^(\d+(,)(.{2}|.{0})(,)(.{2}|.{0})(,)(.{1}|.{0})(,)\w*(,)\w*\.)", RegexOptions.Singleline);
             if (GeneralCommandFormat.IsMatch(Command))
                 return true;
             else
@@ -106,7 +107,7 @@ namespace CommandHandler
                     if (!String.IsNullOrEmpty(SplittedCommand[2]))
                         Cmd.DestinationID = BitConverter.ToUInt16(Encoding.ASCII.GetBytes(SplittedCommand[2]), 0);
                     if (!String.IsNullOrEmpty(SplittedCommand[3]))
-                        Cmd.Action_State = BitConverter.ToUInt16(Encoding.ASCII.GetBytes(SplittedCommand[3]), 0);
+                        Cmd.Action_State = Encoding.ASCII.GetBytes(SplittedCommand[3])[0];
                     Cmd.UserName = SplittedCommand[4];
                     Cmd.Password = SplittedCommand[5];
 
@@ -119,15 +120,15 @@ namespace CommandHandler
 
         public static void InitializeCommandsDictionary()
         {
-            Dict.Add(new Regex(@"^((0,,,,,)\.)"), CommandType.Device_FirstConnection);
-            Dict.Add(new Regex(@"^((1,)\d+(,,,,)\.)"), CommandType.Device_Reconnection);
-            Dict.Add(new Regex(@"^((2,)\d+(,,,,)\.)"), CommandType.Device_WatchDog);
-            Dict.Add(new Regex(@"^((3,)\d+(,)\d+(,)\d+(,,)\.)"), CommandType.Device_Acknowledgement);
-            Dict.Add(new Regex(@"^((4,,,,)\w+(,)\w+\.)"), CommandType.User_FirstConnection_SignIn);
-            Dict.Add(new Regex(@"^((5,)\d+(,,,)\w+(,)\w+\.)"), CommandType.User_Reconnection_SignIn);
-            Dict.Add(new Regex(@"^((6,,,,)\w+(,)\w+\.)"), CommandType.User_FirstConnection_SignUp);
-            Dict.Add(new Regex(@"^((7,)\d+(,,,)\w+(,)\w+\.)"), CommandType.User_Reconnection_SignUp);
-            Dict.Add(new Regex(@"^((8,)\d+(,)\d+(,)\d+(,,)\.)"), CommandType.User_Action);
+            Dict.Add(new Regex(@"^((0,,,,,)\.)", RegexOptions.Singleline), CommandType.Device_FirstConnection);
+            Dict.Add(new Regex(@"^((1,).{2}(,,,,)\.)", RegexOptions.Singleline), CommandType.Device_Reconnection);
+            Dict.Add(new Regex(@"^((2,).{2}(,,,,)\.)", RegexOptions.Singleline), CommandType.Device_WatchDog);
+            Dict.Add(new Regex(@"^((3,).{2}(,).{2}(,).{1}(,,)\.)", RegexOptions.Singleline), CommandType.Device_Acknowledgement);
+            Dict.Add(new Regex(@"^((4,,,,)\w+(,)\w+\.)", RegexOptions.Singleline), CommandType.User_FirstConnection_SignIn);
+            Dict.Add(new Regex(@"^((5,).{2}(,,,)\w+(,)\w+\.)", RegexOptions.Singleline), CommandType.User_Reconnection_SignIn);
+            Dict.Add(new Regex(@"^((6,,,,)\w+(,)\w+\.)", RegexOptions.Singleline), CommandType.User_FirstConnection_SignUp);
+            Dict.Add(new Regex(@"^((7,).{2}(,,,)\w+(,)\w+\.)", RegexOptions.Singleline), CommandType.User_Reconnection_SignUp);
+            Dict.Add(new Regex(@"^((8,).{2}(,).{2}(,).{1}(,,)\.)", RegexOptions.Singleline), CommandType.User_Action);
         }
     }
 }

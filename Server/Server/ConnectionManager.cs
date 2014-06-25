@@ -35,10 +35,10 @@ namespace ConnectionManager
         private static void HandleConnection(User U)
         {
             Command Cmd;
-            byte [] ReceivedData = new byte[100];
+            byte [] ReceivedData = null;
             while (true)
             {
-                if (U.Receive(ReceivedData))
+                if (U.Receive(ref ReceivedData))
                 {
                     Console.WriteLine("Command Received: " + Tools.ByteArrayToString(ReceivedData));
                     Cmd = CommandParser.ParseCommand(Tools.ByteArrayToString(ReceivedData));
@@ -184,10 +184,16 @@ namespace ConnectionManager
         private static void Send_Action(User U, Command Cmd)
         {
             Device D;
+            //String to be sent to device
+            string ActionString = "";
 
             //if destination device is currently connected
             if (Tools.CurrentDeviceList.TryGetValue(Cmd.DestinationID, out D))
-                D.Send(Encoding.ASCII.GetBytes("1," + Cmd.SourceID.ToString() + Cmd.Action_State + "."));
+            {
+                ActionString = ".2," + Tools.ushortToString(Cmd.SourceID) + "," + Tools.ushortToString(Cmd.DestinationID) + "," + Convert.ToChar(Cmd.Action_State) + ".";
+                ActionString = ActionString.Length.ToString() + ActionString;
+                D.Send(Encoding.ASCII.GetBytes(ActionString));
+            }
             else
                 U.Send(Encoding.ASCII.GetBytes("Device not connected!"));
         }
@@ -275,7 +281,7 @@ namespace ConnectionManager
         private static void HandleConnection(Device D)
         {
             //Initialization----------------------------------------------------------------------------0
-            byte[] ReceivedData = new byte[10];
+            byte[] ReceivedData = null;
             string Command;         
             Command Cmd;                        
 
@@ -283,19 +289,12 @@ namespace ConnectionManager
             {
                 try
                 {
-                    //if command not recieved successfully
-                    if (!D.Receive(ReceivedData))
-                    {
-                        //Console.WriteLine("Recieve(D): " + D.GetName() + " is disconnected!");
-                        //Tools.CurrentDeviceList.Remove(D.GetName()); 
-                        //break;
-                    }
-                    else
+                    if (D.Receive(ref ReceivedData))
                     {
                         Command = Tools.ByteArrayToString(ReceivedData);
                         Console.WriteLine("Command received was: " + Command);
                         Cmd = CommandParser.ParseCommand(Command);
-                 
+
                         //Switching different Actions for different received Commands--------------------------------1
                         switch (Cmd.Type)
                         {
@@ -307,11 +306,16 @@ namespace ConnectionManager
                                 break;
                             default:
                                 Console.WriteLine("Error in DeviceConnection.HandleConnection: wrong command format ya teefa!");
-                                break;                           
+                                break;
                         }
                     }
+                    else
+                    {
+                        Console.WriteLine("Device is disconnected!");
+                        Tools.CurrentUserList.Remove(D.GetName());
+                        break;
+                    }
                 }
-
                 //Catching exceptions------------------------------------------------------------------------2
                 catch (Exception e)
                 {
@@ -355,24 +359,8 @@ namespace ConnectionManager
         }
         private static byte[] CreateNewNameMessage(ushort Name)
         {
-            var ByteList = new List<byte>();
-            ByteList.Add(Convert.ToByte('.'));
-            ByteList.Add(Convert.ToByte('1'));
-            ByteList.Add(Convert.ToByte(','));
-
-            byte[] NameAsBytes = BitConverter.GetBytes(Name);
-            for (int i = 0; i < NameAsBytes.Length; i++)
-                ByteList.Add(NameAsBytes[i]);
-
-            ByteList.Add(Convert.ToByte(','));
-            ByteList.Add(Convert.ToByte('2'));
-            ByteList.Add(Convert.ToByte('3'));
-            ByteList.Add(Convert.ToByte(','));
-            ByteList.Add(Convert.ToByte('M'));
-            ByteList.Add(Convert.ToByte('.'));
-            byte[] Result = ByteList.ToArray();
-            //string s = Encoding.ASCII.GetString(Result);
-            return Result;
+            string NameMessage = ".1," + Tools.ushortToString(Name) + ",23,M.";
+            return Encoding.ASCII.GetBytes(NameMessage);
         }
     }
 }
