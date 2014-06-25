@@ -1,4 +1,4 @@
-﻿Server Commands
+Server Commands
 
 Type, SourceID?, DestinationID?, State | Action?, username?, password?.
 
@@ -43,9 +43,9 @@ User_Reconnection_SignUp_reject:			7,UserID,N,      ,      .!
 
 User_Recieve_list of devices:                           1,UserID,Number,DestID,state.!……….!
 
-User_recieve_confirmation:                              8,UserID,   ,DestID,state.!
+User_recieve_confirmation_succuesful:                   8,UserID,Y,      ,     .!
 
-
+User_recieve_confirmation_unsuccuesful:                 8,UserID,N,      ,     .!
 
 
 Device commands: ( 11 bytes)
