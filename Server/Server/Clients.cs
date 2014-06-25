@@ -55,17 +55,48 @@ namespace Clients
                 return false;
             }
         }
-        public bool Receive(byte[] Buffer)
+        public bool Receive(ref byte[] Data)
         {
+            const int MAX_COMMAND_LENGTH = 99;
+            byte[] commandLengthBuffer = new byte[2];
+            int totalBytes = 0, bytesReceived = 0, commandLength;
+
             try
             {
-                this.Sckt.Receive(Buffer);
+                //Start receiving command length
+                bytesReceived = totalBytes = this.Sckt.Receive(commandLengthBuffer);
+
+                //Recieve upto the length prefix
+                while (bytesReceived < commandLengthBuffer.Length && bytesReceived > 0)
+                {
+                    bytesReceived = this.Sckt.Receive(commandLengthBuffer, totalBytes, commandLengthBuffer.Length - totalBytes, SocketFlags.None);
+                    totalBytes += bytesReceived;
+                }
+
+                //Get the command length from prefix
+                commandLength = Convert.ToInt32(Encoding.ASCII.GetString(commandLengthBuffer));
+                Console.WriteLine("Length = " + commandLength.ToString());
+
+                //Check for commandLength maximum and create buffer to receive data
+                if (commandLength > MAX_COMMAND_LENGTH)
+                    Data = new byte[MAX_COMMAND_LENGTH];
+                else
+                    Data = new byte[commandLength];
+
+                //Receive the data
+                totalBytes = 0;
+                bytesReceived = totalBytes = this.Sckt.Receive(Data, 0, Data.Length, SocketFlags.None);
+                while (totalBytes < Data.Length && bytesReceived > 0)
+                {
+                    bytesReceived = this.Sckt.Receive(Data, totalBytes, Data.Length - totalBytes, SocketFlags.None);
+                    totalBytes += bytesReceived;
+                }
+
                 return true;
             }
-            catch (Exception e)
+            catch (SocketException e)
             {
-                Console.WriteLine("Exception in User.Receive " + e.Message);
-                Array.Clear(Buffer, 0, 100);
+                Console.WriteLine("Exception in User.Receive: " + e.Message);
                 return false;
             }
         }
@@ -145,17 +176,48 @@ namespace Clients
                 return false;
             }
         }
-        public bool Receive(byte[] Buffer)
+        public bool Receive(ref byte[] Data)
         {
+            const int MAX_COMMAND_LENGTH = 99;
+            byte[] commandLengthBuffer = new byte[2];
+            int totalBytes = 0, bytesReceived = 0, commandLength;
+
             try
             {
-                this.Sckt.Receive(Buffer);
+                //Start receiving command length
+                bytesReceived = totalBytes = this.Sckt.Receive(commandLengthBuffer);
+
+                //Recieve upto the length prefix
+                while (bytesReceived < commandLengthBuffer.Length && bytesReceived > 0)
+                {
+                    bytesReceived = this.Sckt.Receive(commandLengthBuffer, totalBytes, commandLengthBuffer.Length - totalBytes, SocketFlags.None);
+                    totalBytes += bytesReceived;
+                }
+
+                //Get the command length from prefix
+                commandLength = Convert.ToInt32(Encoding.ASCII.GetString(commandLengthBuffer));
+                Console.WriteLine("Length = " + commandLength.ToString());
+
+                //Check for commandLength maximum and create buffer to receive data
+                if (commandLength > MAX_COMMAND_LENGTH)
+                    Data = new byte[MAX_COMMAND_LENGTH];
+                else
+                    Data = new byte[commandLength];
+
+                //Receive the data
+                totalBytes = 0;
+                bytesReceived = totalBytes = this.Sckt.Receive(Data, 0, Data.Length, SocketFlags.None);
+                while (totalBytes < Data.Length && bytesReceived > 0)
+                {
+                    bytesReceived = this.Sckt.Receive(Data, totalBytes, Data.Length - totalBytes, SocketFlags.None);
+                    totalBytes += bytesReceived;
+                }
+
                 return true;
             }
-            catch (Exception e)
+            catch (SocketException e)
             {
-                Console.WriteLine("Exception in Device.Receive " + e.Message);
-                Array.Clear(Buffer, 0, 100);
+                Console.WriteLine("Exception in Device.Receive: " + e.Message);
                 return false;
             }
         }
