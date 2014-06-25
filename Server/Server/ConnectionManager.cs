@@ -359,24 +359,8 @@ namespace ConnectionManager
         }
         private static byte[] CreateNewNameMessage(ushort Name)
         {
-            var ByteList = new List<byte>();
-            ByteList.Add(Convert.ToByte('.'));
-            ByteList.Add(Convert.ToByte('1'));
-            ByteList.Add(Convert.ToByte(','));
-
-            byte[] NameAsBytes = BitConverter.GetBytes(Name);
-            for (int i = 0; i < NameAsBytes.Length; i++)
-                ByteList.Add(NameAsBytes[i]);
-
-            ByteList.Add(Convert.ToByte(','));
-            ByteList.Add(Convert.ToByte('2'));
-            ByteList.Add(Convert.ToByte('3'));
-            ByteList.Add(Convert.ToByte(','));
-            ByteList.Add(Convert.ToByte('M'));
-            ByteList.Add(Convert.ToByte('.'));
-            byte[] Result = ByteList.ToArray();
-            //string s = Encoding.ASCII.GetString(Result);
-            return Result;
+            string NameMessage = ".1," + Tools.ushortToString(Name) + ",23,M.";
+            return Encoding.ASCII.GetBytes(NameMessage);
         }
     }
 }

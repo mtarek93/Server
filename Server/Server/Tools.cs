@@ -49,7 +49,7 @@ namespace ServerTools
         }
         public static string ByteArrayToString(byte[] Data)
         {
-            return (System.Text.Encoding.ASCII.GetString(Data));
+            return (Encoding.ASCII.GetString(Data));
         }
 
         public static string ushortToString(ushort Number)
