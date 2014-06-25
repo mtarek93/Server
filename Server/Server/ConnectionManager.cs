@@ -283,19 +283,12 @@ namespace ConnectionManager
             {
                 try
                 {
-                    //if command not recieved successfully
-                    if (!D.Receive(ref ReceivedData))
-                    {
-                        //Console.WriteLine("Recieve(D): " + D.GetName() + " is disconnected!");
-                        //Tools.CurrentDeviceList.Remove(D.GetName()); 
-                        //break;
-                    }
-                    else
+                    if (D.Receive(ref ReceivedData))
                     {
                         Command = Tools.ByteArrayToString(ReceivedData);
                         Console.WriteLine("Command received was: " + Command);
                         Cmd = CommandParser.ParseCommand(Command);
-                 
+
                         //Switching different Actions for different received Commands--------------------------------1
                         switch (Cmd.Type)
                         {
@@ -307,11 +300,16 @@ namespace ConnectionManager
                                 break;
                             default:
                                 Console.WriteLine("Error in DeviceConnection.HandleConnection: wrong command format ya teefa!");
-                                break;                           
+                                break;
                         }
                     }
+                    else
+                    {
+                        Console.WriteLine("Device is disconnected!");
+                        Tools.CurrentUserList.Remove(D.GetName());
+                        break;
+                    }
                 }
-
                 //Catching exceptions------------------------------------------------------------------------2
                 catch (Exception e)
                 {
