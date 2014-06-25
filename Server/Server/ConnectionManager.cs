@@ -184,15 +184,10 @@ namespace ConnectionManager
         private static void Send_Action(User U, Command Cmd)
         {
             Device D;
-            string ActionString = "";
 
             //if destination device is currently connected
             if (Tools.CurrentDeviceList.TryGetValue(Cmd.DestinationID, out D))
-            {
-                ActionString = ".2," + Tools.ushortToString(Cmd.SourceID) + "," + Tools.ushortToString(Cmd.DestinationID) + "," + Convert.ToChar(Cmd.Action_State) + ".";
-                ActionString = ActionString.Length.ToString() + ActionString;
-                D.Send(Encoding.ASCII.GetBytes(ActionString));
-            }
+                D.Send(Encoding.ASCII.GetBytes("1," + Cmd.SourceID.ToString() + Cmd.Action_State + "."));
             else
                 U.Send(Encoding.ASCII.GetBytes("Device not connected!"));
         }
