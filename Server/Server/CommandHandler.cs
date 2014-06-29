@@ -103,11 +103,11 @@ namespace CommandHandler
                     string[] SplittedCommand = Command.Split(',');
 
                     if (!String.IsNullOrEmpty(SplittedCommand[1]))
-                        Cmd.SourceID = BitConverter.ToUInt16(Encoding.ASCII.GetBytes(SplittedCommand[1]), 0);
+                        Cmd.SourceID = BitConverter.ToUInt16(Encoding.GetEncoding(437).GetBytes(SplittedCommand[1]), 0);
                     if (!String.IsNullOrEmpty(SplittedCommand[2]))
-                        Cmd.DestinationID = BitConverter.ToUInt16(Encoding.ASCII.GetBytes(SplittedCommand[2]), 0);
+                        Cmd.DestinationID = BitConverter.ToUInt16(Encoding.GetEncoding(437).GetBytes(SplittedCommand[2]), 0);
                     if (!String.IsNullOrEmpty(SplittedCommand[3]))
-                        Cmd.Action_State = Encoding.ASCII.GetBytes(SplittedCommand[3])[0];
+                        Cmd.Action_State = Encoding.GetEncoding(437).GetBytes(SplittedCommand[3])[0];
                     Cmd.UserName = SplittedCommand[4];
                     Cmd.Password = SplittedCommand[5];
 

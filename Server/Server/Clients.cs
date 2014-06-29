@@ -74,7 +74,7 @@ namespace Clients
                 }
 
                 //Get the command length from prefix
-                commandLength = Convert.ToInt32(Encoding.ASCII.GetString(commandLengthBuffer));
+                commandLength = Convert.ToInt32(Encoding.GetEncoding(437).GetString(commandLengthBuffer));
                 Console.WriteLine("Length = " + commandLength.ToString());
 
                 //Check for commandLength maximum and create buffer to receive data
@@ -195,7 +195,7 @@ namespace Clients
                 }
 
                 //Get the command length from prefix
-                commandLength = Convert.ToInt32(Encoding.ASCII.GetString(commandLengthBuffer));
+                commandLength = Convert.ToInt32(Encoding.GetEncoding(437).GetString(commandLengthBuffer));
                 Console.WriteLine("Length = " + commandLength.ToString());
 
                 //Check for commandLength maximum and create buffer to receive data

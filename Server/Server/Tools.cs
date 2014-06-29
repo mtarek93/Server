@@ -49,17 +49,17 @@ namespace ServerTools
         }
         public static string ByteArrayToString(byte[] Data)
         {
-            return (Encoding.ASCII.GetString(Data));
+            return (Encoding.GetEncoding(437).GetString(Data));
         }
 
         public static string ushortToString(ushort Number)
         {
-            return Encoding.ASCII.GetString(BitConverter.GetBytes(Number));
+            return Encoding.GetEncoding(437).GetString(BitConverter.GetBytes(Number));
         }
 
         public static byte[] StringToByteArray(string data)
         {
-            return Encoding.ASCII.GetBytes(data);      
+            return Encoding.GetEncoding(437).GetBytes(data);      
         } 
         public static ushort AssignID()
         {
@@ -94,11 +94,11 @@ namespace ServerTools
                 {
                     bytesReceived = S.Receive(commandLengthBuffer, totalBytes, commandLengthBuffer.Length - totalBytes, SocketFlags.None);
                     totalBytes += bytesReceived;
-                    string s = Encoding.ASCII.GetString(Data);
+                    string s = Encoding.GetEncoding(437).GetString(Data);
                 }
 
                 //Get the command length from prefix
-                commandLength = Convert.ToInt32(Encoding.ASCII.GetString(commandLengthBuffer));
+                commandLength = Convert.ToInt32(Encoding.GetEncoding(437).GetString(commandLengthBuffer));
                 Console.WriteLine("Length = " + commandLength.ToString());
                 //Check for commandLength maximum and create buffer to receive data
                 if (commandLength > MAX_COMMAND_LENGTH)

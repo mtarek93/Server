@@ -51,7 +51,7 @@ namespace ConnectionManager
                             Locate(Cmd);
                             break;
                         default:
-                            U.Send(Encoding.ASCII.GetBytes("Invalid Command!"));
+                            U.Send(Encoding.GetEncoding(437).GetBytes("Invalid Command!"));
                             break;
                     }
                 }
@@ -76,13 +76,13 @@ namespace ConnectionManager
                 DatabaseHandler.AddNewUser(AssignedID);
                 
                 //Send assignedID, devicelist, and wait for new commands in HandleConnection()
-                U.Send(Encoding.ASCII.GetBytes("Login Successful!," + AssignedID.ToString() + "."));
+                U.Send(Encoding.GetEncoding(437).GetBytes("Login Successful!," + AssignedID.ToString() + "."));
                 SendDeviceList(U);
                 HandleConnection(U);
             }
             else
             {
-                UserSocket.Send(Encoding.ASCII.GetBytes("Invalid credentials."));
+                UserSocket.Send(Encoding.GetEncoding(437).GetBytes("Invalid credentials."));
                 return;
             }
         }
@@ -91,7 +91,7 @@ namespace ConnectionManager
             //Check if username exists
             if (DatabaseHandler.UsernameExists(Cmd.UserName))
             {
-                UserSocket.Send(Encoding.ASCII.GetBytes("Username already exists!"));
+                UserSocket.Send(Encoding.GetEncoding(437).GetBytes("Username already exists!"));
                 return;
             }
             else
@@ -108,7 +108,7 @@ namespace ConnectionManager
                 DatabaseHandler.AddNewUser(AssignedID);
 
                 //Send assignedID, devicelist, and wait for new commands in HandleConnection()
-                U.Send(Encoding.ASCII.GetBytes("Sign Up Successful!," + AssignedID.ToString() + "."));
+                U.Send(Encoding.GetEncoding(437).GetBytes("Sign Up Successful!," + AssignedID.ToString() + "."));
                 SendDeviceList(U);
                 HandleConnection(U);
             }
@@ -124,19 +124,19 @@ namespace ConnectionManager
                 {
                     U.BindSocket(UserSocket);
                     Tools.CurrentUserList.Add(Cmd.SourceID, U);
-                    U.Send(Encoding.ASCII.GetBytes("Login Successfull!"));
+                    U.Send(Encoding.GetEncoding(437).GetBytes("Login Successfull!"));
                     SendDeviceList(U);
                     HandleConnection(U);
                 }
                 else
                 {
-                    UserSocket.Send(Encoding.ASCII.GetBytes("Invalid credentials."));
+                    UserSocket.Send(Encoding.GetEncoding(437).GetBytes("Invalid credentials."));
                     return;
                 }
             }
             else
             {
-                UserSocket.Send(Encoding.ASCII.GetBytes("This device has not connected to the server before."));
+                UserSocket.Send(Encoding.GetEncoding(437).GetBytes("This device has not connected to the server before."));
                 return;
             }
         }
@@ -149,7 +149,7 @@ namespace ConnectionManager
             {
                 if (DatabaseHandler.UsernameExists(Cmd.UserName))
                 {
-                    UserSocket.Send(Encoding.ASCII.GetBytes("Username already exists!"));
+                    UserSocket.Send(Encoding.GetEncoding(437).GetBytes("Username already exists!"));
                     return;
                 }
                 else
@@ -161,14 +161,14 @@ namespace ConnectionManager
                     Tools.CurrentUserList.Add(Cmd.SourceID, U);
 
                     //Send DeviceList, and wait for new commands in HandleConnection()
-                    U.Send(Encoding.ASCII.GetBytes("Sign Up Successful!"));
+                    U.Send(Encoding.GetEncoding(437).GetBytes("Sign Up Successful!"));
                     SendDeviceList(U);
                     HandleConnection(U);
                 }
             }
             else
             {
-                UserSocket.Send(Encoding.ASCII.GetBytes("This device has not connected to the server before."));
+                UserSocket.Send(Encoding.GetEncoding(437).GetBytes("This device has not connected to the server before."));
                 return;
             }
         }
@@ -179,7 +179,7 @@ namespace ConnectionManager
                 DeviceList += (Device.Key + Device.Value.GetState().ToString());    //state is assumed to be off for now.....
 
             DeviceList += ".";
-            U.Send(Encoding.ASCII.GetBytes(DeviceList));
+            U.Send(Encoding.GetEncoding(437).GetBytes(DeviceList));
         }
         private static void Send_Action(User U, Command Cmd)
         {
@@ -192,10 +192,10 @@ namespace ConnectionManager
             {
                 ActionString = ".2," + Tools.ushortToString(Cmd.SourceID) + "," + Tools.ushortToString(Cmd.DestinationID) + "," + Convert.ToChar(Cmd.Action_State) + ".";
                 ActionString = ActionString.Length.ToString() + ActionString;
-                D.Send(Encoding.ASCII.GetBytes(ActionString));
+                D.Send(Encoding.GetEncoding(437).GetBytes(ActionString));
             }
             else
-                U.Send(Encoding.ASCII.GetBytes("Device not connected!"));
+                U.Send(Encoding.GetEncoding(437).GetBytes("Device not connected!"));
         }
         private static void Locate(Command Cmd)
         {
@@ -239,7 +239,7 @@ namespace ConnectionManager
                     Tools.CurrentDeviceList.Add(AssignedName, D);
                     DatabaseHandler.AddNewDevice(AssignedName, 0); 
 
-                    byte[] Message = (Encoding.ASCII.GetBytes(".3," + Cmd.SourceID+ AssignedName.ToString() + ",M."));
+                    byte[] Message = (Encoding.GetEncoding(437).GetBytes(".3," + Cmd.SourceID+ AssignedName.ToString() + ",M."));
                     D.Send(Message);
 
                     D.StartTimer();
@@ -337,7 +337,7 @@ namespace ConnectionManager
             if (Tools.CurrentUserList.TryGetValue(Cmd.DestinationID, out U))
             {
                 msg = Convert.ToString(Cmd.DestinationID) + ',' + Convert.ToString(Cmd.SourceID) + ',' + Convert.ToString(Cmd.Action_State) + '.';
-                U.Send(Encoding.ASCII.GetBytes(msg));
+                U.Send(Encoding.GetEncoding(437).GetBytes(msg));
                 Console.WriteLine("State sent to User: "+ Cmd.DestinationID+ " From Device: "+ Cmd.SourceID);
                 flag = true;
             }
@@ -360,7 +360,7 @@ namespace ConnectionManager
         private static byte[] CreateNewNameMessage(ushort Name)
         {
             string NameMessage = ".1," + Tools.ushortToString(Name) + ",23,M.";
-            return Encoding.ASCII.GetBytes(NameMessage);
+            return Encoding.GetEncoding(437).GetBytes(NameMessage);
         }
     }
 }
