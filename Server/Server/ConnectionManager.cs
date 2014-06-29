@@ -233,18 +233,16 @@ namespace ConnectionManager
                     Console.WriteLine("New name assigned to Device!");
                     Console.WriteLine("Device Name: " + AssignedName);
 
-                    D.ChangeName(AssignedName);
-                    D.BindSocket(DeviceSocket);
+                    D = new Device(AssignedName, DeviceSocket);
 
                     Tools.CurrentDeviceList.Add(AssignedName, D);
                     DatabaseHandler.AddNewDevice(AssignedName, 0); 
 
-                    byte[] Message = (Encoding.GetEncoding(437).GetBytes(".3," + Cmd.SourceID+ AssignedName.ToString() + ",M."));
+                    byte[] Message = CreateChangeNameMessage(Cmd.SourceID, AssignedName);
                     D.Send(Message);
 
                     D.StartTimer();
                     HandleConnection(D);
-
                 }
             }
 
@@ -361,6 +359,12 @@ namespace ConnectionManager
         {
             string NameMessage = ".1," + Tools.ushortToString(Name) + ",23,M.";
             return Encoding.GetEncoding(437).GetBytes(NameMessage);
+        }
+
+        private static byte[] CreateChangeNameMessage(ushort OldName, ushort NewName)
+        {
+            string Message = ".3," + Tools.ushortToString(OldName) + "," + Tools.ushortToString(NewName) + ",M.";
+            return Encoding.GetEncoding(437).GetBytes(Message);
         }
     }
 }
