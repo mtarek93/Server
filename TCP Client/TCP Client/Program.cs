@@ -22,7 +22,7 @@ namespace TCP_Client
                 Console.WriteLine("Connecting.....");
 
                 tcpSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-                tcpSocket.Connect("192.168.1.9", 14);
+                tcpSocket.Connect("192.168.1.8", 14);
                 // use the ipaddress as in the server program
 
                 Console.WriteLine("Connected");
@@ -42,13 +42,13 @@ namespace TCP_Client
         {
             byte[] Data = new byte[1024];
             string initialString = "135,\0\0,,,mt,mt.";
-            tcpSocket.Send(Encoding.ASCII.GetBytes(initialString));
+            tcpSocket.Send(Encoding.GetEncoding(437).GetBytes(initialString));
             while (true)
             {
                 Console.Write("Enter the string to be transmitted : ");
                 String str = Console.ReadLine();
                 str = Regex.Unescape(str);    //to unescape escape sequences
-                Data = Encoding.ASCII.GetBytes(str);
+                Data = Encoding.GetEncoding(437).GetBytes(str);
 
                 Console.WriteLine("Transmitting.....");
                 tcpSocket.Send(Data);
@@ -63,7 +63,7 @@ namespace TCP_Client
                 byte[] Data;
                 int NumberofBytes = tcpSocket.Receive(ReceivedData);
                 Data = FormatData(ReceivedData, NumberofBytes);
-                Console.WriteLine(Encoding.ASCII.GetString(Data));
+                Console.WriteLine(Encoding.GetEncoding(437).GetString(Data));
             }
         }
 
