@@ -40,16 +40,16 @@ namespace TCP_Client
 
         static void SendFunction()
         {
-            byte[] Data = new byte[1024];
+            byte[] Data = null;
             string initialString = "135,\0\0,,,mt,mt.";
             tcpSocket.Send(Encoding.GetEncoding(437).GetBytes(initialString));
             while (true)
             {
                 Console.Write("Enter the string to be transmitted : ");
                 String str = Console.ReadLine();
-                str = Regex.Unescape(str);    //to unescape escape sequences
-                Data = Encoding.GetEncoding(437).GetBytes(str);
-
+                str.Remove(str.Length - 1);
+                string[] SplittedCommand = str.Split(',');
+                Data = Encoding.GetEncoding(437).GetBytes(CreateActionString(SplittedCommand[1], SplittedCommand[2], SplittedCommand[3]));
                 Console.WriteLine("Transmitting.....");
                 tcpSocket.Send(Data);
             }
@@ -77,5 +77,16 @@ namespace TCP_Client
             return FormattedData;
         }
 
+        static string CreateActionString(string ID, string DestinationID, string Action)
+        {
+            string ActionString = "8," + ushortToString(Convert.ToUInt16(ID)) + "," + ushortToString(Convert.ToUInt16(DestinationID)) + "," + (char)Convert.ToByte(Action) + ",,.";
+            ActionString = ActionString.Length.ToString() + ActionString;
+            return ActionString;
+        }
+
+        static string ushortToString(ushort Number)
+        {
+            return Encoding.GetEncoding(437).GetString(BitConverter.GetBytes(Number));
+        }
     }
 }
