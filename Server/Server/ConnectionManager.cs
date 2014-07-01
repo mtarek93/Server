@@ -220,11 +220,13 @@ namespace ConnectionManager
 
                     //bind new socket, add to current devices list, and start watchdog timer
                     D.BindSocket(DeviceSocket);
+                    //D.SetState(Cmd.Action_State);   !!!
                     Tools.CurrentDeviceList.Add(D.GetName(), D);
                     D.StartTimer();
 
                     HandleConnection(D);
                 }
+
                 //if not: assign new name, add to database, send NewName command to device
                 else
                 {
@@ -234,12 +236,14 @@ namespace ConnectionManager
                     Console.WriteLine("Device Name: " + AssignedName);
 
                     D = new Device(AssignedName, DeviceSocket);
+                    //D = new Device(AssignedName, DeviceSocket, Cmd.Action_State);   !!!
 
                     Tools.CurrentDeviceList.Add(AssignedName, D);
                     DatabaseHandler.AddNewDevice(AssignedName, 0); 
 
                     byte[] Message = CreateChangeNameMessage(Cmd.SourceID, AssignedName);
-                    D.Send(Message);
+                    if (!D.Send(Message))
+                        Console.WriteLine("Device.StartConnection (reconnect_ChangeName) :Send failed");
 
                     D.StartTimer();
                     HandleConnection(D);
@@ -252,19 +256,23 @@ namespace ConnectionManager
                 //Assign name for device
                 AssignedName = Tools.AssignID();
                 Device D = new Device(AssignedName, DeviceSocket);
+                //Device D = new Device(AssignedName, DeviceSocket, Cmd.Action_State);  !!!
 
                 Console.WriteLine("New name assigned to Device!");
                 Console.WriteLine("Device Name: " + D.GetName());
 
                 //Add Device to both current devices list and database
                 Tools.CurrentDeviceList.Add(AssignedName, D);
-                DatabaseHandler.AddNewDevice(AssignedName, 0); //assuming state is off for now
+                DatabaseHandler.AddNewDevice(AssignedName, 0); 
+                //if state removed from database:   !!!
+                //DatabaseHandler.AddNewDevice(AssignedName); 
 
                 //Name notification message to device
                 byte[] Message = CreateNewNameMessage(AssignedName);
-                D.Send(Message);
+                if(!D.Send(Message))
+                    Console.WriteLine("Device.StartConnection (First Connection_ NewName): Send Failed");
 
-                //Add to current devices list and start watchdog timer    
+                //start watchdog timer    
                 D.StartTimer();
                 HandleConnection(D);
             }
@@ -310,7 +318,7 @@ namespace ConnectionManager
                     else
                     {
                         Console.WriteLine("Device is disconnected!");
-                        Tools.CurrentUserList.Remove(D.GetName());
+                        Tools.CurrentDeviceList.Remove(D.GetName());
                         break;
                     }
                 }
@@ -318,8 +326,8 @@ namespace ConnectionManager
                 catch (Exception e)
                 {
                     Console.WriteLine("Exception in DeviceConnection.HandleConnection: " + e.Message);
-                    //Console.WriteLine("Device: " + D.GetName() + " was disconnected");
-                    //Tools.CurrentDeviceList.Remove(D.GetName());
+                    Console.WriteLine("Device: " + D.GetName() + " was disconnected");
+                    Tools.CurrentDeviceList.Remove(D.GetName());
                     break;
                 }
             }
@@ -335,7 +343,8 @@ namespace ConnectionManager
             if (Tools.CurrentUserList.TryGetValue(Cmd.DestinationID, out U))
             {
                 msg = Convert.ToString(Cmd.DestinationID) + ',' + Convert.ToString(Cmd.SourceID) + ',' + Convert.ToString(Cmd.Action_State) + '.';
-                U.Send(Encoding.GetEncoding(437).GetBytes(msg));
+                if (!U.Send(Encoding.GetEncoding(437).GetBytes(msg)))
+                    Console.WriteLine("Device_Acknowledgement_Action: Send failed");
                 Console.WriteLine("State sent to User: "+ Cmd.DestinationID+ " From Device: "+ Cmd.SourceID);
                 flag = true;
             }
@@ -343,7 +352,7 @@ namespace ConnectionManager
             //if user not in current users list
             else
             {
-                Console.WriteLine("Error in DeviceCinnection.Device_Acknowledgement_Action: User doesn't exist in database!");
+                Console.WriteLine("Error in DeviceConnection.Device_Acknowledgement_Action: User doesn't exist in database!");
                 Console.WriteLine("Acknowledgement not sent");
             }
 
@@ -353,6 +362,7 @@ namespace ConnectionManager
         {
             Console.WriteLine("WatchDog recieved from device: " + Cmd.SourceID);
             D.resetTimer();
+            //D.SetState(Cmd.Action_State);   !!!
             return true;
         }
         private static byte[] CreateNewNameMessage(ushort Name)
@@ -360,7 +370,6 @@ namespace ConnectionManager
             string NameMessage = ".1," + Tools.ushortToString(Name) + ",23,M.";
             return Encoding.GetEncoding(437).GetBytes(NameMessage);
         }
-
         private static byte[] CreateChangeNameMessage(ushort OldName, ushort NewName)
         {
             string Message = ".3," + Tools.ushortToString(OldName) + "," + Tools.ushortToString(NewName) + ",M.";

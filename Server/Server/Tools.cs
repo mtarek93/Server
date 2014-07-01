@@ -51,12 +51,10 @@ namespace ServerTools
         {
             return (Encoding.GetEncoding(437).GetString(Data));
         }
-
         public static string ushortToString(ushort Number)
         {
             return Encoding.GetEncoding(437).GetString(BitConverter.GetBytes(Number));
         }
-
         public static byte[] StringToByteArray(string data)
         {
             return Encoding.GetEncoding(437).GetBytes(data);      

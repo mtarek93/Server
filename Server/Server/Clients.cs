@@ -51,7 +51,7 @@ namespace Clients
             }
             catch (Exception e)
             {
-                Console.WriteLine("Exception in User.Send " + e.Message);
+                Console.WriteLine("Exception in User.Send: " + e.Message);
                 return false;
             }
         }
@@ -123,6 +123,12 @@ namespace Clients
             this.Name = _name;
             this.Sckt = _S;
         }
+        public Device(ushort _name, Socket _S, byte _State)
+        {
+            this.Name = _name;
+            this.State = _State;
+            this.Sckt = _S;
+        }
         public ushort GetName()
         {
             return this.Name;
@@ -172,7 +178,7 @@ namespace Clients
             }
             catch (Exception e)
             {
-                Console.WriteLine("Exception in Device.Send " + e.Message);
+                Console.WriteLine("Exception in Device.Send: " + e.Message);
                 return false;
             }
         }

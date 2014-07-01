@@ -7,27 +7,28 @@ using System.Text.RegularExpressions;
 
 namespace CommandHandler
 {
-    class Test
+/*    class Test
     {
-        //static void Main(string[] args)
-        //{
-        //    string Command;
-        //    Command Cmd;
-        //    CommandParser.InitializeCommandsDictionary();
-        //    while (true)
-        //    {
-        //        Command = Console.ReadLine();
-        //        Command = Regex.Unescape(Command);
-        //        Cmd = CommandParser.ParseCommand(Command);
-        //        Console.WriteLine(Cmd.Type);
-        //        Console.WriteLine(Cmd.SourceID);
-        //        Console.WriteLine(Cmd.DestinationID);
-        //        Console.WriteLine(Cmd.Action_State);
-        //        Console.WriteLine(Cmd.UserName);
-        //        Console.WriteLine(Cmd.Password);
-        //    }
-        //}
+        static void Main(string[] args)
+        {
+            string Command;
+            Command Cmd;
+            CommandParser.InitializeCommandsDictionary();
+            while (true)
+            {
+                Command = Console.ReadLine();
+                Command = Regex.Unescape(Command);
+                Cmd = CommandParser.ParseCommand(Command);
+                Console.WriteLine(Cmd.Type);
+                Console.WriteLine(Cmd.SourceID);
+                Console.WriteLine(Cmd.DestinationID);
+                Console.WriteLine(Cmd.Action_State);
+                Console.WriteLine(Cmd.UserName);
+                Console.WriteLine(Cmd.Password);
+            }
+        }
     }
+ */
     public enum CommandType
     {
         Device_FirstConnection,
@@ -77,7 +78,6 @@ namespace CommandHandler
             else
                 return false;
         }
-
         static CommandType GetCommandType(string Command)
         {
             foreach (var Element in Dict)
@@ -87,7 +87,6 @@ namespace CommandHandler
             }
             return CommandType.Invalid;
         }
-
         public static Command ParseCommand(string Command)
         {
             Command Cmd = new Command(CommandType.Invalid, 0, 0, 0, "x", "x");
@@ -116,7 +115,6 @@ namespace CommandHandler
             else
                 return Cmd;
         }
-
         public static void InitializeCommandsDictionary()
         {
             Dict.Add(new Regex(@"^((0,,,,,))", RegexOptions.Singleline), CommandType.Device_FirstConnection);
