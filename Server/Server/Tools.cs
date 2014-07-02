@@ -59,10 +59,6 @@ namespace ServerTools
         {
             return Encoding.GetEncoding(437).GetBytes(data);      
         } 
-        public static ushort AssignID()
-        {
-            return DatabaseHandler.GetNumberofIDs();
-        }
         public static IPAddress GetMyIPAddress()
         {
             return Dns.GetHostEntry(Dns.GetHostName()).AddressList.FirstOrDefault(ip => ip.AddressFamily == AddressFamily.InterNetwork);
