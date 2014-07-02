@@ -261,8 +261,6 @@ namespace ConnectionManager
                 //Add Device to current devices list
                 Tools.CurrentDeviceList.Add(AssignedName, D);
 
-                //if state removed from database:   !!!
-                //DatabaseHandler.AddNewDevice(AssignedName); 
 
                 //Name notification message to device
                 byte[] Message = CreateNewNameMessage(AssignedName);
