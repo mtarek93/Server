@@ -174,7 +174,7 @@ namespace ConnectionManager
         {
             string DeviceList = "";
             foreach (var Device in Tools.CurrentDeviceList)
-                DeviceList += (Device.Key + Device.Value.GetState().ToString());    //state is assumed to be off for now.....
+                DeviceList += (Device.Key + Device.Value.GetState().ToString());  
 
             DeviceList += ".";
             U.Send(Encoding.GetEncoding(437).GetBytes(DeviceList));
@@ -201,31 +201,32 @@ namespace ConnectionManager
     }
     class DeviceConnection
     {   
-        //Connection Managing functions----------------------------------------------------------------
+        //Connection Managing functions------------------------------------------------------------
         public static void StartConnection(Socket DeviceSocket, Command Cmd)
         {
             ushort AssignedName;
 
-            //if Command was reconnect-------------------------------------------------------------------1
+//if Command was reconnect-------------------------------------------------------------------1
             if (Cmd.Type == CommandType.Device_Reconnection)
             {
-                //if device is on the database: reconnect
+        //if device is on the database: reconnect.........................................a
                 Device D;
                 if (DatabaseHandler.TryGetDevice(Cmd.SourceID, out D))
                 {
                     Console.WriteLine("Name exists in database!");
                     Console.WriteLine("Connection accepted from Device " + D.GetName());
 
-                    //bind new socket, add to current devices list, and start watchdog timer
                     D.BindSocket(DeviceSocket);
-                    //D.SetState(Cmd.Action_State);   !!!
-                    Tools.CurrentDeviceList.Add(D.GetName(), D);
-                    D.StartTimer();
+                    D.SetState(Cmd.Action_State);
 
+                    //Add device to list and update users' lists
+                    Add_Device(D);
+
+                    D.StartTimer();
                     HandleConnection(D);
                 }
 
-                //if not: assign new name, add to database, send NewName command to device
+        //if not: assign new name, add to database, send NewName command to device.......b
                 else
                 {
                     Console.WriteLine("Name: " + Cmd.SourceID + " Doesn't exist in Database!");
@@ -233,11 +234,12 @@ namespace ConnectionManager
                     Console.WriteLine("New name assigned to Device!");
                     Console.WriteLine("Device Name: " + AssignedName);
 
-                    D = new Device(AssignedName, DeviceSocket);
-                    //D = new Device(AssignedName, DeviceSocket, Cmd.Action_State);   !!!
+                    D = new Device(AssignedName, DeviceSocket, Cmd.Action_State);
 
-                    Tools.CurrentDeviceList.Add(AssignedName, D);
-
+                    //Add device to list and update users' lists
+                    Add_Device(D);
+                    
+                    //Send NewName message
                     byte[] Message = CreateChangeNameMessage(Cmd.SourceID, AssignedName);
                     if (!D.Send(Message))
                         Console.WriteLine("Device.StartConnection (reconnect_ChangeName) :Send failed");
@@ -247,32 +249,29 @@ namespace ConnectionManager
                 }
             }
 
-            //if Command was FirstConnection-------------------------------------------------------------2
+//if Command was FirstConnection-------------------------------------------------------------2
             else if (Cmd.Type == CommandType.Device_FirstConnection)
             {
                 //Assign name for device and add to database
                 AssignedName = DatabaseHandler.AddNewDevice();
-                Device D = new Device(AssignedName, DeviceSocket);
-                //Device D = new Device(AssignedName, DeviceSocket, Cmd.Action_State);  !!!
+                Device D = new Device(AssignedName, DeviceSocket, Cmd.Action_State); 
 
                 Console.WriteLine("New name assigned to Device!");
                 Console.WriteLine("Device Name: " + D.GetName());
 
-                //Add Device to current devices list
-                Tools.CurrentDeviceList.Add(AssignedName, D);
-
+                //Add Device to current devices list, and update users' lists
+                Add_Device(D);
 
                 //Name notification message to device
                 byte[] Message = CreateNewNameMessage(AssignedName);
                 if(!D.Send(Message))
                     Console.WriteLine("Device.StartConnection (First Connection_ NewName): Send Failed");
-
-                //start watchdog timer    
+   
                 D.StartTimer();
                 HandleConnection(D);
             }
 
-            //If Command format wasn't correct----------------------------------------------------------3
+//If Command format wasn't correct----------------------------------------------------------3
             else
             {
                 Console.WriteLine("Error in DeviceConnection.Accept Connection: wrong command format ya teefa!");
@@ -300,7 +299,7 @@ namespace ConnectionManager
                         switch (Cmd.Type)
                         {
                             case CommandType.Device_Acknowledgement:
-                                Device_Acknowledgement_Action(Cmd);
+                                Device_Acknowledgement_Action(Cmd, D);
                                 break;
                             case CommandType.Device_WatchDog:
                                 Device_WatchDog_Action(Cmd, D);
@@ -312,8 +311,9 @@ namespace ConnectionManager
                     }
                     else
                     {
-                        Console.WriteLine("Device is disconnected!");
-                        Tools.CurrentDeviceList.Remove(D.GetName());
+                        Console.WriteLine("Device"+ D.GetName() + "is disconnected!");
+                        //Remove Device from list and update users' lists
+                        Remove_Device(D);
                         break;
                     }
                 }
@@ -321,26 +321,33 @@ namespace ConnectionManager
                 catch (Exception e)
                 {
                     Console.WriteLine("Exception in DeviceConnection.HandleConnection: " + e.Message);
-                    Console.WriteLine("Device: " + D.GetName() + " was disconnected");
-                    Tools.CurrentDeviceList.Remove(D.GetName());
+                    Console.WriteLine("Device: " + D.GetName() + "is disconnected");
+                    //Remove Device from list and update users' lists
+                    Remove_Device(D);
                     break;
                 }
             }
         }     
-        //Actions--------------------------------------------------------------------------------------
-        private static bool Device_Acknowledgement_Action(Command Cmd)
+        //Actions----------------------------------------------------------------------------------
+        private static bool Device_Acknowledgement_Action(Command Cmd, Device D)
         {
             User U;
-            bool flag = false;
+            bool flag;
             string msg;
 
+            //Update state of device
+            D.SetState(Cmd.Action_State);
+
+            //Update current list and update users' lists
+            Update_State(D);
+
+            //Not necessary anymore !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
             //if User is in current users list
             if (Tools.CurrentUserList.TryGetValue(Cmd.DestinationID, out U))
             {
                 msg = Convert.ToString(Cmd.DestinationID) + ',' + Convert.ToString(Cmd.SourceID) + ',' + Convert.ToString(Cmd.Action_State) + '.';
                 if (!U.Send(Encoding.GetEncoding(437).GetBytes(msg)))
                     Console.WriteLine("Device_Acknowledgement_Action: Send failed");
-                Console.WriteLine("State sent to User: "+ Cmd.DestinationID+ " From Device: "+ Cmd.SourceID);
                 flag = true;
             }
 
@@ -349,17 +356,80 @@ namespace ConnectionManager
             {
                 Console.WriteLine("Error in DeviceConnection.Device_Acknowledgement_Action: User doesn't exist in database!");
                 Console.WriteLine("Acknowledgement not sent");
+                flag = false;
             }
-
+            //Down to here !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
             return flag;
         }
         private static bool Device_WatchDog_Action(Command Cmd, Device D)
         {
             Console.WriteLine("WatchDog recieved from device: " + Cmd.SourceID);
             D.resetTimer();
-            //D.SetState(Cmd.Action_State);   !!!
+            /*
+            if (D.GetState() != Cmd.Action_State)
+            {
+                //Update state of device
+                D.SetState(Cmd.Action_State);  
+
+                //Update current list and update users' lists
+                Update_State(D);
+            }
+            */
             return true;
         }
+        //Updates----------------------------------------------------------------------------------
+        private static void Add_Device(Clients.Device D)
+        {
+            string CMD;
+            byte[] Add_Cmd;
+            string Device_Name = Tools.ushortToString(D.GetName());
+            string Device_State = D.GetState().ToString();
+
+            Tools.CurrentDeviceList.Add(D.GetName(),D);
+            foreach (var User in Tools.CurrentUserList)
+            {
+                //9,UserID,A,	 ,DestID,State.!
+                CMD = "9," + Tools.ushortToString(User.Value.GetName()) + ",A,," +
+                    Device_Name + "," + Device_State + ".!";
+                Add_Cmd = Tools.StringToByteArray(CMD);
+                User.Value.GetSocket().Send(Add_Cmd);
+            }
+        }
+        private static void Remove_Device(Clients.Device D)
+        {
+            string CMD;
+            byte[] Add_Cmd;
+            string Device_Name = Tools.ushortToString(D.GetName());
+            string Device_State = D.GetState().ToString();
+
+            Tools.CurrentDeviceList.Remove(D.GetName());
+            foreach (var User in Tools.CurrentUserList)
+            {
+                //9,UserID,R,	 ,DestID,State.!
+                CMD = "9," + Tools.ushortToString(User.Value.GetName()) + ",R,," +
+                    Device_Name + "," + Device_State + ".!";
+                Add_Cmd = Tools.StringToByteArray(CMD);
+                User.Value.GetSocket().Send(Add_Cmd);
+            }
+        }
+        private static void Update_State(Clients.Device D)
+        {
+            string CMD;
+            byte[] Add_Cmd;
+            string Device_Name = Tools.ushortToString(D.GetName());
+            string Device_State = D.GetState().ToString();
+
+            Tools.CurrentDeviceList[D.GetName()] = D;
+            foreach (var User in Tools.CurrentUserList)
+            {
+                //9,UserID,C,	 ,DestID,State.!
+                CMD = "9," + Tools.ushortToString(User.Value.GetName()) + ",C,," +
+                    Device_Name + "," + Device_State + ".!";
+                Add_Cmd = Tools.StringToByteArray(CMD);
+                User.Value.GetSocket().Send(Add_Cmd);
+            }
+        }
+        //tools------------------------------------------------------------------------------------
         private static byte[] CreateNewNameMessage(ushort Name)
         {
             string NameMessage = ".1," + Tools.ushortToString(Name) + ",23,M.";
