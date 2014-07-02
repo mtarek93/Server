@@ -1,20 +1,20 @@
-Server Commands
+﻿Server Commands
 
 Type, SourceID?, DestinationID?, State | Action?, username?, password?.
 
 Commands: 
-Device_FirstConnection,  			0,  ,      ,      ,        ,    .
-Device_Reconnection,      			1,ID,      ,      ,        ,    .
-Device_WatchDog,	  			2,ID,      ,      ,        ,    .
-Device_Acknowledgement,   			3,ID,DestID,State ,        ,    .
-User_FirstConnection_SignIn,			4,  ,      ,      ,username,pass.
-User_Reconnection_SignIn,			5,ID,      ,      ,username,pass.
-User_FirstConnection_SignUp,			6,  ,      ,      ,username,pass.
-User_Reconnection_SignUp,			7,ID,      ,      ,username,pass.
-User_Action,					8,ID,DestID,Action,	   ,    .
-Device_Command_Not_Found			9,  ,      ,      ,        ,    .
-User_Locate,					TBA XD
-User_send_list of devices                       TBA XD
+Device_FirstConnection,  			length,0,  ,      ,      ,        ,    
+Device_Reconnection,      			length,1,ID,      ,      ,        ,    
+Device_WatchDog,	  			length,2,ID,      ,      ,        ,    
+Device_Acknowledgement,   			length,3,ID,DestID,State ,        ,    
+User_FirstConnection_SignIn,			length,4,  ,      ,      ,username,pass
+User_Reconnection_SignIn,			length,5,ID,      ,      ,username,pass
+User_FirstConnection_SignUp,			length,6,  ,      ,      ,username,pass
+User_Reconnection_SignUp,			length,7,ID,      ,      ,username,pass
+User_Action,					length,8,ID,DestID,Action,	  ,    
+Device_Command_Not_Found			length,9,  ,      ,      ,        ,    
+User_Locate,					length,TBA XD
+User_send_list of devices                       length,TBA XD
 
 
 
