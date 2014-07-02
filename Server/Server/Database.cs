@@ -141,7 +141,7 @@ namespace Database
                 try
                 {
                     Database.Open();
-                    string Query = "SELECT Id, State FROM " + DevicesTable + " WHERE Id = " + "'" + Id + "';";
+                    string Query = "SELECT Id FROM " + DevicesTable + " WHERE Id = " + "'" + Id + "';";
                     using (SqlCommand Command = new SqlCommand(Query, Database))
                     {
                         SqlDataReader Reader = Command.ExecuteReader();
