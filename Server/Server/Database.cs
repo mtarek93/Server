@@ -100,10 +100,9 @@ namespace Database
                 try
                 {
                     Database.Open();
-                    using (SqlCommand Command = new SqlCommand("INSERT INTO " + DevicesTable + " (Id, State) VALUES (@Id, @State);", Database))
+                    using (SqlCommand Command = new SqlCommand("INSERT INTO " + DevicesTable + " (Id) VALUES (@Id);", Database))
                     {
                         Command.Parameters.Add(new SqlParameter("@Id", Id));
-                        Command.Parameters.Add(new SqlParameter("@State", State));
                         Command.ExecuteNonQuery();
                     }
                     Database.Close();
@@ -130,7 +129,7 @@ namespace Database
                         if (Reader.Read())
                         {
                             //Console.WriteLine("Device found!");
-                            D = new Device(Convert.ToUInt16(Reader.GetInt32(0)), Reader.GetByte(1));
+                            D = new Device(Convert.ToUInt16(Reader.GetInt32(0)));
                             return true;
                         }
 
