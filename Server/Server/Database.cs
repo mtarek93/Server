@@ -17,104 +17,123 @@ namespace Database
     class DatabaseHandler
     {
         public static string ConnectionString, LoginTable = "LoginTable", UsersTable = "UsersTable", DevicesTable = "DevicesTable", IDTable = "IDTable";
+        private static object LoginTableLock = new object();
+        private static object DbWriteLock = new object();
+
         public static void AddUserAccount(string Username, string Password)
         {
-            using (SqlConnection Database = new SqlConnection(ConnectionString))
+            lock (LoginTableLock)
             {
-                try
+                using (SqlConnection Database = new SqlConnection(ConnectionString))
                 {
-                    Database.Open();
-                    using (SqlCommand Command = new SqlCommand("INSERT INTO " + LoginTable + " (Username, Password) VALUES (@Username, @Password);", Database))
+                    try
                     {
-                        Command.Parameters.Add(new SqlParameter("@Username", Username));
-                        Command.Parameters.Add(new SqlParameter("@Password", Password));
-                        Command.ExecuteNonQuery();
+                        Database.Open();
+                        using (SqlCommand Command = new SqlCommand("INSERT INTO " + LoginTable + " (Username, Password) VALUES (@Username, @Password);", Database))
+                        {
+                            Command.Parameters.Add(new SqlParameter("@Username", Username));
+                            Command.Parameters.Add(new SqlParameter("@Password", Password));
+                            Command.ExecuteNonQuery();
+                        }
+                        Database.Close();
                     }
-                    Database.Close();
-                }
-                catch (SqlException e)
-                {
-                    Console.WriteLine(e.Message);
+                    catch (SqlException e)
+                    {
+                        Console.WriteLine(e.Message);
+                    }
                 }
             }
         }
         public static bool UserIsAuthenticated(string Username, string Password)
         {
-            using (SqlConnection Database = new SqlConnection(ConnectionString))
+            lock (LoginTableLock)
             {
-                try
+                using (SqlConnection Database = new SqlConnection(ConnectionString))
                 {
-                    Database.Open();
-                    string Query = "SELECT Username, Password FROM " + LoginTable + " WHERE Username = " + "'" + Username + "' " + "AND Password = " + "'" + Password + "';";
+                    try
+                    {
+                        Database.Open();
+                        string Query = "SELECT Username, Password FROM " + LoginTable + " WHERE Username = " + "'" + Username + "' " + "AND Password = " + "'" + Password + "';";
 
-                    using (SqlCommand Command = new SqlCommand(Query, Database))
-                    {
-                        SqlDataReader Reader = Command.ExecuteReader();
-                        if (Reader.Read())
+                        using (SqlCommand Command = new SqlCommand(Query, Database))
                         {
-                            //Console.WriteLine("Authenticated!");
-                            return true;
-                        }
+                            SqlDataReader Reader = Command.ExecuteReader();
+                            if (Reader.Read())
+                            {
+                                //Console.WriteLine("Authenticated!");
+                                return true;
+                            }
 
-                        else
-                        {
-                            //Console.WriteLine("Please check your credentials and try again.");
-                            return false;
+                            else
+                            {
+                                //Console.WriteLine("Please check your credentials and try again.");
+                                return false;
+                            }
                         }
                     }
-                }
-                catch (SqlException e)
-                {
-                    Console.WriteLine(e.Message);
-                    return false;
-                }
-            }
-        }
-        public static void AddNewUser(ushort ID)
-        {
-            int Id = Convert.ToInt32(ID);
-            using (SqlConnection Database = new SqlConnection(ConnectionString))
-            {
-                try
-                {
-                    Database.Open();
-                    using (SqlCommand Command = new SqlCommand("INSERT INTO " + UsersTable + " (Id) VALUES (@Id);", Database))
+                    catch (SqlException e)
                     {
-                        Command.Parameters.Add(new SqlParameter("@Id", Id));
-                        Command.ExecuteNonQuery();
+                        Console.WriteLine(e.Message);
+                        return false;
                     }
-                    Database.Close();
-                }
-                catch (SqlException e)
-                {
-                    Console.WriteLine(e.Message);
                 }
             }
-            AddNewID(ID);
         }
-        public static void AddNewDevice(ushort ID, int State)
+        // Adds a new user to the database and returns an Assigned ID
+        public static ushort AddNewUser()
         {
-            int Id = Convert.ToInt32(ID);
-            using (SqlConnection Database = new SqlConnection(ConnectionString))
+            lock (DbWriteLock)
             {
-                try
+                int Id = GetNextID();
+                using (SqlConnection Database = new SqlConnection(ConnectionString))
                 {
-                    Database.Open();
-                    using (SqlCommand Command = new SqlCommand("INSERT INTO " + DevicesTable + " (Id) VALUES (@Id);", Database))
+                    try
                     {
-                        Command.Parameters.Add(new SqlParameter("@Id", Id));
-                        Command.ExecuteNonQuery();
+                        Database.Open();
+                        using (SqlCommand Command = new SqlCommand("INSERT INTO " + UsersTable + " (Id) VALUES (@Id);", Database))
+                        {
+                            Command.Parameters.Add(new SqlParameter("@Id", Id));
+                            Command.ExecuteNonQuery();
+                        }
+                        Database.Close();
                     }
-                    Database.Close();
+                    catch (SqlException e)
+                    {
+                        Console.WriteLine(e.Message);
+                    }
                 }
-                catch (SqlException e)
-                {
-                    Console.WriteLine(e.Message);
-                }
+                AddNewID(Id);
+                return (ushort)Id;
             }
-            AddNewID(ID);
         }
-        public static bool TryGetDevice(int ID, out Device D)
+        // Adds a new device to the database and returns an Assigned ID
+        public static ushort AddNewDevice()
+        {
+            lock (DbWriteLock)
+            {
+                int Id = GetNextID();
+                using (SqlConnection Database = new SqlConnection(ConnectionString))
+                {
+                    try
+                    {
+                        Database.Open();
+                        using (SqlCommand Command = new SqlCommand("INSERT INTO " + DevicesTable + " (Id) VALUES (@Id);", Database))
+                        {
+                            Command.Parameters.Add(new SqlParameter("@Id", Id));
+                            Command.ExecuteNonQuery();
+                        }
+                        Database.Close();
+                    }
+                    catch (SqlException e)
+                    {
+                        Console.WriteLine(e.Message);
+                    }
+                }
+                AddNewID(Id);
+                return (ushort)Id;
+            }
+        }
+        public static bool TryGetDevice(ushort ID, out Device D)
         {
             int Id = Convert.ToInt32(ID);
             using (SqlConnection Database = new SqlConnection(ConnectionString))
@@ -149,7 +168,7 @@ namespace Database
                 }
             }
         }
-        public static bool TryGetUser(int ID, out User U)
+        public static bool TryGetUser(ushort ID, out User U)
         {
             int Id = Convert.ToInt32(ID);
             using (SqlConnection Database = new SqlConnection(ConnectionString))
@@ -187,30 +206,33 @@ namespace Database
         }
         public static bool UsernameExists(string Username)
         {
-            using (SqlConnection Database = new SqlConnection(ConnectionString))
+            lock (LoginTableLock)
             {
-                try
+                using (SqlConnection Database = new SqlConnection(ConnectionString))
                 {
-                    Database.Open();
-                    string Query = "SELECT Username FROM " + LoginTable + " WHERE Username = " + "'" + Username + "';";
-
-                    using (SqlCommand Command = new SqlCommand(Query, Database))
+                    try
                     {
-                        SqlDataReader Reader = Command.ExecuteReader();
-                        if (Reader.Read())
-                            return true;
-                        else
-                            return false;
+                        Database.Open();
+                        string Query = "SELECT Username FROM " + LoginTable + " WHERE Username = " + "'" + Username + "';";
+
+                        using (SqlCommand Command = new SqlCommand(Query, Database))
+                        {
+                            SqlDataReader Reader = Command.ExecuteReader();
+                            if (Reader.Read())
+                                return true;
+                            else
+                                return false;
+                        }
                     }
-                }
-                catch (SqlException e)
-                {
-                    Console.WriteLine(e.Message);
-                    return false;
+                    catch (SqlException e)
+                    {
+                        Console.WriteLine(e.Message);
+                        return false;
+                    }
                 }
             }
         }
-        public static ushort GetNumberofIDs()
+        private static int GetNextID()
         {
             using (SqlConnection Database = new SqlConnection(ConnectionString))
             {
@@ -222,19 +244,19 @@ namespace Database
                     {
                         SqlDataReader Reader = Command.ExecuteReader();
                         if (Reader.Read())
-                            return Convert.ToUInt16(Reader.GetInt32(0));
+                            return Reader.GetInt32(0);
                         else
-                            return (ushort)0;
+                            return -1;
                     }
                 }
                 catch (SqlException e)
                 {
                     Console.WriteLine(e.Message);
-                    return (ushort)0;
+                    return -1;
                 }
             }
         }
-        private static void AddNewID (ushort ID)
+        private static void AddNewID (int ID)
         {
             using (SqlConnection Database = new SqlConnection(ConnectionString))
             {
@@ -244,7 +266,7 @@ namespace Database
                     string Query = "INSERT INTO " + IDTable + " (Id) VALUES (@Id);";
                     using (SqlCommand Command = new SqlCommand(Query, Database))
                     {
-                        Command.Parameters.Add(new SqlParameter("@Id", Convert.ToInt32(ID)));
+                        Command.Parameters.Add(new SqlParameter("@Id", ID));
                         Command.ExecuteNonQuery();
                     }
                     Database.Close();
