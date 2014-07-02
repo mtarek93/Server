@@ -67,13 +67,12 @@ namespace ConnectionManager
         {
             if (DatabaseHandler.UserIsAuthenticated(Cmd.UserName, Cmd.Password))
             {
-                //Assign ID to user's device
-                ushort AssignedID = Tools.AssignID();
+                //Assign ID to user's device and add to database
+                ushort AssignedID = DatabaseHandler.AddNewUser();
 
-                //Add to database and current list
+                //Add to current list
                 User U = new User(AssignedID, UserSocket);
                 Tools.CurrentUserList.Add(AssignedID, U);
-                DatabaseHandler.AddNewUser(AssignedID);
                 
                 //Send assignedID, devicelist, and wait for new commands in HandleConnection()
                 U.Send(Encoding.GetEncoding(437).GetBytes("Login Successful!," + AssignedID.ToString() + "."));
@@ -96,16 +95,15 @@ namespace ConnectionManager
             }
             else
             {
-                //Assign ID to user's device
-                ushort AssignedID = Tools.AssignID();
+                //Assign ID to user's device and add to database
+                ushort AssignedID = DatabaseHandler.AddNewUser();
 
                 //Create new user account
                 DatabaseHandler.AddUserAccount(Cmd.UserName, Cmd.Password);
 
-                //Add to database and current list
+                //Add to current list
                 User U = new User(AssignedID, UserSocket);
                 Tools.CurrentUserList.Add(AssignedID, U);
-                DatabaseHandler.AddNewUser(AssignedID);
 
                 //Send assignedID, devicelist, and wait for new commands in HandleConnection()
                 U.Send(Encoding.GetEncoding(437).GetBytes("Sign Up Successful!," + AssignedID.ToString() + "."));
@@ -231,7 +229,7 @@ namespace ConnectionManager
                 else
                 {
                     Console.WriteLine("Name: " + Cmd.SourceID + " Doesn't exist in Database!");
-                    AssignedName = Tools.AssignID();
+                    AssignedName = DatabaseHandler.AddNewDevice();
                     Console.WriteLine("New name assigned to Device!");
                     Console.WriteLine("Device Name: " + AssignedName);
 
@@ -239,7 +237,6 @@ namespace ConnectionManager
                     //D = new Device(AssignedName, DeviceSocket, Cmd.Action_State);   !!!
 
                     Tools.CurrentDeviceList.Add(AssignedName, D);
-                    DatabaseHandler.AddNewDevice(AssignedName, 0); 
 
                     byte[] Message = CreateChangeNameMessage(Cmd.SourceID, AssignedName);
                     if (!D.Send(Message))
@@ -253,17 +250,17 @@ namespace ConnectionManager
             //if Command was FirstConnection-------------------------------------------------------------2
             else if (Cmd.Type == CommandType.Device_FirstConnection)
             {
-                //Assign name for device
-                AssignedName = Tools.AssignID();
+                //Assign name for device and add to database
+                AssignedName = DatabaseHandler.AddNewDevice();
                 Device D = new Device(AssignedName, DeviceSocket);
                 //Device D = new Device(AssignedName, DeviceSocket, Cmd.Action_State);  !!!
 
                 Console.WriteLine("New name assigned to Device!");
                 Console.WriteLine("Device Name: " + D.GetName());
 
-                //Add Device to both current devices list and database
+                //Add Device to current devices list
                 Tools.CurrentDeviceList.Add(AssignedName, D);
-                DatabaseHandler.AddNewDevice(AssignedName, 0); 
+
                 //if state removed from database:   !!!
                 //DatabaseHandler.AddNewDevice(AssignedName); 
 
