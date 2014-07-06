@@ -16,8 +16,8 @@ namespace ServerTools
     class Tools
     {
         //Lists of current Devices and Users---------------------------------------------------------------------------
-        public static SortedDictionary<ushort, User> CurrentUserList = new SortedDictionary<ushort, User>();
-        public static SortedDictionary<ushort, Device> CurrentDeviceList = new SortedDictionary<ushort, Device>();
+        public static SynchronizedDictionary<ushort, User> CurrentUserList = new SynchronizedDictionary<ushort, User>();
+        public static SynchronizedDictionary<ushort, Device> CurrentDeviceList = new SynchronizedDictionary<ushort, Device>();
 
         public static void AcceptConnection(object _Socket)
         {
@@ -69,7 +69,7 @@ namespace ServerTools
             {
                 Console.WriteLine("Number of Users: " + CurrentUserList.Count.ToString());    
                 Console.WriteLine("Number of Devices: " + CurrentDeviceList.Count.ToString());    
-                Thread.Sleep(80000);
+                Thread.Sleep(5000);
             }
         }
         static bool Receive(Socket S, ref byte[] Data)
