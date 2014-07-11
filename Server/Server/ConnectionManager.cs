@@ -35,10 +35,10 @@ namespace ConnectionManager
         private static void HandleConnection(User U)
         {
             Command Cmd;
-            byte [] ReceivedData = null;
+            byte [] ReceivedData = new byte[100];
             while (true)
             {
-                if (U.Receive(ref ReceivedData))
+                if (U.Receive(ReceivedData))
                 {
                     Console.WriteLine("Command Received: " + Tools.ByteArrayToString(ReceivedData));
                     Cmd = CommandParser.ParseCommand(Tools.ByteArrayToString(ReceivedData));
@@ -281,7 +281,7 @@ namespace ConnectionManager
         private static void HandleConnection(Device D)
         {
             //Initialization----------------------------------------------------------------------------0
-            byte[] ReceivedData = null;
+            byte[] ReceivedData = new byte[10];
             string Command;         
             Command Cmd;                        
 
@@ -289,7 +289,14 @@ namespace ConnectionManager
             {
                 try
                 {
-                    if (D.Receive(ref ReceivedData))
+                    //if command not recieved successfully
+                    if (!D.Receive(ReceivedData))
+                    {
+                        //Console.WriteLine("Recieve(D): " + D.GetName() + " is disconnected!");
+                        //Tools.CurrentDeviceList.Remove(D.GetName()); 
+                        //break;
+                    }
+                    else
                     {
                         Command = Tools.ByteArrayToString(ReceivedData);
                         Console.WriteLine("Command received was: " + Command);
@@ -308,13 +315,6 @@ namespace ConnectionManager
                                 Console.WriteLine("Error in DeviceConnection.HandleConnection: wrong command format ya teefa!");
                                 break;
                         }
-                    }
-                    else
-                    {
-                        Console.WriteLine("Device"+ D.GetName() + "is disconnected!");
-                        //Remove Device from list and update users' lists
-                        Remove_Device(D);
-                        break;
                     }
                 }
                 //Catching exceptions------------------------------------------------------------------------2
