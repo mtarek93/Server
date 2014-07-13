@@ -40,7 +40,7 @@ namespace ServerTools
                          Cmd.Type == CommandType.User_FirstConnection_SignUp || Cmd.Type == CommandType.User_Reconnection_SignUp)
                     UserConnection.StartConnection(S, Cmd);
                 else
-                    Console.WriteLine("Tools.AcceptConnection: Connection not accepted!");
+                    Console.WriteLine("Tools.AcceptConnection: Invalid command, Connection not accepted!");
             }
             else
             {
