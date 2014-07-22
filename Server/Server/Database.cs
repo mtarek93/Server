@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Data.SqlClient;
 using Clients;
 
+
 namespace Database
 {
     class Test
@@ -16,7 +17,12 @@ namespace Database
     }
     class DatabaseHandler
     {
-        public static string ConnectionString, LoginTable = "LoginTable", UsersTable = "UsersTable", DevicesTable = "DevicesTable", IDTable = "IDTable";
+        public static string ConnectionString,
+            LoginTable = "LoginTable", 
+            UsersTable = "UsersTable", 
+            DevicesTable = "DevicesTable", 
+            IDTable = "IDTable";
+
         private static object LoginTableLock = new object();
         private static object DbWriteLock = new object();
 
