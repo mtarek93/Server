@@ -25,24 +25,34 @@ namespace LocationComponents
 
     class Zone
     {
+        public string Name { get; set; }
+        private List<Room> RoomList = new List<Room>();
+
+        void AddRoom(Room R)
+        {
+            RoomList.Add(R);
+        }
+
+        void RemoveRoom(Room R)
+        {
+            RoomList.Remove(R);
+        }
     }
 
     class Home
     {
     }
 
-    class Location
+    class Position
     {
         public int xCoordinate { get; set; }
         public int yCoordinate { get; set; }
-        public Room locationRoom;
+        public Room positionRoom;
 
-        public Location(int x, int y)
+        public Position(int x, int y)
         {
             xCoordinate = x;
             yCoordinate = y;
         }
-
-
     }
 }
