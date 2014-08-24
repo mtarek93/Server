@@ -61,6 +61,9 @@ Commands:
 First time name:  .1,name,         ,M      .
 Action         :  .2,name,Dev name ,Action .
 Change name    :  .3,name,new name ,       .
+Turn on        :  .4, xx ,Dev name , 255   .
+Turn off       :  .4, xx ,Dev name , 0     .
+SendMagnitude  :  .4, xx ,Dev name , Mag   .
 
 
 
