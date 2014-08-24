@@ -94,7 +94,7 @@ namespace CommandHandler
         }
         public static Command ParseCommand(string Command)
         {
-            Command Cmd = new Command(CommandType.Invalid, 0, 0, 0, "x", "x");
+            Command Cmd = new Invalid();
 
             if (isInCorrectFormat(Command))
             {

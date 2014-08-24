@@ -175,6 +175,7 @@ namespace CommandHandler
     {
         public override bool Execute(Socket S)
         {
+            Console.WriteLine("Invalid Command!");
             return false;
         }
     }
