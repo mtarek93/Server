@@ -8,6 +8,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.IO;
 using ServerTools;
+using CommandHandler;
 
 namespace Clients
 {
@@ -109,6 +110,27 @@ namespace Clients
 
             DeviceList += ".";
             Send(Encoding.GetEncoding(437).GetBytes(DeviceList));
+        }
+
+        public void HandleConnection()
+        {
+            Command Cmd;
+            byte[] ReceivedData = null;
+            while (true)
+            {
+                if (Receive(ref ReceivedData))
+                {
+                    Console.WriteLine("Command Received: " + Tools.ByteArrayToString(ReceivedData));
+                    Cmd = CommandParser.ParseCommand(Tools.ByteArrayToString(ReceivedData));
+                    Cmd.Execute(Sckt);
+                }
+                else
+                {
+                    Console.WriteLine("User is disconnected!");
+                    Tools.CurrentUserList.Remove(Name);
+                    break;
+                }
+            }
         }
     }
     public class Device

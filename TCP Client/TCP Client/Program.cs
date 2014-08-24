@@ -22,7 +22,7 @@ namespace TCP_Client
                 Console.WriteLine("Connecting.....");
 
                 tcpSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-                tcpSocket.Connect("10.96.85.164", 14);
+                tcpSocket.Connect("10.32.30.229", 14);
                 // use the ipaddress as in the server program
 
                 Console.WriteLine("Connected");
@@ -41,7 +41,7 @@ namespace TCP_Client
         static void SendFunction()
         {
             byte[] Data = null;
-            string initialString = "135,\0\0,,,mt,mt.";
+            string initialString = "125,\0\0,,,mt,mt";
             tcpSocket.Send(Encoding.GetEncoding(437).GetBytes(initialString));
             while (true)
             {

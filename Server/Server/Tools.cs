@@ -33,14 +33,7 @@ namespace ServerTools
                 Command = ByteArrayToString(Data);
                 Console.WriteLine("Tools.AcceptConnection: Command received was: " + Command);
                 Cmd = CommandParser.ParseCommand(Command);
-
-                if (Cmd.Type == CommandType.Device_FirstConnection || Cmd.Type == CommandType.Device_Reconnection)
-                    DeviceConnection.StartConnection(S, Cmd);
-                else if (Cmd.Type == CommandType.User_FirstConnection_SignIn || Cmd.Type == CommandType.User_Reconnection_SignIn ||
-                         Cmd.Type == CommandType.User_FirstConnection_SignUp || Cmd.Type == CommandType.User_Reconnection_SignUp)
-                    UserConnection.StartConnection(S, Cmd);
-                else
-                    Console.WriteLine("Tools.AcceptConnection: Invalid command, Connection not accepted!");
+                Cmd.Execute(S);
             }
             else
             {
