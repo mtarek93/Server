@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Text.RegularExpressions;
+using System.Net;
+using System.Net.Sockets;
 
 namespace CommandHandler
 {
@@ -65,6 +67,8 @@ namespace CommandHandler
         public Command()
         {
         }
+
+        virtual public void Execute() {}
     }
     class CommandParser
     {

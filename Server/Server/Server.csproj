@@ -45,6 +45,7 @@
     <Compile Include="CommandHandler.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Commands.cs" />
     <Compile Include="ConnectionManager.cs">
       <SubType>Code</SubType>
     </Compile>
