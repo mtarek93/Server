@@ -13,6 +13,10 @@ namespace CommandHandler
 {
     class User_FirstConnection_SignIn : Command
     {
+        public User_FirstConnection_SignIn()
+        {
+            Type = CommandType.User_FirstConnection_SignIn;
+        }
         public override bool Execute(Socket UserSocket)
         {
             if (DatabaseHandler.UserIsAuthenticated(UserName, Password))
@@ -39,6 +43,10 @@ namespace CommandHandler
     }
     class User_FirstConnection_SignUp : Command
     {
+        public User_FirstConnection_SignUp()
+        {
+            Type = CommandType.User_FirstConnection_SignUp;
+        }
         public override bool Execute (Socket UserSocket)
         {
             //Check if username exists
@@ -69,6 +77,10 @@ namespace CommandHandler
     }
     class User_Reconnection_SignIn : Command
     {
+        public User_Reconnection_SignIn()
+        {
+            Type = CommandType.User_Reconnection_SignIn;
+        }
         public override bool Execute(Socket UserSocket)
         {
             User U;
@@ -99,6 +111,10 @@ namespace CommandHandler
     }
     class User_Reconnection_SignUp : Command
     {
+        public User_Reconnection_SignUp()
+        {
+            Type = CommandType.User_Reconnection_SignUp;
+        }
         public override bool Execute(Socket UserSocket)
         {
             User U;
@@ -173,6 +189,10 @@ namespace CommandHandler
     }
     class Invalid : Command
     {
+        public Invalid()
+        {
+            Type = CommandType.Invalid;
+        }
         public override bool Execute(Socket S)
         {
             Console.WriteLine("Invalid Command!");
