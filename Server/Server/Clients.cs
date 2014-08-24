@@ -240,7 +240,7 @@ namespace Clients
 
         public void SendMagnitude(byte Magnitude)
         {
-            Send(Encoding.GetEncoding(437).GetBytes(".4,xx," + Tools.ushortToString(Name) + "," + Convert.ToChar((byte)0) + "."));
+            Send(Encoding.GetEncoding(437).GetBytes(".4,xx," + Tools.ushortToString(Name) + "," + Convert.ToChar(Magnitude) + "."));
         }
     }
 }
