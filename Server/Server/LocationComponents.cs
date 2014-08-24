@@ -12,14 +12,26 @@ namespace LocationComponents
         public string Name { get; set; }
         private List<Device> DeviceList = new List<Device>();
 
-        void AddDevice(Device D)
+        public void AddDevice(Device D)
         {
             DeviceList.Add(D);
         }
 
-        void RemoveDevice(Device D)
+        public void RemoveDevice(Device D)
         {
             DeviceList.Remove(D);
+        }
+
+        public void TurnOnDevices()
+        {
+            foreach (Device D in DeviceList)
+                D.TurnOn();
+        }
+
+        public void TurnOffDevices()
+        {
+            foreach (Device D in DeviceList)
+                D.TurnOff();
         }
     }
 
@@ -28,14 +40,26 @@ namespace LocationComponents
         public string Name { get; set; }
         private List<Room> RoomList = new List<Room>();
 
-        void AddRoom(Room R)
+        public void AddRoom(Room R)
         {
             RoomList.Add(R);
         }
 
-        void RemoveRoom(Room R)
+        public void RemoveRoom(Room R)
         {
             RoomList.Remove(R);
+        }
+
+        public void TurnOnDevices()
+        {
+            foreach (Room R in RoomList)
+                R.TurnOnDevices();
+        }
+
+        public void TurnOffDevices()
+        {
+            foreach (Room R in RoomList)
+                R.TurnOffDevices();
         }
     }
 
