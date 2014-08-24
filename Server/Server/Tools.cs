@@ -44,7 +44,7 @@ namespace ServerTools
             }
             else
             {
-                Console.WriteLine("Receive failed! Tools.AcceptConnection: Connection not accepted!");
+                Console.WriteLine("Receive failed! Tools.AcceptConnection: Connection not accepted!");//test
             }
         }
         public static string ByteArrayToString(byte[] Data)
