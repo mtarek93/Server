@@ -100,6 +100,16 @@ namespace Clients
                 return false;
             }
         }
+
+        public void SendDeviceList()
+        {
+            string DeviceList = "";
+            foreach (var Device in Tools.CurrentDeviceList)
+                DeviceList += (Device.Key + Device.Value.GetState().ToString());
+
+            DeviceList += ".";
+            Send(Encoding.GetEncoding(437).GetBytes(DeviceList));
+        }
     }
     public class Device
     {
