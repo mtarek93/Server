@@ -47,9 +47,8 @@ namespace TCP_Client
             {
                 Console.Write("Enter the string to be transmitted : ");
                 String str = Console.ReadLine();
-                str.Remove(str.Length - 1);
-                string[] SplittedCommand = str.Split(',');
-                Data = Encoding.GetEncoding(437).GetBytes(CreateActionString(SplittedCommand[1], SplittedCommand[2], SplittedCommand[3]));
+                str += str.Length;
+                Data = Encoding.GetEncoding(437).GetBytes(str);
                 Console.WriteLine("Transmitting.....");
                 tcpSocket.Send(Data);
             }
