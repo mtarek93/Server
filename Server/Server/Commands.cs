@@ -151,6 +151,10 @@ namespace CommandHandler
     }
     class User_Action : Command
     {
+        public User_Action()
+        {
+            Type = CommandType.User_Action;
+        }
         public override bool Execute(Socket UserSocket)
         {
             Device D;
@@ -174,6 +178,10 @@ namespace CommandHandler
     }
     class User_Locate : Command
     {
+        public User_Locate()
+        {
+            Type = CommandType.User_Locate;
+        }
     }
     class Device_FirstConnection : Command
     {

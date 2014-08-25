@@ -85,24 +85,32 @@ namespace ServerTools
                 }
 
                 //Get the command length from prefix
-                commandLength = Convert.ToInt32(Encoding.GetEncoding(437).GetString(commandLengthBuffer));
-                Console.WriteLine("Length = " + commandLength.ToString());
-                //Check for commandLength maximum and create buffer to receive data
-                if (commandLength > MAX_COMMAND_LENGTH)
-                    Data = new byte[MAX_COMMAND_LENGTH];
-                else
-                    Data = new byte[commandLength];
-
-                //Receive the data
-                totalBytes = 0;
-                bytesReceived = totalBytes = S.Receive(Data, 0, Data.Length, SocketFlags.None);
-                while (totalBytes < Data.Length && bytesReceived > 0)
+                if (Int32.TryParse(Encoding.GetEncoding(437).GetString(commandLengthBuffer), out commandLength))
                 {
-                    bytesReceived = S.Receive(Data, totalBytes, Data.Length - totalBytes, SocketFlags.None);
-                    totalBytes += bytesReceived;
-                }
+                    Console.WriteLine("Length = " + commandLength.ToString());
 
-                return true;
+                    //Check for commandLength maximum and create buffer to receive data
+                    if (commandLength > MAX_COMMAND_LENGTH)
+                        Data = new byte[MAX_COMMAND_LENGTH];
+                    else
+                        Data = new byte[commandLength];
+
+                    //Receive the data
+                    totalBytes = 0;
+                    bytesReceived = totalBytes = S.Receive(Data, 0, Data.Length, SocketFlags.None);
+                    while (totalBytes < Data.Length && bytesReceived > 0)
+                    {
+                        bytesReceived = S.Receive(Data, totalBytes, Data.Length - totalBytes, SocketFlags.None);
+                        totalBytes += bytesReceived;
+                    }
+
+                    return true;
+                }
+                else
+                {
+                    Console.WriteLine("Wrong format for length prefix!");
+                    return false;
+                }
             }
             catch (SocketException e)
             {
