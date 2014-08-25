@@ -280,17 +280,17 @@ namespace Clients
 
         public void TurnOn()
         {
-            Send(Encoding.GetEncoding(437).GetBytes(".4,xx," + Tools.ushortToString(Name) + "," + Convert.ToChar((byte)255) + "."));
+            Send(Tools.StringToByteArray(".4,xx," + Tools.ushortToString(Name) + "," + Convert.ToChar((byte)255) + "."));
         }
 
         public void TurnOff()
         {
-            Send(Encoding.GetEncoding(437).GetBytes(".4,xx," + Tools.ushortToString(Name) + "," + Convert.ToChar((byte)0) + "."));
+            Send(Tools.StringToByteArray(".4,xx," + Tools.ushortToString(Name) + "," + Convert.ToChar((byte)0) + "."));
         }
 
         public void SendMagnitude(byte Magnitude)
         {
-            Send(Encoding.GetEncoding(437).GetBytes(".4,xx," + Tools.ushortToString(Name) + "," + Convert.ToChar(Magnitude) + "."));
+            Send(Tools.StringToByteArray(".4,xx," + Tools.ushortToString(Name) + "," + Convert.ToChar(Magnitude) + "."));
         }
     }
 }
