@@ -41,17 +41,15 @@ namespace TCP_Client
         static void SendFunction()
         {
             byte[] Data = null;
-            string initialString = "125,\0\0,,,mt,mt";
+            string initialString = "5,\0\0,,,mt,mt";
+            initialString = PrependLength(initialString);
             tcpSocket.Send(Encoding.GetEncoding(437).GetBytes(initialString));
+
             while (true)
             {
                 Console.Write("Enter the string to be transmitted : ");
                 String str = Console.ReadLine();
-                int strlen = str.Length;
-                if (strlen < 10)
-                    str = "0" + strlen.ToString() + str;
-                else
-                    str = strlen.ToString() + str;
+                str = PrependLength(str);
                 //string str = "8,\0\0,\0\0," + Convert.ToChar((byte)255) + ",,";
                 //str = str.Length.ToString() + str;
                 Data = Encoding.GetEncoding(437).GetBytes(str);
@@ -92,6 +90,15 @@ namespace TCP_Client
         static string ushortToString(ushort Number)
         {
             return Encoding.GetEncoding(437).GetString(BitConverter.GetBytes(Number));
+        }
+
+        static string PrependLength(string Command)
+        {
+            int CommandLength = Command.Length;
+            if (CommandLength < 10)
+                return "0" + CommandLength.ToString() + Command;
+            else
+                return CommandLength.ToString() + Command;
         }
     }
 }
