@@ -49,10 +49,9 @@ namespace TCP_Client
             {
                 Console.Write("Enter the string to be transmitted : ");
                 String str = Console.ReadLine();
-                str = PrependLength(str);
                 //string str = "8,\0\0,\0\0," + Convert.ToChar((byte)255) + ",,";
                 //str = str.Length.ToString() + str;
-                Data = Encoding.GetEncoding(437).GetBytes(str);
+                Data = ReformatCommand(str);
                 Console.WriteLine("Transmitting.....");
                 tcpSocket.Send(Data);
             }
@@ -99,6 +98,34 @@ namespace TCP_Client
                 return "0" + CommandLength.ToString() + Command;
             else
                 return CommandLength.ToString() + Command;
+        }
+
+        static byte[] ReformatCommand(string Command)
+        {
+            string[] SplittedCommand;
+            ushort ID, DestID;
+            byte State;
+            string IDstr, DestIDstr, Statestr, FormattedCommand = "";
+
+            SplittedCommand = Command.Split(',');
+            UInt16.TryParse(SplittedCommand[1], out ID);
+            UInt16.TryParse(SplittedCommand[2], out DestID);
+            Byte.TryParse(SplittedCommand[3], out State);
+
+            IDstr = ushortToString(ID);
+            DestIDstr = ushortToString(DestID);
+            Statestr = Convert.ToChar(State).ToString();
+
+            SplittedCommand[1] = IDstr;
+            SplittedCommand[2] = DestIDstr;
+            SplittedCommand[3] = Statestr;
+
+            foreach (string s in SplittedCommand)
+                FormattedCommand += s + ",";
+            FormattedCommand = FormattedCommand.Remove(FormattedCommand.Length - 1);
+            FormattedCommand = PrependLength(FormattedCommand);
+
+            return Encoding.GetEncoding(437).GetBytes(FormattedCommand);
         }
     }
 }
