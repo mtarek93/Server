@@ -99,6 +99,8 @@ namespace Clients
                 else
                 {
                     Console.WriteLine("Wrong format for length prefix!");
+                    this.Sckt.Disconnect(false);
+                    this.Sckt.Dispose();
                     return false;
                 }
             }
@@ -264,6 +266,8 @@ namespace Clients
                 else
                 {
                     Console.WriteLine("Wrong format for length prefix!");
+                    this.Sckt.Disconnect(false);
+                    this.Sckt.Dispose();
                     return false;
                 }
             }

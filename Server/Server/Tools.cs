@@ -109,6 +109,8 @@ namespace ServerTools
                 else
                 {
                     Console.WriteLine("Wrong format for length prefix!");
+                    S.Disconnect(false);
+                    S.Dispose();
                     return false;
                 }
             }
