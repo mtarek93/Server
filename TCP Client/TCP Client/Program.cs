@@ -47,7 +47,13 @@ namespace TCP_Client
             {
                 Console.Write("Enter the string to be transmitted : ");
                 String str = Console.ReadLine();
-                str += str.Length;
+                int strlen = str.Length;
+                if (strlen < 10)
+                    str = "0" + strlen.ToString() + str;
+                else
+                    str = strlen.ToString() + str;
+                //string str = "8,\0\0,\0\0," + Convert.ToChar((byte)255) + ",,";
+                //str = str.Length.ToString() + str;
                 Data = Encoding.GetEncoding(437).GetBytes(str);
                 Console.WriteLine("Transmitting.....");
                 tcpSocket.Send(Data);
@@ -78,7 +84,7 @@ namespace TCP_Client
 
         static string CreateActionString(string ID, string DestinationID, string Action)
         {
-            string ActionString = "8," + ushortToString(Convert.ToUInt16(ID)) + "," + ushortToString(Convert.ToUInt16(DestinationID)) + "," + (char)Convert.ToByte(Action) + ",,.";
+            string ActionString = "8," + ushortToString(Convert.ToUInt16(ID)) + "," + ushortToString(Convert.ToUInt16(DestinationID)) + "," + (char)Convert.ToByte(Action) + ",,";
             ActionString = ActionString.Length.ToString() + ActionString;
             return ActionString;
         }
