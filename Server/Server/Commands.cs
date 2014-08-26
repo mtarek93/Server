@@ -8,6 +8,7 @@ using System.Net.Sockets;
 using Database;
 using ServerTools;
 using Clients;
+using ConnectionManager;
 
 namespace CommandHandler
 {
@@ -200,10 +201,10 @@ namespace CommandHandler
             Console.WriteLine("Device Name: " + D.GetName());
 
             //Add Device to current devices list, and update users' lists
-            Add_Device(D);
+            ConnectionManager.DeviceConnection.Add_Device (D);
 
             //Name notification message to device
-            byte[] Message = CreateNewNameMessage(AssignedName);
+            byte[] Message = ConnectionManager.DeviceConnection.CreateNewNameMessage(AssignedName);
             if (!D.Send(Message))
                 Console.WriteLine("Device.StartConnection (First Connection_ NewName): Send Failed");
 
@@ -230,7 +231,7 @@ namespace CommandHandler
                 D.SetState(Action_State);
 
                 //Add device to list and update users' lists
-                Add_Device(D);
+                ConnectionManager.DeviceConnection.Add_Device(D);
 
                 D.StartTimer();
                 HandleConnection(D);
@@ -239,6 +240,7 @@ namespace CommandHandler
             //if not: assign new name, add to database, send NewName command to device.......b
             else
             {
+                string AssignedName;
                 Console.WriteLine("Name: " + Cmd.SourceID + " Doesn't exist in Database!");
                 AssignedName = DatabaseHandler.AddNewDevice();
                 Console.WriteLine("New name assigned to Device!");
@@ -247,10 +249,10 @@ namespace CommandHandler
                 D = new Device(AssignedName, DeviceSocket, Cmd.Action_State);
 
                 //Add device to list and update users' lists
-                Add_Device(D);
+                ConnectionManager.DeviceConnection.Add_Device(D);
 
                 //Send NewName message
-                byte[] Message = CreateChangeNameMessage(Cmd.SourceID, AssignedName);
+                byte[] Message = ConnectionManager.DeviceConnection.CreateChangeNameMessage(Cmd.SourceID, AssignedName);
                 if (!D.Send(Message))
                     Console.WriteLine("Device.StartConnection (reconnect_ChangeName) :Send failed");
 
@@ -304,7 +306,7 @@ namespace CommandHandler
             D.SetState(Action_State);
 
             //Update current list and update users' lists
-            Update_State(D);
+            ConnectionManager.DeviceConnection.Update_State(D);
 
             //Not necessary anymore !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
             //if User is in current users list

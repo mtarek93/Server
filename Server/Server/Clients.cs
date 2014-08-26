@@ -110,7 +110,6 @@ namespace Clients
                 return false;
             }
         }
-
         public void SendDeviceList()
         {
             if (Tools.CurrentDeviceList.Count == 0)
@@ -125,7 +124,6 @@ namespace Clients
                 Send(Tools.StringToByteArray(DeviceList));
             }
         }
-
         public void HandleConnection()
         {
             Command Cmd;
@@ -303,7 +301,7 @@ namespace Clients
                 {
                     Console.WriteLine("Device" + Name + "is disconnected!");
                     //Remove Device from list and update users' lists
-                    Remove_Device(D);
+                    ConnectionManager.DeviceConnection.Remove_Device(this);
                     break;
                 }
             }

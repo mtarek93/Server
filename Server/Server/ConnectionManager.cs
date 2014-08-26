@@ -18,7 +18,7 @@ namespace ConnectionManager
     class DeviceConnection
     {
         //Updates----------------------------------------------------------------------------------
-        private static void Add_Device(Clients.Device D)
+        public static void Add_Device(Clients.Device D)
         {
             string CMD;
             byte[] Add_Cmd;
@@ -35,7 +35,7 @@ namespace ConnectionManager
                 User.Value.GetSocket().Send(Add_Cmd);
             }
         }
-        private static void Remove_Device(Clients.Device D)
+        public static void Remove_Device(Clients.Device D)
         {
             string CMD;
             byte[] Add_Cmd;
@@ -52,7 +52,7 @@ namespace ConnectionManager
                 User.Value.GetSocket().Send(Add_Cmd);
             }
         }
-        private static void Update_State(Clients.Device D)
+        public static void Update_State(Clients.Device D)
         {
             string CMD;
             byte[] Add_Cmd;
@@ -70,12 +70,12 @@ namespace ConnectionManager
             }
         }
         //tools------------------------------------------------------------------------------------
-        private static byte[] CreateNewNameMessage(ushort Name)
+        public static byte[] CreateNewNameMessage(ushort Name)
         {
             string NameMessage = ".1," + Tools.ushortToString(Name) + ",23,M.";
             return Encoding.GetEncoding(437).GetBytes(NameMessage);
         }
-        private static byte[] CreateChangeNameMessage(ushort OldName, ushort NewName)
+        public static byte[] CreateChangeNameMessage(ushort OldName, ushort NewName)
         {
             string Message = ".3," + Tools.ushortToString(OldName) + "," + Tools.ushortToString(NewName) + ",M.";
             return Encoding.GetEncoding(437).GetBytes(Message);
