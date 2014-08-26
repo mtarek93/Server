@@ -283,6 +283,32 @@ namespace Clients
             }
         }
 
+        public void HandleConnection()
+        {
+            //Initialization----------------------------------------------------------------------------0
+            byte[] ReceivedData = null;
+            string Command;
+            Command Cmd;
+
+            while (true)
+            {
+                if (Receive(ref ReceivedData))
+                {
+                    Command = Tools.ByteArrayToString(ReceivedData);
+                    Console.WriteLine("Command received was: " + Command);
+                    Cmd = CommandParser.ParseCommand(Command);
+                    Cmd.Execute(this.Sckt);
+                }
+                else
+                {
+                    Console.WriteLine("Device" + Name + "is disconnected!");
+                    //Remove Device from list and update users' lists
+                    Remove_Device(D);
+                    break;
+                }
+            }
+        }
+
         public void TurnOn()
         {
             Send(Tools.StringToByteArray(".4,xx," + Tools.ushortToString(Name) + "," + Convert.ToChar((byte)255) + "."));
