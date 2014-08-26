@@ -185,15 +185,147 @@ namespace CommandHandler
     }
     class Device_FirstConnection : Command
     {
+        public Device_FirstConnection()
+        {
+            Type = CommandType.Device_FirstConnection;
+        }
+
+        public override bool Execute(Socket DeviceSocket)
+        {
+            //Assign name for device and add to database
+            ushort AssignedName = DatabaseHandler.AddNewDevice();
+            Device D = new Device(AssignedName, DeviceSocket, Action_State);
+
+            Console.WriteLine("New name assigned to Device!");
+            Console.WriteLine("Device Name: " + D.GetName());
+
+            //Add Device to current devices list, and update users' lists
+            Add_Device(D);
+
+            //Name notification message to device
+            byte[] Message = CreateNewNameMessage(AssignedName);
+            if (!D.Send(Message))
+                Console.WriteLine("Device.StartConnection (First Connection_ NewName): Send Failed");
+
+            D.StartTimer();
+            D.HandleConnection();
+        }
     }
     class Device_Reconnection : Command
     {
+        public Device_Reconnection()
+        {
+            Type = CommandType.Device_Reconnection;
+        }
+        public override bool Execute(Socket DeviceSocket)
+        {
+            //if device is on the database: reconnect.........................................a
+            Device D;
+            if (DatabaseHandler.TryGetDevice(SourceID, out D))
+            {
+                Console.WriteLine("Name exists in database!");
+                Console.WriteLine("Connection accepted from Device " + D.GetName());
+
+                D.BindSocket(DeviceSocket);
+                D.SetState(Action_State);
+
+                //Add device to list and update users' lists
+                Add_Device(D);
+
+                D.StartTimer();
+                HandleConnection(D);
+            }
+
+            //if not: assign new name, add to database, send NewName command to device.......b
+            else
+            {
+                Console.WriteLine("Name: " + Cmd.SourceID + " Doesn't exist in Database!");
+                AssignedName = DatabaseHandler.AddNewDevice();
+                Console.WriteLine("New name assigned to Device!");
+                Console.WriteLine("Device Name: " + AssignedName);
+
+                D = new Device(AssignedName, DeviceSocket, Cmd.Action_State);
+
+                //Add device to list and update users' lists
+                Add_Device(D);
+
+                //Send NewName message
+                byte[] Message = CreateChangeNameMessage(Cmd.SourceID, AssignedName);
+                if (!D.Send(Message))
+                    Console.WriteLine("Device.StartConnection (reconnect_ChangeName) :Send failed");
+
+                D.StartTimer();
+                HandleConnection(D);
+            }
+        }
     }
     class Device_WatchDog : Command 
     {
+        public Device_WatchDog()
+        {
+            Type = CommandType.Device_WatchDog;
+        }
+
+        public override bool Execute(Socket DeviceSocket)
+        {
+            Console.WriteLine("WatchDog recieved from device: " + SourceID);
+            Device D;
+            Tools.CurrentDeviceList.TryGetValue(SourceID, out D);
+            D.resetTimer();
+            /*
+            if (D.GetState() != Cmd.Action_State)
+            {
+                //Update state of device
+                D.SetState(Cmd.Action_State);  
+
+                //Update current list and update users' lists
+                Update_State(D);
+            }
+            */
+            return true;
+        }
     }
     class Device_Acknowledgement : Command
     {
+        public Device_Acknowledgement()
+        {
+            Type = CommandType.Device_Acknowledgement;
+        }
+
+        public override bool Execute(Socket DeviceSocket)
+        {
+            User U;
+            bool flag;
+            string msg;
+
+            Device D;
+            Tools.CurrentDeviceList.TryGetValue(SourceID, out D);
+            //Update state of device
+            D.SetState(Action_State);
+
+            //Update current list and update users' lists
+            Update_State(D);
+
+            //Not necessary anymore !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            //if User is in current users list
+            if (Tools.CurrentUserList.TryGetValue(DestinationID, out U))
+            {
+                msg = Convert.ToString(DestinationID) + ',' + Convert.ToString(SourceID) + ',' + Convert.ToString(Action_State) + '.';
+                if (!U.Send(Encoding.GetEncoding(437).GetBytes(msg)))
+                    Console.WriteLine("Device_Acknowledgement_Action: Send failed");
+                flag = true;
+            }
+
+            //if user not in current users list
+            else
+            {
+                Console.WriteLine("Error in DeviceConnection.Device_Acknowledgement_Action: User doesn't exist in database!");
+                Console.WriteLine("Acknowledgement not sent");
+                flag = false;
+            }
+            //Down to here !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            return flag;
+        }
     }
     class Invalid : Command
     {
