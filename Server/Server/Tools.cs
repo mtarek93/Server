@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using System.Net;
 using System.Net.Sockets;
 using CommandHandler;
-using ConnectionManager;
 using Clients;
 using Database;
 using System.Threading;

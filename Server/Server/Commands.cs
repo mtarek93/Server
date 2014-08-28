@@ -8,7 +8,6 @@ using System.Net.Sockets;
 using Database;
 using ServerTools;
 using Clients;
-using ConnectionManager;
 
 namespace CommandHandler
 {
