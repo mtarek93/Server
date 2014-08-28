@@ -119,7 +119,7 @@ namespace ServerTools
                 return false;
             }
         }
-        public static void BroadcastDeviceListUpdate_AddDevice(Device D)
+        public static void UpdateListAndBroadcast_AddDevice(Device D)
         {
             string CMD;
             byte[] Add_Cmd;
@@ -136,7 +136,7 @@ namespace ServerTools
                 User.Value.Send(Add_Cmd);
             }
         }
-        public static void BroadcastDeviceListUpdate_RemoveDevice(Device D)
+        public static void UpdateListAndBroadcast_RemoveDevice(Device D)
         {
             string CMD;
             byte[] Add_Cmd;
@@ -153,7 +153,7 @@ namespace ServerTools
                 User.Value.Send(Add_Cmd);
             }
         }
-        public static void BroadcastDeviceListUpdate_UpdateState(Device D)
+        public static void UpdateListAndBroadcast_ChangeState(Device D)
         {
             string CMD;
             byte[] Add_Cmd;

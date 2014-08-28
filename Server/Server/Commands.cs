@@ -188,8 +188,7 @@ namespace CommandHandler
             Console.WriteLine("Device Name: " + D.GetName());
 
             //Add Device to current devices list, and update users' lists
-            Tools.CurrentDeviceList.Add(AssignedName, D);
-            Tools.BroadcastDeviceListUpdate_AddDevice(D);
+            Tools.UpdateListAndBroadcast_AddDevice(D);
 
             //Name notification message to device
             byte[] Message = CreateNewNameMessage(AssignedName);
@@ -225,8 +224,7 @@ namespace CommandHandler
                 D.SetState(Action_State);
 
                 //Add device to list and update users' lists
-                Tools.CurrentDeviceList.Add(D.GetName(), D);
-                Tools.BroadcastDeviceListUpdate_AddDevice(D);
+                Tools.UpdateListAndBroadcast_AddDevice(D);
 
                 D.StartTimer();
                 D.HandleConnection();
@@ -244,8 +242,7 @@ namespace CommandHandler
                 D = new Device(AssignedName, DeviceSocket, Action_State);
 
                 //Add device to list and update users' lists
-                Tools.CurrentDeviceList.Add(AssignedName, D);
-                Tools.BroadcastDeviceListUpdate_AddDevice(D);
+                Tools.UpdateListAndBroadcast_AddDevice(D);
 
                 //Send NewName message
                 byte[] Message = CreateChangeNameMessage(SourceID, AssignedName);
@@ -306,7 +303,7 @@ namespace CommandHandler
             D.SetState(Action_State);
 
             //Update users' lists
-            Tools.BroadcastDeviceListUpdate_UpdateState(D);
+            Tools.UpdateListAndBroadcast_ChangeState(D);
 
             //Not necessary anymore !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
             //if User is in current users list
