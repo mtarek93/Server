@@ -31,10 +31,7 @@ namespace Clients
         {
             return this.Name;
         }
-        public Socket GetSocket()
-        {
-            return this.Sckt;
-        }
+
         public void BindSocket(Socket _S)
         {
             this.Sckt = _S;
@@ -177,10 +174,7 @@ namespace Clients
         {
             return this.Name;
         }
-        public Socket GetSocket()
-        {
-            return this.Sckt;
-        }
+
         public void StartTimer()                                           //Timer enable
         {
             this.T.Elapsed += T_Elapsed;                                   //Timer
