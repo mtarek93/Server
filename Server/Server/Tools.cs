@@ -120,5 +120,56 @@ namespace ServerTools
                 return false;
             }
         }
+        public static void BroadcastDeviceListUpdate_AddDevice(Device D)
+        {
+            string CMD;
+            byte[] Add_Cmd;
+            string Device_Name = Tools.ushortToString(D.GetName());
+            string Device_State = D.GetState().ToString();
+
+            Tools.CurrentDeviceList.Add(D.GetName(), D);
+            foreach (var User in Tools.CurrentUserList)
+            {
+                //9,UserID,A,	 ,DestID,State.!
+                CMD = "9," + Tools.ushortToString(User.Value.GetName()) + ",A,," +
+                    Device_Name + "," + Device_State + ".!";
+                Add_Cmd = Tools.StringToByteArray(CMD);
+                User.Value.Send(Add_Cmd);
+            }
+        }
+        public static void BroadcastDeviceListUpdate_RemoveDevice(Device D)
+        {
+            string CMD;
+            byte[] Add_Cmd;
+            string Device_Name = Tools.ushortToString(D.GetName());
+            string Device_State = D.GetState().ToString();
+
+            Tools.CurrentDeviceList.Remove(D.GetName());
+            foreach (var User in Tools.CurrentUserList)
+            {
+                //9,UserID,R,	 ,DestID,State.!
+                CMD = "9," + Tools.ushortToString(User.Value.GetName()) + ",R,," +
+                    Device_Name + "," + Device_State + ".!";
+                Add_Cmd = Tools.StringToByteArray(CMD);
+                User.Value.Send(Add_Cmd);
+            }
+        }
+        public static void BroadcastDeviceListUpdate_UpdateState(Device D)
+        {
+            string CMD;
+            byte[] Add_Cmd;
+            string Device_Name = Tools.ushortToString(D.GetName());
+            string Device_State = D.GetState().ToString();
+
+            Tools.CurrentDeviceList[D.GetName()] = D;
+            foreach (var User in Tools.CurrentUserList)
+            {
+                //9,UserID,C,	 ,DestID,State.!
+                CMD = "9," + Tools.ushortToString(User.Value.GetName()) + ",C,," +
+                    Device_Name + "," + Device_State + ".!";
+                Add_Cmd = Tools.StringToByteArray(CMD);
+                User.Value.Send(Add_Cmd);
+            }
+        }
     }
 }
