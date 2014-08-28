@@ -68,7 +68,7 @@ namespace CommandHandler
         {
         }
 
-        virtual public bool Execute(Socket S) { return true; }
+        virtual public void Execute(Socket S) { }
     }
     class CommandParser
     {

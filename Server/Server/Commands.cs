@@ -18,7 +18,7 @@ namespace CommandHandler
         {
             Type = CommandType.User_FirstConnection_SignIn;
         }
-        public override bool Execute(Socket UserSocket)
+        public override void Execute(Socket UserSocket)
         {
             if (DatabaseHandler.UserIsAuthenticated(UserName, Password))
             {
@@ -33,12 +33,10 @@ namespace CommandHandler
                 U.Send(Encoding.GetEncoding(437).GetBytes("Login Successful!," + AssignedID.ToString() + "."));
                 U.SendDeviceList();
                 U.HandleConnection();
-                return true;
             }
             else
             {
                 UserSocket.Send(Encoding.GetEncoding(437).GetBytes("Invalid credentials."));
-                return false;
             }
         }   
     }
@@ -48,13 +46,12 @@ namespace CommandHandler
         {
             Type = CommandType.User_FirstConnection_SignUp;
         }
-        public override bool Execute (Socket UserSocket)
+        public override void Execute (Socket UserSocket)
         {
             //Check if username exists
             if (DatabaseHandler.UsernameExists(UserName))
             {
                 UserSocket.Send(Encoding.GetEncoding(437).GetBytes("Username already exists!"));
-                return false;
             }
             else
             {
@@ -72,7 +69,6 @@ namespace CommandHandler
                 U.Send(Encoding.GetEncoding(437).GetBytes("Sign Up Successful!," + AssignedID.ToString() + "."));
                 U.SendDeviceList();
                 U.HandleConnection();
-                return true;
             }
         }
     }
@@ -82,7 +78,7 @@ namespace CommandHandler
         {
             Type = CommandType.User_Reconnection_SignIn;
         }
-        public override bool Execute(Socket UserSocket)
+        public override void Execute(Socket UserSocket)
         {
             User U;
             //if user's device has connected before
@@ -95,18 +91,15 @@ namespace CommandHandler
                     U.Send(Encoding.GetEncoding(437).GetBytes("Login Successfull!"));
                     U.SendDeviceList();
                     U.HandleConnection();
-                    return true;
                 }
                 else
                 {
                     UserSocket.Send(Encoding.GetEncoding(437).GetBytes("Invalid credentials."));
-                    return false;
                 }
             }
             else
             {
                 UserSocket.Send(Encoding.GetEncoding(437).GetBytes("This device has not connected to the server before."));
-                return false;
             }
         }
     }
@@ -116,7 +109,7 @@ namespace CommandHandler
         {
             Type = CommandType.User_Reconnection_SignUp;
         }
-        public override bool Execute(Socket UserSocket)
+        public override void Execute(Socket UserSocket)
         {
             User U;
 
@@ -126,7 +119,6 @@ namespace CommandHandler
                 if (DatabaseHandler.UsernameExists(UserName))
                 {
                     UserSocket.Send(Encoding.GetEncoding(437).GetBytes("Username already exists!"));
-                    return false;
                 }
                 else
                 {
@@ -140,13 +132,11 @@ namespace CommandHandler
                     U.Send(Encoding.GetEncoding(437).GetBytes("Sign Up Successful!"));
                     U.SendDeviceList();
                     U.HandleConnection();
-                    return true;
                 }
             }
             else
             {
                 UserSocket.Send(Encoding.GetEncoding(437).GetBytes("This device has not connected to the server before."));
-                return false;
             }
         }
     }
@@ -156,7 +146,7 @@ namespace CommandHandler
         {
             Type = CommandType.User_Action;
         }
-        public override bool Execute(Socket UserSocket)
+        public override void Execute(Socket UserSocket)
         {
             Device D;
             //String to be sent to device
@@ -168,12 +158,10 @@ namespace CommandHandler
                 ActionString = ".2," + Tools.ushortToString(SourceID) + "," + Tools.ushortToString(DestinationID) + "," + Convert.ToChar(Action_State) + ".";
                 ActionString = ActionString.Length.ToString() + ActionString;
                 D.Send(Encoding.GetEncoding(437).GetBytes(ActionString));
-                return true;
             }
             else
             {
                 UserSocket.Send(Encoding.GetEncoding(437).GetBytes("Device not connected!"));
-                return false;
             }
         }
     }
@@ -191,7 +179,7 @@ namespace CommandHandler
             Type = CommandType.Device_FirstConnection;
         }
 
-        public override bool Execute(Socket DeviceSocket)
+        public override void Execute(Socket DeviceSocket)
         {
             //Assign name for device and add to database
             ushort AssignedName = DatabaseHandler.AddNewDevice();
@@ -218,7 +206,7 @@ namespace CommandHandler
         {
             Type = CommandType.Device_Reconnection;
         }
-        public override bool Execute(Socket DeviceSocket)
+        public override void Execute(Socket DeviceSocket)
         {
             //if device is on the database: reconnect.........................................a
             Device D;
@@ -268,7 +256,7 @@ namespace CommandHandler
             Type = CommandType.Device_WatchDog;
         }
 
-        public override bool Execute(Socket DeviceSocket)
+        public override void Execute(Socket DeviceSocket)
         {
             Console.WriteLine("WatchDog recieved from device: " + SourceID);
             Device D;
@@ -284,7 +272,6 @@ namespace CommandHandler
                 Update_State(D);
             }
             */
-            return true;
         }
     }
     class Device_Acknowledgement : Command
@@ -294,10 +281,9 @@ namespace CommandHandler
             Type = CommandType.Device_Acknowledgement;
         }
 
-        public override bool Execute(Socket DeviceSocket)
+        public override void Execute(Socket DeviceSocket)
         {
             User U;
-            bool flag;
             string msg;
 
             Device D;
@@ -315,7 +301,6 @@ namespace CommandHandler
                 msg = Convert.ToString(DestinationID) + ',' + Convert.ToString(SourceID) + ',' + Convert.ToString(Action_State) + '.';
                 if (!U.Send(Encoding.GetEncoding(437).GetBytes(msg)))
                     Console.WriteLine("Device_Acknowledgement_Action: Send failed");
-                flag = true;
             }
 
             //if user not in current users list
@@ -323,10 +308,7 @@ namespace CommandHandler
             {
                 Console.WriteLine("Error in DeviceConnection.Device_Acknowledgement_Action: User doesn't exist in database!");
                 Console.WriteLine("Acknowledgement not sent");
-                flag = false;
             }
-            //Down to here !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-            return flag;
         }
     }
     class Invalid : Command
@@ -335,10 +317,9 @@ namespace CommandHandler
         {
             Type = CommandType.Invalid;
         }
-        public override bool Execute(Socket S)
+        public override void Execute(Socket S)
         {
             Console.WriteLine("Invalid Command!");
-            return false;
         }
     }
 }
