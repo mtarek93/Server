@@ -201,7 +201,7 @@ namespace CommandHandler
             Console.WriteLine("Device Name: " + D.GetName());
 
             //Add Device to current devices list, and update users' lists
-            ConnectionManager.DeviceConnection.Add_Device (D);
+            ConnectionManager.DeviceConnection.Add_Device(D);
 
             //Name notification message to device
             byte[] Message = ConnectionManager.DeviceConnection.CreateNewNameMessage(AssignedName);
@@ -234,30 +234,30 @@ namespace CommandHandler
                 ConnectionManager.DeviceConnection.Add_Device(D);
 
                 D.StartTimer();
-                HandleConnection(D);
+                D.HandleConnection();
             }
 
             //if not: assign new name, add to database, send NewName command to device.......b
             else
             {
-                string AssignedName;
-                Console.WriteLine("Name: " + Cmd.SourceID + " Doesn't exist in Database!");
+                ushort AssignedName;
+                Console.WriteLine("Name: " + SourceID + " Doesn't exist in Database!");
                 AssignedName = DatabaseHandler.AddNewDevice();
                 Console.WriteLine("New name assigned to Device!");
                 Console.WriteLine("Device Name: " + AssignedName);
 
-                D = new Device(AssignedName, DeviceSocket, Cmd.Action_State);
+                D = new Device(AssignedName, DeviceSocket, Action_State);
 
                 //Add device to list and update users' lists
                 ConnectionManager.DeviceConnection.Add_Device(D);
 
                 //Send NewName message
-                byte[] Message = ConnectionManager.DeviceConnection.CreateChangeNameMessage(Cmd.SourceID, AssignedName);
+                byte[] Message = ConnectionManager.DeviceConnection.CreateChangeNameMessage(SourceID, AssignedName);
                 if (!D.Send(Message))
                     Console.WriteLine("Device.StartConnection (reconnect_ChangeName) :Send failed");
 
                 D.StartTimer();
-                HandleConnection(D);
+                D.HandleConnection();
             }
         }
     }
