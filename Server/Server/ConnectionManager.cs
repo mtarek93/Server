@@ -32,7 +32,7 @@ namespace ConnectionManager
                 CMD = "9," + Tools.ushortToString(User.Value.GetName()) + ",A,," +
                     Device_Name + "," + Device_State + ".!";
                 Add_Cmd = Tools.StringToByteArray(CMD);
-                User.Value.GetSocket().Send(Add_Cmd);
+                User.Value.Send(Add_Cmd);
             }
         }
         public static void Remove_Device(Clients.Device D)
@@ -49,7 +49,7 @@ namespace ConnectionManager
                 CMD = "9," + Tools.ushortToString(User.Value.GetName()) + ",R,," +
                     Device_Name + "," + Device_State + ".!";
                 Add_Cmd = Tools.StringToByteArray(CMD);
-                User.Value.GetSocket().Send(Add_Cmd);
+                User.Value.Send(Add_Cmd);
             }
         }
         public static void Update_State(Clients.Device D)
@@ -66,7 +66,7 @@ namespace ConnectionManager
                 CMD = "9," + Tools.ushortToString(User.Value.GetName()) + ",C,," +
                     Device_Name + "," + Device_State + ".!";
                 Add_Cmd = Tools.StringToByteArray(CMD);
-                User.Value.GetSocket().Send(Add_Cmd);
+                User.Value.Send(Add_Cmd);
             }
         }
         //tools------------------------------------------------------------------------------------
