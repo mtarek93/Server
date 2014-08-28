@@ -295,8 +295,7 @@ namespace Clients
                 {
                     Console.WriteLine("Device" + Name + "is disconnected!");
                     //Remove Device from list and update users' lists
-                    Tools.CurrentDeviceList.Remove(this.Name);
-                    Tools.BroadcastDeviceListUpdate_RemoveDevice(this);
+                    Tools.UpdateListAndBroadcast_RemoveDevice(this);
                     break;
                 }
             }
