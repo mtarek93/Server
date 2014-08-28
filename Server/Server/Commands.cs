@@ -189,15 +189,22 @@ namespace CommandHandler
             Console.WriteLine("Device Name: " + D.GetName());
 
             //Add Device to current devices list, and update users' lists
-            ConnectionManager.DeviceConnection.Add_Device(D);
+            Tools.CurrentDeviceList.Add(AssignedName, D);
+            Tools.BroadcastDeviceListUpdate_AddDevice(D);
 
             //Name notification message to device
-            byte[] Message = ConnectionManager.DeviceConnection.CreateNewNameMessage(AssignedName);
+            byte[] Message = CreateNewNameMessage(AssignedName);
             if (!D.Send(Message))
                 Console.WriteLine("Device.StartConnection (First Connection_ NewName): Send Failed");
 
             D.StartTimer();
             D.HandleConnection();
+        }
+
+        private static byte[] CreateNewNameMessage(ushort Name)
+        {
+            string NameMessage = ".1," + Tools.ushortToString(Name) + ",23,M.";
+            return Encoding.GetEncoding(437).GetBytes(NameMessage);
         }
     }
     class Device_Reconnection : Command
@@ -219,7 +226,8 @@ namespace CommandHandler
                 D.SetState(Action_State);
 
                 //Add device to list and update users' lists
-                ConnectionManager.DeviceConnection.Add_Device(D);
+                Tools.CurrentDeviceList.Add(D.GetName(), D);
+                Tools.BroadcastDeviceListUpdate_AddDevice(D);
 
                 D.StartTimer();
                 D.HandleConnection();
@@ -237,16 +245,23 @@ namespace CommandHandler
                 D = new Device(AssignedName, DeviceSocket, Action_State);
 
                 //Add device to list and update users' lists
-                ConnectionManager.DeviceConnection.Add_Device(D);
+                Tools.CurrentDeviceList.Add(AssignedName, D);
+                Tools.BroadcastDeviceListUpdate_AddDevice(D);
 
                 //Send NewName message
-                byte[] Message = ConnectionManager.DeviceConnection.CreateChangeNameMessage(SourceID, AssignedName);
+                byte[] Message = CreateChangeNameMessage(SourceID, AssignedName);
                 if (!D.Send(Message))
                     Console.WriteLine("Device.StartConnection (reconnect_ChangeName) :Send failed");
 
                 D.StartTimer();
                 D.HandleConnection();
             }
+        }
+
+        private static byte[] CreateChangeNameMessage(ushort OldName, ushort NewName)
+        {
+            string Message = ".3," + Tools.ushortToString(OldName) + "," + Tools.ushortToString(NewName) + ",M.";
+            return Encoding.GetEncoding(437).GetBytes(Message);
         }
     }
     class Device_WatchDog : Command 
@@ -291,8 +306,8 @@ namespace CommandHandler
             //Update state of device
             D.SetState(Action_State);
 
-            //Update current list and update users' lists
-            ConnectionManager.DeviceConnection.Update_State(D);
+            //Update users' lists
+            Tools.BroadcastDeviceListUpdate_UpdateState(D);
 
             //Not necessary anymore !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
             //if User is in current users list
