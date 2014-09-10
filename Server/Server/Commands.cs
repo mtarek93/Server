@@ -19,23 +19,23 @@ namespace CommandHandler
         }
         public override void Execute(Socket UserSocket)
         {
+            //Assign ID to user's device and add to database
+            ushort AssignedID = DatabaseHandler.AddNewUser();
+
             if (DatabaseHandler.UserIsAuthenticated(UserName, Password))
             {
-                //Assign ID to user's device and add to database
-                ushort AssignedID = DatabaseHandler.AddNewUser();
-
                 //Add to current list
                 User U = new User(AssignedID, UserSocket);
                 Tools.CurrentUserList.Add(AssignedID, U);
 
                 //Send assignedID, devicelist, and wait for new commands in HandleConnection()
-                U.Send(Encoding.GetEncoding(437).GetBytes("Login Successful!," + AssignedID.ToString() + "."));
+                U.Send(Encoding.GetEncoding(437).GetBytes("4," + AssignedID.ToString() + ",Y,,.!"));
                 U.SendDeviceList();
                 U.HandleConnection();
             }
             else
             {
-                UserSocket.Send(Encoding.GetEncoding(437).GetBytes("Invalid credentials."));
+                UserSocket.Send(Encoding.GetEncoding(437).GetBytes("4," + AssignedID.ToString() + ",N,,.!"));
             }
         }   
     }
@@ -47,16 +47,16 @@ namespace CommandHandler
         }
         public override void Execute (Socket UserSocket)
         {
+            //Assign ID to user's device and add to database
+            ushort AssignedID = DatabaseHandler.AddNewUser();
+
             //Check if username exists
             if (DatabaseHandler.UsernameExists(UserName))
             {
-                UserSocket.Send(Encoding.GetEncoding(437).GetBytes("Username already exists!"));
+                UserSocket.Send(Encoding.GetEncoding(437).GetBytes("6," + AssignedID.ToString() + ",N,,.!"));
             }
             else
             {
-                //Assign ID to user's device and add to database
-                ushort AssignedID = DatabaseHandler.AddNewUser();
-
                 //Create new user account
                 DatabaseHandler.AddUserAccount(UserName, Password);
 
@@ -65,7 +65,7 @@ namespace CommandHandler
                 Tools.CurrentUserList.Add(AssignedID, U);
 
                 //Send assignedID, devicelist, and wait for new commands in HandleConnection()
-                U.Send(Encoding.GetEncoding(437).GetBytes("Sign Up Successful!," + AssignedID.ToString() + "."));
+                U.Send(Encoding.GetEncoding(437).GetBytes("6," + AssignedID.ToString() + ",Y,,.!"));
                 U.SendDeviceList();
                 U.HandleConnection();
             }
@@ -87,13 +87,13 @@ namespace CommandHandler
                 {
                     U.BindSocket(UserSocket);
                     Tools.CurrentUserList.Add(SourceID, U);
-                    U.Send(Encoding.GetEncoding(437).GetBytes("Login Successfull!"));
+                    U.Send(Encoding.GetEncoding(437).GetBytes("5," + U.GetName().ToString() + ",Y,,.!"));
                     U.SendDeviceList();
                     U.HandleConnection();
                 }
                 else
                 {
-                    UserSocket.Send(Encoding.GetEncoding(437).GetBytes("Invalid credentials."));
+                    UserSocket.Send(Encoding.GetEncoding(437).GetBytes("5," + U.GetName().ToString() + ",N,,.!"));
                 }
             }
             else
@@ -117,7 +117,7 @@ namespace CommandHandler
             {
                 if (DatabaseHandler.UsernameExists(UserName))
                 {
-                    UserSocket.Send(Encoding.GetEncoding(437).GetBytes("Username already exists!"));
+                    UserSocket.Send(Encoding.GetEncoding(437).GetBytes("7," + U.GetName().ToString() + ",N,,.!"));
                 }
                 else
                 {
@@ -128,7 +128,7 @@ namespace CommandHandler
                     Tools.CurrentUserList.Add(SourceID, U);
 
                     //Send DeviceList, and wait for new commands in HandleConnection()
-                    U.Send(Encoding.GetEncoding(437).GetBytes("Sign Up Successful!"));
+                    U.Send(Encoding.GetEncoding(437).GetBytes("7," + U.GetName().ToString() + ",Y,,.!"));
                     U.SendDeviceList();
                     U.HandleConnection();
                 }
