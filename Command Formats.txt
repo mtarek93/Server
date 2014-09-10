@@ -29,16 +29,15 @@ Type, UserID, Y | N | Number of devices in the network, DestID,state.!
 
 Commands: 
 User_FirstConnection_SignIn_accept:			4,UserID,Y,      ,      .!
-
 User_FirstConnection_SignIn_reject:			4,UserID,N,      ,      .!
+
 User_Reconnection_SignIn_accept:			5,UserID,Y,      ,      .!
-
 User_Reconnection_SignIn_reject:			5,UserID,N,      ,      .!
+
 User_FirstConnection_SignUp_accept:			6,UserID,Y,      ,      .!
-
 User_FirstConnection_SignUp_reject:			6,UserID,N,      ,      .!
-User_Reconnection_SignUp_accept:			7,UserID,Y,      ,      .!
 
+User_Reconnection_SignUp_accept:			7,UserID,Y,      ,      .!
 User_Reconnection_SignUp_reject:			7,UserID,N,      ,      .!
 
 User_Recieve_list of devices:                           1,UserID,Number,DestID,state.!……….!
