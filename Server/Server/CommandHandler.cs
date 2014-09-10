@@ -126,7 +126,7 @@ namespace CommandHandler
             Dict.Add(new Regex(@"^((1,).{2}(,,,,))", RegexOptions.Singleline), new Device_Reconnection());
             Dict.Add(new Regex(@"^((2,).{2}(,,,,))", RegexOptions.Singleline), new Device_WatchDog());
             Dict.Add(new Regex(@"^((3,).{2}(,).{2}(,).{1}(,,))", RegexOptions.Singleline), new Device_Acknowledgement());
-            Dict.Add(new Regex(@"^((4,,,,)\w+(,)\w+\.)", RegexOptions.Singleline), new User_FirstConnection_SignIn());
+            Dict.Add(new Regex(@"^((4,,,,)\w+(,)\w+)", RegexOptions.Singleline), new User_FirstConnection_SignIn());
             Dict.Add(new Regex(@"^((5,).{2}(,,,)\w+(,)\w+)", RegexOptions.Singleline), new User_Reconnection_SignIn());
             Dict.Add(new Regex(@"^((6,,,,)\w+(,)\w+)", RegexOptions.Singleline), new User_FirstConnection_SignUp());
             Dict.Add(new Regex(@"^((7,).{2}(,,,)\w+(,)\w+)", RegexOptions.Singleline), new User_Reconnection_SignUp());
