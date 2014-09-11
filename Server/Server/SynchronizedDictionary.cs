@@ -8,7 +8,7 @@ namespace ServerTools
 {
     class SynchronizedDictionary<TKey, TValue> : IEnumerable<KeyValuePair<TKey, TValue>>
     {
-        public SortedDictionary<TKey, TValue> List = new SortedDictionary<TKey, TValue>();
+        private SortedDictionary<TKey, TValue> List = new SortedDictionary<TKey, TValue>();
         private object LockObject = new object();
 
         public int Count
