@@ -48,9 +48,9 @@ User_recieve_confirmation_succuesful:                   8,UserID,Y,      ,     .
 User_recieve_confirmation_unsuccuesful:                 8,UserID,N,      ,     .!
 
 Update_Commands (By miky): (Not yet approved by bob_92 :D )
-Add_Device						9,UserID,A,	 ,DestID,State.!
-Remove_Device						9,UserID,R,	 ,DestID,State.!
-Change_State						9,UserID,C,	 ,DestID,State.!
+Add_Device						9,UserID,1,	 ,DestID,State.!  //1
+Remove_Device						9,UserID,2,	 ,DestID,State.!  //2
+Change_State						9,UserID,3,	 ,DestID,State.!  //3
 //In this case, the acknowledgement msg from device is not necessary!!!
 
 Device commands: ( 11 bytes)

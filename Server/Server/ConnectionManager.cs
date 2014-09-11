@@ -29,7 +29,7 @@ namespace ConnectionManager
             foreach (var User in Tools.CurrentUserList)
             {
                 //9,UserID,A,	 ,DestID,State.!
-                CMD = "9," + Tools.ushortToString(User.Value.GetName()) + ",A,," +
+                CMD = "9," + Tools.ushortToString(User.Value.GetName()) + ",1,," +
                     Device_Name + "," + Device_State + ".!";
                 Add_Cmd = Tools.StringToByteArray(CMD);
                 User.Value.GetSocket().Send(Add_Cmd);
@@ -46,7 +46,7 @@ namespace ConnectionManager
             foreach (var User in Tools.CurrentUserList)
             {
                 //9,UserID,R,	 ,DestID,State.!
-                CMD = "9," + Tools.ushortToString(User.Value.GetName()) + ",R,," +
+                CMD = "9," + Tools.ushortToString(User.Value.GetName()) + ",2,," +
                     Device_Name + "," + Device_State + ".!";
                 Add_Cmd = Tools.StringToByteArray(CMD);
                 User.Value.GetSocket().Send(Add_Cmd);
@@ -63,7 +63,7 @@ namespace ConnectionManager
             foreach (var User in Tools.CurrentUserList)
             {
                 //9,UserID,C,	 ,DestID,State.!
-                CMD = "9," + Tools.ushortToString(User.Value.GetName()) + ",C,," +
+                CMD = "9," + Tools.ushortToString(User.Value.GetName()) + ",3,," +
                     Device_Name + "," + Device_State + ".!";
                 Add_Cmd = Tools.StringToByteArray(CMD);
                 User.Value.GetSocket().Send(Add_Cmd);
