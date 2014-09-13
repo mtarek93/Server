@@ -113,12 +113,12 @@ namespace Clients
                 Send(Tools.StringToByteArray("No devices are connected."));
             else
             {
-                string DeviceList = "";
+                string Message;
                 foreach (var Device in Tools.CurrentDeviceList)
-                    DeviceList += (Device.Key + Device.Value.GetState().ToString());
-
-                DeviceList += ".";
-                Send(Tools.StringToByteArray(DeviceList));
+                {
+                    Message = "1," + Name.ToString() + "," + Tools.CurrentDeviceList.Count.ToString() + "," + Device.Key.ToString() + "," + Device.Value.GetState().ToString() + ".!";
+                    Send(Tools.StringToByteArray(Message));
+                }
             }
         }
         public void HandleConnection()
