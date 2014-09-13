@@ -58,11 +58,11 @@ Command format: . 1byte , 2bytes , 2bytes , 1byte .
 
 Commands:
 First time name:  .1,name,         ,M      .
-Action         :  .2,name,Dev name ,Action .
+Action         :  .2,name,Dev name ,Action .   //to be removed because ack is not needed, ack will be done using watchdog
 Change name    :  .3,name,new name ,       .
-Turn on        :  .4, xx ,Dev name , 255   .
-Turn off       :  .4, xx ,Dev name , 0     .
-SendMagnitude  :  .4, xx ,Dev name , Mag   .
+Turn on        :  .4,name, xx      , 255   .
+Turn off       :  .4,name, xx      , 0     .
+SendMagnitude  :  .4,name, xx      , Mag   .
 
 
 
