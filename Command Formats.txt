@@ -5,8 +5,7 @@ Type, SourceID?, DestinationID?, State | Action?, username?, password?.
 Commands: 
 Device_FirstConnection,  			length,0,  ,      ,      ,        ,    
 Device_Reconnection,      			length,1,ID,      ,      ,        ,    
-Device_WatchDog,	  			length,2,ID,      ,      ,        ,    
-Device_Acknowledgement,   			length,3,ID,DestID,State ,        ,    
+Device_WatchDog,	  			length,2,ID,      ,State ,        ,      //255:on, 0:off, 1:failed open, 254:failed closed
 User_FirstConnection_SignIn,			length,4,  ,      ,      ,username,pass
 User_Reconnection_SignIn,			length,5,ID,      ,      ,username,pass
 User_FirstConnection_SignUp,			length,6,  ,      ,      ,username,pass
