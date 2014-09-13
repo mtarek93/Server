@@ -11,11 +11,11 @@ User_FirstConnection_SignIn,			length,4,  ,      ,      ,username,pass
 User_Reconnection_SignIn,			length,5,ID,      ,      ,username,pass
 User_FirstConnection_SignUp,			length,6,  ,      ,      ,username,pass
 User_Reconnection_SignUp,			length,7,ID,      ,      ,username,pass
-User_Action,					length,8,ID,DestID,Action,	  ,    
+User_Action,				length,8,ID,DestID,Action,	  ,    
 Device_Command_Not_Found			length,9,  ,      ,      ,        ,    
-User_Locate,					length,TBA XD
-User_send_list of devices                       length,TBA XD
-
+User_Locate,				length,TBA XD
+User_send_list of devices                     		length,TBA XD
+	
 
 
 
