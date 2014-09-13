@@ -271,16 +271,15 @@ namespace CommandHandler
             Device D;
             Tools.CurrentDeviceList.TryGetValue(SourceID, out D);
             D.resetTimer();
-            /*
-            if (D.GetState() != Cmd.Action_State)
+            
+            if (D.GetState() != Action_State)
             {
                 //Update state of device
-                D.SetState(Cmd.Action_State);  
+                D.SetState(Action_State);  
 
                 //Update current list and update users' lists
-                Update_State(D);
+                Tools.UpdateListAndBroadcast_ChangeState(D);
             }
-            */
         }
     }
     class Device_Acknowledgement : Command
