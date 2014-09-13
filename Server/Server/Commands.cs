@@ -148,15 +148,13 @@ namespace CommandHandler
         public override void Execute(Socket UserSocket)
         {
             Device D;
-            //String to be sent to device
-            string ActionString = "";
-
             //if destination device is currently connected
             if (Tools.CurrentDeviceList.TryGetValue(DestinationID, out D))
             {
-                ActionString = ".2," + Tools.ushortToString(SourceID) + "," + Tools.ushortToString(DestinationID) + "," + Convert.ToChar(Action_State) + ".";
-                ActionString = ActionString.Length.ToString() + ActionString;
-                D.Send(Encoding.GetEncoding(437).GetBytes(ActionString));
+                if (Action_State == (byte)255)
+                    D.TurnOn();
+                else //Action_State == 0
+                    D.TurnOff();
             }
             else
             {
