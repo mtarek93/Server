@@ -48,9 +48,10 @@ namespace Server
                 try
                 {
                     /* Start Listening at the specified port */
-                    Server.Start();
-                    Thread T = new Thread(new ParameterizedThreadStart(Tools.AcceptConnection));
-                    T.Start(Server.AcceptSocket());
+                        Server.Start();
+                        Thread T = new Thread(new ParameterizedThreadStart(Tools.AcceptConnection));
+                        T.Start(Server.AcceptSocket());
+
                 }
                 catch (Exception e)
                 {
@@ -60,3 +61,4 @@ namespace Server
         }
     }
 }
+    
