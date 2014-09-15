@@ -328,6 +328,7 @@ namespace CommandHandler
         public override void Execute(Socket S)
         {
             Console.WriteLine("Invalid Command!");
+            S.Send(Tools.StringToByteArray("Invalid Command!"));
         }
     }
 }
