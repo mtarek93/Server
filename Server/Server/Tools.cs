@@ -61,7 +61,7 @@ namespace ServerTools
             {
                 Console.WriteLine("Number of Users: " + CurrentUserList.Count.ToString());    
                 Console.WriteLine("Number of Devices: " + CurrentDeviceList.Count.ToString());    
-                Thread.Sleep(5000);
+                Thread.Sleep(60000);
             }
         }
         static bool Receive(Socket S, ref byte[] Data)
@@ -108,7 +108,8 @@ namespace ServerTools
                 else
                 {
                     Console.WriteLine("Wrong format for length prefix!");
-                    S.Disconnect(false);
+                    S.Disconnect(true);
+                    S.Close();
                     S.Dispose();
                     return false;
                 }
