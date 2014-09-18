@@ -23,7 +23,13 @@ namespace TCP_Device
             {
                 Console.WriteLine("Connecting.....");
                 tcpSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+<<<<<<< HEAD
                 tcpSocket.Connect("10.40.1.207", 14);
+=======
+
+                tcpSocket.Connect("192.168.1.4", 14);
+
+>>>>>>> origin/MT_Branch
                 Console.WriteLine("Connected");
 
                 ID = RequestName();
@@ -95,7 +101,7 @@ namespace TCP_Device
             string ID = (string)_ID;
             while (true)
             {
-                byte[] Data = Encoding.GetEncoding(437).GetBytes("082," + ID + ",,,,");
+                byte[] Data = Encoding.GetEncoding(437).GetBytes("092," + ID + ",,1,,");
                 Console.WriteLine("watchdogSent");
                 tcpSocket.Send(Data);
                 Thread.Sleep(4000);

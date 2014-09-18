@@ -151,7 +151,7 @@ namespace CommandHandler
             //if destination device is currently connected
             if (Tools.CurrentDeviceList.TryGetValue(DestinationID, out D))
             {
-                if (Action_State == (byte)255)
+                if (Action_State == (byte)49)
                     D.TurnOn();
                 else //Action_State == 0
                     D.TurnOff();
@@ -328,6 +328,7 @@ namespace CommandHandler
         public override void Execute(Socket S)
         {
             Console.WriteLine("Invalid Command!");
+            S.Send(Tools.StringToByteArray("Invalid Command!"));
         }
     }
 }
