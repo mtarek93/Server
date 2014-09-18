@@ -23,7 +23,9 @@ namespace TCP_Device
             {
                 Console.WriteLine("Connecting.....");
                 tcpSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+
                 tcpSocket.Connect("10.7.162.55", 14);
+
                 Console.WriteLine("Connected");
 
                 ID = RequestName();

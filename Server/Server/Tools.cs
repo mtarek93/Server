@@ -61,7 +61,7 @@ namespace ServerTools
             {
                 Console.WriteLine("Number of Users: " + CurrentUserList.Count.ToString());    
                 Console.WriteLine("Number of Devices: " + CurrentDeviceList.Count.ToString());    
-                Thread.Sleep(60000);
+                Thread.Sleep(5000);
             }
         }
         static bool Receive(Socket S, ref byte[] Data)

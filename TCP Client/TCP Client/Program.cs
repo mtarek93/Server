@@ -22,7 +22,11 @@ namespace TCP_Client
                 Console.WriteLine("Connecting.....");
 
                 tcpSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+<<<<<<< HEAD
                 tcpSocket.Connect("10.7.162.55", 14);
+=======
+                tcpSocket.Connect("10.40.44.232", 14);
+>>>>>>> origin/MT_Branch
                 // use the ipaddress as in the server program
 
                 Console.WriteLine("Connected");
