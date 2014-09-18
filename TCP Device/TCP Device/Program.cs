@@ -95,7 +95,7 @@ namespace TCP_Device
             string ID = (string)_ID;
             while (true)
             {
-                byte[] Data = Encoding.GetEncoding(437).GetBytes("082," + ID + ",,,,");
+                byte[] Data = Encoding.GetEncoding(437).GetBytes("092," + ID + ",,1,,");
                 Console.WriteLine("watchdogSent");
                 tcpSocket.Send(Data);
                 Thread.Sleep(4000);
