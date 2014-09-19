@@ -271,7 +271,7 @@ namespace Clients
                 {
                     Console.WriteLine("Wrong format for length prefix!");
                     this.Sckt.Shutdown(SocketShutdown.Both);
-                    this.Sckt.Dispose();
+                    this.Sckt.Close();
                     return false;
                 }
             }
