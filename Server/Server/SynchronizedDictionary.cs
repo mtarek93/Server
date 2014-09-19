@@ -8,7 +8,7 @@ namespace ServerTools
 {
     class SynchronizedDictionary<TKey, TValue> : IEnumerable<KeyValuePair<TKey, TValue>>
     {
-        public SortedDictionary<TKey, TValue> List = new SortedDictionary<TKey, TValue>();
+        private SortedDictionary<TKey, TValue> List = new SortedDictionary<TKey, TValue>();
         private object LockObject = new object();
 
         public int Count
@@ -23,7 +23,12 @@ namespace ServerTools
         public void Add(TKey Key, TValue Value)
         {
             lock (LockObject)
-                List.Add(Key, Value);
+            {
+                if (!List.ContainsKey(Key))
+                    List.Add(Key, Value);
+                else
+                    Console.WriteLine("Entry already exists in list!");
+            }
         }
 
         public void Remove(TKey Key)

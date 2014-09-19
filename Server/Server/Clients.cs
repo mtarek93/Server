@@ -8,6 +8,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.IO;
 using ServerTools;
+using CommandHandler;
 
 namespace Clients
 {
@@ -30,10 +31,7 @@ namespace Clients
         {
             return this.Name;
         }
-        public Socket GetSocket()
-        {
-            return this.Sckt;
-        }
+
         public void BindSocket(Socket _S)
         {
             this.Sckt = _S;
@@ -59,7 +57,7 @@ namespace Clients
         {
             const int MAX_COMMAND_LENGTH = 99;
             byte[] commandLengthBuffer = new byte[2];
-            int totalBytes = 0, bytesReceived = 0, commandLength;
+            int totalBytes = 0, bytesReceived = 0, commandLength = 0;
 
             try
             {
@@ -74,30 +72,73 @@ namespace Clients
                 }
 
                 //Get the command length from prefix
-                commandLength = Convert.ToInt32(Encoding.GetEncoding(437).GetString(commandLengthBuffer));
-                Console.WriteLine("Length = " + commandLength.ToString());
-
-                //Check for commandLength maximum and create buffer to receive data
-                if (commandLength > MAX_COMMAND_LENGTH)
-                    Data = new byte[MAX_COMMAND_LENGTH];
-                else
-                    Data = new byte[commandLength];
-
-                //Receive the data
-                totalBytes = 0;
-                bytesReceived = totalBytes = this.Sckt.Receive(Data, 0, Data.Length, SocketFlags.None);
-                while (totalBytes < Data.Length && bytesReceived > 0)
+                if (Int32.TryParse(Encoding.GetEncoding(437).GetString(commandLengthBuffer), out commandLength))
                 {
-                    bytesReceived = this.Sckt.Receive(Data, totalBytes, Data.Length - totalBytes, SocketFlags.None);
-                    totalBytes += bytesReceived;
-                }
+                    Console.WriteLine("Length = " + commandLength.ToString());
 
-                return true;
+                    //Check for commandLength maximum and create buffer to receive data
+                    if (commandLength > MAX_COMMAND_LENGTH)
+                        Data = new byte[MAX_COMMAND_LENGTH];
+                    else
+                        Data = new byte[commandLength];
+
+                    //Receive the data
+                    totalBytes = 0;
+                    bytesReceived = totalBytes = this.Sckt.Receive(Data, 0, Data.Length, SocketFlags.None);
+                    while (totalBytes < Data.Length && bytesReceived > 0)
+                    {
+                        bytesReceived = this.Sckt.Receive(Data, totalBytes, Data.Length - totalBytes, SocketFlags.None);
+                        totalBytes += bytesReceived;
+                    }
+
+                    return true;
+                }
+                else
+                {
+                    Console.WriteLine("Wrong format for length prefix!");
+                    this.Sckt.Disconnect(false);
+                    this.Sckt.Dispose();
+                    return false;
+                }
             }
             catch (SocketException e)
             {
                 Console.WriteLine("Exception in User.Receive: " + e.Message);
                 return false;
+            }
+        }
+        public void SendDeviceList()
+        {
+            if (Tools.CurrentDeviceList.Count == 0)
+                Send(Tools.StringToByteArray("No devices are connected."));
+            else
+            {
+                string Message;
+                foreach (var Device in Tools.CurrentDeviceList)
+                {
+                    Message = "1," + Name.ToString() + "," + Tools.CurrentDeviceList.Count.ToString() + "," + Device.Key.ToString() + "," + Device.Value.GetState().ToString() + ".!";
+                    Send(Tools.StringToByteArray(Message));
+                }
+            }
+        }
+        public void HandleConnection()
+        {
+            Command Cmd;
+            byte[] ReceivedData = null;
+            while (true)
+            {
+                if (Receive(ref ReceivedData))
+                {
+                    Console.WriteLine("Command Received: " + Tools.ByteArrayToString(ReceivedData));
+                    Cmd = CommandParser.ParseCommand(Tools.ByteArrayToString(ReceivedData));
+                    Cmd.Execute(Sckt);
+                }
+                else
+                {
+                    Console.WriteLine("User is disconnected!");
+                    Tools.CurrentUserList.Remove(Name);
+                    break;
+                }
             }
         }
     }
@@ -133,10 +174,7 @@ namespace Clients
         {
             return this.Name;
         }
-        public Socket GetSocket()
-        {
-            return this.Sckt;
-        }
+
         public void StartTimer()                                           //Timer enable
         {
             this.T.Elapsed += T_Elapsed;                                   //Timer
@@ -201,25 +239,34 @@ namespace Clients
                 }
 
                 //Get the command length from prefix
-                commandLength = Convert.ToInt32(Encoding.GetEncoding(437).GetString(commandLengthBuffer));
-                Console.WriteLine("Length = " + commandLength.ToString());
-
-                //Check for commandLength maximum and create buffer to receive data
-                if (commandLength > MAX_COMMAND_LENGTH)
-                    Data = new byte[MAX_COMMAND_LENGTH];
-                else
-                    Data = new byte[commandLength];
-
-                //Receive the data
-                totalBytes = 0;
-                bytesReceived = totalBytes = this.Sckt.Receive(Data, 0, Data.Length, SocketFlags.None);
-                while (totalBytes < Data.Length && bytesReceived > 0)
+                if (Int32.TryParse(Encoding.GetEncoding(437).GetString(commandLengthBuffer), out commandLength))
                 {
-                    bytesReceived = this.Sckt.Receive(Data, totalBytes, Data.Length - totalBytes, SocketFlags.None);
-                    totalBytes += bytesReceived;
-                }
+                    Console.WriteLine("Length = " + commandLength.ToString());
 
-                return true;
+                    //Check for commandLength maximum and create buffer to receive data
+                    if (commandLength > MAX_COMMAND_LENGTH)
+                        Data = new byte[MAX_COMMAND_LENGTH];
+                    else
+                        Data = new byte[commandLength];
+
+                    //Receive the data
+                    totalBytes = 0;
+                    bytesReceived = totalBytes = this.Sckt.Receive(Data, 0, Data.Length, SocketFlags.None);
+                    while (totalBytes < Data.Length && bytesReceived > 0)
+                    {
+                        bytesReceived = this.Sckt.Receive(Data, totalBytes, Data.Length - totalBytes, SocketFlags.None);
+                        totalBytes += bytesReceived;
+                    }
+
+                    return true;
+                }
+                else
+                {
+                    Console.WriteLine("Wrong format for length prefix!");
+                    this.Sckt.Disconnect(false);
+                    this.Sckt.Dispose();
+                    return false;
+                }
             }
             catch (SocketException e)
             {
@@ -228,19 +275,45 @@ namespace Clients
             }
         }
 
+        public void HandleConnection()
+        {
+            //Initialization----------------------------------------------------------------------------0
+            byte[] ReceivedData = null;
+            string Command;
+            Command Cmd;
+
+            while (true)
+            {
+                if (Receive(ref ReceivedData))
+                {
+                    Command = Tools.ByteArrayToString(ReceivedData);
+                    Console.WriteLine("Command received was: " + Command);
+                    Cmd = CommandParser.ParseCommand(Command);
+                    Cmd.Execute(this.Sckt);
+                }
+                else
+                {
+                    Console.WriteLine("Device" + Name + "is disconnected!");
+                    //Remove Device from list and update users' lists
+                    Tools.UpdateListAndBroadcast_RemoveDevice(this);
+                    break;
+                }
+            }
+        }
+
         public void TurnOn()
         {
-            Send(Encoding.GetEncoding(437).GetBytes(".4,xx," + Tools.ushortToString(Name) + "," + Convert.ToChar((byte)255) + "."));
+            Send(Tools.StringToByteArray(".4," + Tools.ushortToString(Name) + ",xx,1."));
         }
 
         public void TurnOff()
         {
-            Send(Encoding.GetEncoding(437).GetBytes(".4,xx," + Tools.ushortToString(Name) + "," + Convert.ToChar((byte)0) + "."));
+            Send(Tools.StringToByteArray(".4," + Tools.ushortToString(Name) + ",xx,0."));
         }
 
         public void SendMagnitude(byte Magnitude)
         {
-            Send(Encoding.GetEncoding(437).GetBytes(".4,xx," + Tools.ushortToString(Name) + "," + Convert.ToChar(Magnitude) + "."));
+            Send(Tools.StringToByteArray(".4," + Tools.ushortToString(Name) + ",xx," + Convert.ToChar(Magnitude) + "."));
         }
     }
 }

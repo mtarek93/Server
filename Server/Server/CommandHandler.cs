@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Text.RegularExpressions;
+using System.Net;
+using System.Net.Sockets;
 
 namespace CommandHandler
 {
@@ -65,10 +67,12 @@ namespace CommandHandler
         public Command()
         {
         }
+
+        virtual public void Execute(Socket S) { }
     }
     class CommandParser
     {
-        static Dictionary<Regex, CommandType> Dict = new Dictionary<Regex, CommandType>();
+        static Dictionary<Regex, Command> Dict = new Dictionary<Regex, Command>();
 
         static bool isInCorrectFormat(string Command)
         {
@@ -78,22 +82,23 @@ namespace CommandHandler
             else
                 return false;
         }
-        static CommandType GetCommandType(string Command)
+        static Command GetCommandType(string Command)
         {
             foreach (var Element in Dict)
             {
                 if (Element.Key.IsMatch(Command))
                     return Element.Value;
             }
-            return CommandType.Invalid;
+            Command InvalidCommand = new Invalid();
+            return InvalidCommand;
         }
         public static Command ParseCommand(string Command)
         {
-            Command Cmd = new Command(CommandType.Invalid, 0, 0, 0, "x", "x");
+            Command Cmd = new Invalid();
 
             if (isInCorrectFormat(Command))
             {
-                Cmd.Type = GetCommandType(Command);
+                Cmd = GetCommandType(Command);
                 if (Cmd.Type == CommandType.Invalid)
                     return Cmd;
                 else
@@ -117,15 +122,15 @@ namespace CommandHandler
         }
         public static void InitializeCommandsDictionary()
         {
-            Dict.Add(new Regex(@"^((0,,,,,))", RegexOptions.Singleline), CommandType.Device_FirstConnection);
-            Dict.Add(new Regex(@"^((1,).{2}(,,,,))", RegexOptions.Singleline), CommandType.Device_Reconnection);
-            Dict.Add(new Regex(@"^((2,).{2}(,,,,))", RegexOptions.Singleline), CommandType.Device_WatchDog);
-            Dict.Add(new Regex(@"^((3,).{2}(,).{2}(,).{1}(,,))", RegexOptions.Singleline), CommandType.Device_Acknowledgement);
-            Dict.Add(new Regex(@"^((4,,,,)\w+(,)\w+\.)", RegexOptions.Singleline), CommandType.User_FirstConnection_SignIn);
-            Dict.Add(new Regex(@"^((5,).{2}(,,,)\w+(,)\w+)", RegexOptions.Singleline), CommandType.User_Reconnection_SignIn);
-            Dict.Add(new Regex(@"^((6,,,,)\w+(,)\w+)", RegexOptions.Singleline), CommandType.User_FirstConnection_SignUp);
-            Dict.Add(new Regex(@"^((7,).{2}(,,,)\w+(,)\w+)", RegexOptions.Singleline), CommandType.User_Reconnection_SignUp);
-            Dict.Add(new Regex(@"^((8,).{2}(,).{2}(,).{1}(,,))", RegexOptions.Singleline), CommandType.User_Action);
+            Dict.Add(new Regex(@"^((0,,,,,))", RegexOptions.Singleline), new Device_FirstConnection());
+            Dict.Add(new Regex(@"^((1,).{2}(,,,,))", RegexOptions.Singleline), new Device_Reconnection());
+            Dict.Add(new Regex(@"^((2,).{2}(,,.{1},,))", RegexOptions.Singleline), new Device_WatchDog());
+            Dict.Add(new Regex(@"^((3,).{2}(,).{2}(,).{1}(,,))", RegexOptions.Singleline), new Device_Acknowledgement());
+            Dict.Add(new Regex(@"^((4,,,,)\w+(,)\w+)", RegexOptions.Singleline), new User_FirstConnection_SignIn());
+            Dict.Add(new Regex(@"^((5,).{2}(,,,)\w+(,)\w+)", RegexOptions.Singleline), new User_Reconnection_SignIn());
+            Dict.Add(new Regex(@"^((6,,,,)\w+(,)\w+)", RegexOptions.Singleline), new User_FirstConnection_SignUp());
+            Dict.Add(new Regex(@"^((7,).{2}(,,,)\w+(,)\w+)", RegexOptions.Singleline), new User_Reconnection_SignUp());
+            Dict.Add(new Regex(@"^((8,).{2}(,).{2}(,).{1}(,,))", RegexOptions.Singleline), new User_Action());
         }
     }
 }

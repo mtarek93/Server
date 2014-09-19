@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using System.Net;
 using System.Net.Sockets;
 using CommandHandler;
-using ConnectionManager;
 using Clients;
 using Database;
 using System.Threading;
@@ -33,14 +32,7 @@ namespace ServerTools
                 Command = ByteArrayToString(Data);
                 Console.WriteLine("Tools.AcceptConnection: Command received was: " + Command);
                 Cmd = CommandParser.ParseCommand(Command);
-
-                if (Cmd.Type == CommandType.Device_FirstConnection || Cmd.Type == CommandType.Device_Reconnection)
-                    DeviceConnection.StartConnection(S, Cmd);
-                else if (Cmd.Type == CommandType.User_FirstConnection_SignIn || Cmd.Type == CommandType.User_Reconnection_SignIn ||
-                         Cmd.Type == CommandType.User_FirstConnection_SignUp || Cmd.Type == CommandType.User_Reconnection_SignUp)
-                    UserConnection.StartConnection(S, Cmd);
-                else
-                    Console.WriteLine("Tools.AcceptConnection: Invalid command, Connection not accepted!");
+                Cmd.Execute(S);
             }
             else
             {
@@ -92,29 +84,91 @@ namespace ServerTools
                 }
 
                 //Get the command length from prefix
-                commandLength = Convert.ToInt32(Encoding.GetEncoding(437).GetString(commandLengthBuffer));
-                Console.WriteLine("Length = " + commandLength.ToString());
-                //Check for commandLength maximum and create buffer to receive data
-                if (commandLength > MAX_COMMAND_LENGTH)
-                    Data = new byte[MAX_COMMAND_LENGTH];
-                else
-                    Data = new byte[commandLength];
-
-                //Receive the data
-                totalBytes = 0;
-                bytesReceived = totalBytes = S.Receive(Data, 0, Data.Length, SocketFlags.None);
-                while (totalBytes < Data.Length && bytesReceived > 0)
+                if (Int32.TryParse(Encoding.GetEncoding(437).GetString(commandLengthBuffer), out commandLength))
                 {
-                    bytesReceived = S.Receive(Data, totalBytes, Data.Length - totalBytes, SocketFlags.None);
-                    totalBytes += bytesReceived;
-                }
+                    Console.WriteLine("Length = " + commandLength.ToString());
 
-                return true;
+                    //Check for commandLength maximum and create buffer to receive data
+                    if (commandLength > MAX_COMMAND_LENGTH)
+                        Data = new byte[MAX_COMMAND_LENGTH];
+                    else
+                        Data = new byte[commandLength];
+
+                    //Receive the data
+                    totalBytes = 0;
+                    bytesReceived = totalBytes = S.Receive(Data, 0, Data.Length, SocketFlags.None);
+                    while (totalBytes < Data.Length && bytesReceived > 0)
+                    {
+                        bytesReceived = S.Receive(Data, totalBytes, Data.Length - totalBytes, SocketFlags.None);
+                        totalBytes += bytesReceived;
+                    }
+
+                    return true;
+                }
+                else
+                {
+                    Console.WriteLine("Wrong format for length prefix!");
+                    S.Disconnect(true);
+                    S.Close();
+                    S.Dispose();
+                    return false;
+                }
             }
             catch (SocketException e)
             {
                 Console.WriteLine(e.Message);
                 return false;
+            }
+        }
+        public static void UpdateListAndBroadcast_AddDevice(Device D)
+        {
+            string CMD;
+            byte[] Add_Cmd;
+            string Device_Name = Tools.ushortToString(D.GetName());
+            string Device_State = D.GetState().ToString();
+
+            Tools.CurrentDeviceList.Add(D.GetName(), D);
+            foreach (var User in Tools.CurrentUserList)
+            {
+                //9,UserID,A,	 ,DestID,State.!
+                CMD = "9," + Tools.ushortToString(User.Value.GetName()) + ",1," +
+                    Device_Name + "," + Device_State + ".!";
+                Add_Cmd = Tools.StringToByteArray(CMD);
+                User.Value.Send(Add_Cmd);
+            }
+        }
+        public static void UpdateListAndBroadcast_RemoveDevice(Device D)
+        {
+            string CMD;
+            byte[] Add_Cmd;
+            string Device_Name = Tools.ushortToString(D.GetName());
+            string Device_State = D.GetState().ToString();
+
+            Tools.CurrentDeviceList.Remove(D.GetName());
+            foreach (var User in Tools.CurrentUserList)
+            {
+                //9,UserID,R,	 ,DestID,State.!
+                CMD = "9," + Tools.ushortToString(User.Value.GetName()) + ",2," +
+                    Device_Name + "," + Device_State + ".!";
+                Add_Cmd = Tools.StringToByteArray(CMD);
+                User.Value.Send(Add_Cmd);
+            }
+        }
+        public static void UpdateListAndBroadcast_ChangeState(Device D)
+        {
+            string CMD;
+            byte[] Add_Cmd;
+            string Device_Name = Tools.ushortToString(D.GetName());
+            string Device_State = D.GetState().ToString();
+
+            Tools.CurrentDeviceList[D.GetName()] = D;
+            foreach (var User in Tools.CurrentUserList)
+            {
+                //9,UserID,C,	 ,DestID,State.!
+                CMD = "9," + Tools.ushortToString(User.Value.GetName()) + ",3," +
+                    Device_Name + "," + Device_State + ".!";
+                Add_Cmd = Tools.StringToByteArray(CMD);
+                User.Value.Send(Add_Cmd);
             }
         }
     }

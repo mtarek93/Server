@@ -5,8 +5,7 @@ Type, SourceID?, DestinationID?, State | Action?, username?, password?.
 Commands: 
 Device_FirstConnection,  			length,0,  ,      ,      ,        ,    
 Device_Reconnection,      			length,1,ID,      ,      ,        ,    
-Device_WatchDog,	  			length,2,ID,      ,      ,        ,    
-Device_Acknowledgement,   			length,3,ID,DestID,State ,        ,    
+Device_WatchDog,	  			length,2,ID,      ,State ,        ,      //"1":on, "0":off, "2":failed open, "3":failed closed
 User_FirstConnection_SignIn,			length,4,  ,      ,      ,username,pass
 User_Reconnection_SignIn,			length,5,ID,      ,      ,username,pass
 User_FirstConnection_SignUp,			length,6,  ,      ,      ,username,pass
@@ -29,16 +28,15 @@ Type, UserID, Y | N | Number of devices in the network, DestID,state.!
 
 Commands: 
 User_FirstConnection_SignIn_accept:			4,UserID,Y,      ,      .!
-
 User_FirstConnection_SignIn_reject:			4,UserID,N,      ,      .!
+
 User_Reconnection_SignIn_accept:			5,UserID,Y,      ,      .!
-
 User_Reconnection_SignIn_reject:			5,UserID,N,      ,      .!
+
 User_FirstConnection_SignUp_accept:			6,UserID,Y,      ,      .!
-
 User_FirstConnection_SignUp_reject:			6,UserID,N,      ,      .!
-User_Reconnection_SignUp_accept:			7,UserID,Y,      ,      .!
 
+User_Reconnection_SignUp_accept:			7,UserID,Y,      ,      .!
 User_Reconnection_SignUp_reject:			7,UserID,N,      ,      .!
 
 User_Recieve_list of devices:                           1,UserID,Number,DestID,state.!……….!
@@ -48,9 +46,9 @@ User_recieve_confirmation_succuesful:                   8,UserID,Y,      ,     .
 User_recieve_confirmation_unsuccuesful:                 8,UserID,N,      ,     .!
 
 Update_Commands (By miky): (Not yet approved by bob_92 :D )
-Add_Device						9,UserID,A,	 ,DestID,State.!
-Remove_Device						9,UserID,R,	 ,DestID,State.!
-Change_State						9,UserID,C,	 ,DestID,State.!
+Add_Device						9,UserID,1,	 DestID,State.!  //1
+Remove_Device						9,UserID,2,	 DestID,State.!  //2
+Change_State						9,UserID,3,	 DestID,State.!  //3
 //In this case, the acknowledgement msg from device is not necessary!!!
 
 Device commands: ( 11 bytes)
@@ -59,11 +57,11 @@ Command format: . 1byte , 2bytes , 2bytes , 1byte .
 
 Commands:
 First time name:  .1,name,         ,M      .
-Action         :  .2,name,Dev name ,Action .
+Action         :  .2,name,Dev name ,Action .   //to be removed because ack is not needed, ack will be done using watchdog
 Change name    :  .3,name,new name ,       .
-Turn on        :  .4, xx ,Dev name , 255   .
-Turn off       :  .4, xx ,Dev name , 0     .
-SendMagnitude  :  .4, xx ,Dev name , Mag   .
+Turn on        :  .4,name, xx      , 255   .
+Turn off       :  .4,name, xx      , 0     .
+SendMagnitude  :  .4,name, xx      , Mag   .
 
 
 

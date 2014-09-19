@@ -22,7 +22,9 @@ namespace TCP_Client
                 Console.WriteLine("Connecting.....");
 
                 tcpSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-                tcpSocket.Connect("10.96.85.164", 14);
+
+                tcpSocket.Connect("192.168.1.3", 14);
+
                 // use the ipaddress as in the server program
 
                 Console.WriteLine("Connected");
@@ -41,15 +43,17 @@ namespace TCP_Client
         static void SendFunction()
         {
             byte[] Data = null;
-            string initialString = "135,\0\0,,,mt,mt.";
+            string initialString = "5,\0\0,,,mt,mt";
+            initialString = PrependLength(initialString);
             tcpSocket.Send(Encoding.GetEncoding(437).GetBytes(initialString));
+
             while (true)
             {
                 Console.Write("Enter the string to be transmitted : ");
                 String str = Console.ReadLine();
-                str.Remove(str.Length - 1);
-                string[] SplittedCommand = str.Split(',');
-                Data = Encoding.GetEncoding(437).GetBytes(CreateActionString(SplittedCommand[1], SplittedCommand[2], SplittedCommand[3]));
+                //string str = "8,\0\0,\0\0," + Convert.ToChar((byte)255) + ",,";
+                //str = str.Length.ToString() + str;
+                Data = ReformatCommand(str);
                 Console.WriteLine("Transmitting.....");
                 tcpSocket.Send(Data);
             }
@@ -79,7 +83,7 @@ namespace TCP_Client
 
         static string CreateActionString(string ID, string DestinationID, string Action)
         {
-            string ActionString = "8," + ushortToString(Convert.ToUInt16(ID)) + "," + ushortToString(Convert.ToUInt16(DestinationID)) + "," + (char)Convert.ToByte(Action) + ",,.";
+            string ActionString = "8," + ushortToString(Convert.ToUInt16(ID)) + "," + ushortToString(Convert.ToUInt16(DestinationID)) + "," + (char)Convert.ToByte(Action) + ",,";
             ActionString = ActionString.Length.ToString() + ActionString;
             return ActionString;
         }
@@ -87,6 +91,43 @@ namespace TCP_Client
         static string ushortToString(ushort Number)
         {
             return Encoding.GetEncoding(437).GetString(BitConverter.GetBytes(Number));
+        }
+
+        static string PrependLength(string Command)
+        {
+            int CommandLength = Command.Length;
+            if (CommandLength < 10)
+                return "0" + CommandLength.ToString() + Command;
+            else
+                return CommandLength.ToString() + Command;
+        }
+
+        static byte[] ReformatCommand(string Command)
+        {
+            string[] SplittedCommand;
+            ushort ID, DestID;
+            byte State;
+            string IDstr, DestIDstr, Statestr, FormattedCommand = "";
+
+            SplittedCommand = Command.Split(',');
+            UInt16.TryParse(SplittedCommand[1], out ID);
+            UInt16.TryParse(SplittedCommand[2], out DestID);
+            Byte.TryParse(SplittedCommand[3], out State);
+
+            IDstr = ushortToString(ID);
+            DestIDstr = ushortToString(DestID);
+            Statestr = Convert.ToChar(State).ToString();
+
+            SplittedCommand[1] = IDstr;
+            SplittedCommand[2] = DestIDstr;
+            SplittedCommand[3] = Statestr;
+
+            foreach (string s in SplittedCommand)
+                FormattedCommand += s + ",";
+            FormattedCommand = FormattedCommand.Remove(FormattedCommand.Length - 1);
+            FormattedCommand = PrependLength(FormattedCommand);
+
+            return Encoding.GetEncoding(437).GetBytes(FormattedCommand);
         }
     }
 }
