@@ -23,13 +23,9 @@ namespace TCP_Device
             {
                 Console.WriteLine("Connecting.....");
                 tcpSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-<<<<<<< HEAD
-                tcpSocket.Connect("10.40.1.207", 14);
-=======
 
-                tcpSocket.Connect("192.168.1.4", 14);
+                tcpSocket.Connect("192.168.1.7", 14);
 
->>>>>>> origin/MT_Branch
                 Console.WriteLine("Connected");
 
                 ID = RequestName();
