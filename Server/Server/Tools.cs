@@ -108,9 +108,8 @@ namespace ServerTools
                 else
                 {
                     Console.WriteLine("Wrong format for length prefix!");
-                    S.Disconnect(true);
+                    S.Shutdown(SocketShutdown.Both);
                     S.Close();
-                    S.Dispose();
                     return false;
                 }
             }
