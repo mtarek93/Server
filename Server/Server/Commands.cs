@@ -8,6 +8,7 @@ using System.Net.Sockets;
 using Database;
 using ServerTools;
 using Clients;
+using LocationComponents;
 
 namespace CommandHandler
 {
@@ -167,6 +168,23 @@ namespace CommandHandler
         public User_Locate()
         {
             Type = CommandType.User_Locate;
+        }
+
+        public override void Execute(Socket S)
+        {
+            User U;
+            Tools.CurrentUserList.TryGetValue(SourceID, out U);
+            Location Loc = GetLocation();
+            if (Loc != U.CurrentLocation)
+            {
+                U.CurrentLocation = Loc;
+                U.CurrentLocation.locationRoom.TurnOnDevices();
+            }
+        }
+
+        private Location GetLocation()
+        {
+            return new Location(2, 4);
         }
     }
     class Device_FirstConnection : Command
