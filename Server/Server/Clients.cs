@@ -9,6 +9,7 @@ using System.Net.Sockets;
 using System.IO;
 using ServerTools;
 using CommandHandler;
+using LocationComponents;
 
 namespace Clients
 {
@@ -16,6 +17,7 @@ namespace Clients
     {
         ushort Name;
         Socket Sckt;
+        public Location CurrentLocation;
         //add field to find specific user
 
         public User(ushort _name)
