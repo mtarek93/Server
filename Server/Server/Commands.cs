@@ -177,8 +177,9 @@ namespace CommandHandler
             Location Loc = GetLocation();
             if (Loc != U.CurrentLocation)
             {
+                U.CurrentLocation.locationRoom.TurnOffDevices();
                 U.CurrentLocation = Loc;
-                U.CurrentLocation.locationRoom.TurnOnDevices();
+                Loc.locationRoom.TurnOnDevices();
             }
         }
 
