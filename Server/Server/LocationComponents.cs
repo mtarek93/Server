@@ -9,8 +9,8 @@ namespace LocationComponents
 {
     public class Room
     {
-        public int ID { get; set; }
-        public string Name { get; set; } 
+        public int ID;
+        public string Name;
         private List<Device> DeviceList = new List<Device>();
 
         public Room(int _ID, string _Name)
@@ -81,8 +81,8 @@ namespace LocationComponents
 
     public class Zone
     {
-        public int ID { get; set; }
-        public string Name { get; set; }
+        public int ID;
+        public string Name;
         private List<Room> RoomList = new List<Room>();
 
         public Zone(int _ID, string _Name)
@@ -155,24 +155,24 @@ namespace LocationComponents
     {
     }
 
-    public class Position
+    public class Location
     {
         public int xCoordinate { get; set; }
         public int yCoordinate { get; set; }
-        public Room positionRoom;
+        public Room locationRoom;
 
-        public Position(int x, int y, Room R)
+        public Location(int x, int y, Room R)
         {
             xCoordinate = x;
             yCoordinate = y;
-            positionRoom = R;
+            locationRoom = R;
         }
 
-        public Position(int x, int y)
+        public Location(int x, int y)
         {
             xCoordinate = x;
             yCoordinate = y;
-            positionRoom = null;
+            locationRoom = null;
         }
     }
 }
