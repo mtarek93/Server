@@ -194,6 +194,7 @@ namespace Clients
             Tools.UpdateListAndBroadcast_RemoveDevice(this);          //Timer
             this.Sckt.Shutdown(SocketShutdown.Both);
             this.Sckt.Close();
+            this.StopTimer();
             Console.WriteLine("Device: " + this.Name + " is disconnected"); //Timer
         }
         public void resetTimer()                                          //Timer
