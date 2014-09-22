@@ -10,7 +10,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text.RegularExpressions;
 
-namespace TCP_Device
+namespace TCP_Devices
 {
     public class Client
     {
@@ -25,7 +25,7 @@ namespace TCP_Device
                 Console.WriteLine("Connecting.....");
                 tcpSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 
-                tcpSocket.Connect("10.40.6.190", 14);
+                tcpSocket.Connect("10.7.162.63", 14);
 
                 Console.WriteLine("Connected");
 

@@ -30,13 +30,13 @@ namespace CommandHandler
                 Tools.CurrentUserList.Add(AssignedID, U);
 
                 //Send assignedID, devicelist, and wait for new commands in HandleConnection()
-                U.Send(Encoding.GetEncoding(437).GetBytes("4," + AssignedID.ToString() + ",Y,,.!"));
+                U.Send(Encoding.GetEncoding(437).GetBytes("4," + Tools.ushortToString(AssignedID) + ",Y,,.!"));
                 U.SendDeviceList();
                 U.HandleConnection();
             }
             else
             {
-                UserSocket.Send(Encoding.GetEncoding(437).GetBytes("4," + AssignedID.ToString() + ",N,,.!"));
+                UserSocket.Send(Encoding.GetEncoding(437).GetBytes("4," + Tools.ushortToString(AssignedID) + ",N,,.!"));
             }
         }   
     }
@@ -54,7 +54,7 @@ namespace CommandHandler
             //Check if username exists
             if (DatabaseHandler.UsernameExists(UserName))
             {
-                UserSocket.Send(Encoding.GetEncoding(437).GetBytes("6," + AssignedID.ToString() + ",N,,.!"));
+                UserSocket.Send(Encoding.GetEncoding(437).GetBytes("6," + Tools.ushortToString(AssignedID) + ",N,,.!"));
             }
             else
             {
@@ -66,7 +66,7 @@ namespace CommandHandler
                 Tools.CurrentUserList.Add(AssignedID, U);
 
                 //Send assignedID, devicelist, and wait for new commands in HandleConnection()
-                U.Send(Encoding.GetEncoding(437).GetBytes("6," + AssignedID.ToString() + ",Y,,.!"));
+                U.Send(Encoding.GetEncoding(437).GetBytes("6," + Tools.ushortToString(AssignedID) + ",Y,,.!"));
                 U.SendDeviceList();
                 U.HandleConnection();
             }
@@ -88,13 +88,13 @@ namespace CommandHandler
                 {
                     U.BindSocket(UserSocket);
                     Tools.CurrentUserList.Add(SourceID, U);
-                    U.Send(Encoding.GetEncoding(437).GetBytes("5," + U.GetName().ToString() + ",Y,,.!"));
+                    U.Send(Encoding.GetEncoding(437).GetBytes("5," + Tools.ushortToString(U.GetName()) + ",Y,,.!"));
                     U.SendDeviceList();
                     U.HandleConnection();
                 }
                 else
                 {
-                    UserSocket.Send(Encoding.GetEncoding(437).GetBytes("5," + U.GetName().ToString() + ",N,,.!"));
+                    UserSocket.Send(Encoding.GetEncoding(437).GetBytes("5," + Tools.ushortToString(U.GetName()) + ",N,,.!"));
                 }
             }
             else
@@ -118,7 +118,7 @@ namespace CommandHandler
             {
                 if (DatabaseHandler.UsernameExists(UserName))
                 {
-                    UserSocket.Send(Encoding.GetEncoding(437).GetBytes("7," + U.GetName().ToString() + ",N,,.!"));
+                    UserSocket.Send(Encoding.GetEncoding(437).GetBytes("7," + Tools.ushortToString(U.GetName()) + ",N,,.!"));
                 }
                 else
                 {
@@ -129,7 +129,7 @@ namespace CommandHandler
                     Tools.CurrentUserList.Add(SourceID, U);
 
                     //Send DeviceList, and wait for new commands in HandleConnection()
-                    U.Send(Encoding.GetEncoding(437).GetBytes("7," + U.GetName().ToString() + ",Y,,.!"));
+                    U.Send(Encoding.GetEncoding(437).GetBytes("7," + Tools.ushortToString(U.GetName()) + ",Y,,.!"));
                     U.SendDeviceList();
                     U.HandleConnection();
                 }

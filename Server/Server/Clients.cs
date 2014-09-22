@@ -118,7 +118,7 @@ namespace Clients
                 string Message;
                 foreach (var Device in Tools.CurrentDeviceList)
                 {
-                    Message = "1," + Name.ToString() + "," + Tools.CurrentDeviceList.Count.ToString() + "," + Device.Key.ToString() + "," + Device.Value.GetState().ToString() + ".!";
+                    Message = "1," + Tools.ushortToString(Name) + "," + Tools.CurrentDeviceList.Count.ToString() + "," + Tools.ushortToString(Device.Key) + "," + Device.Value.GetState().ToString() + ".!";
                     Send(Tools.StringToByteArray(Message));
                 }
             }
