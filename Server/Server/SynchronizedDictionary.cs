@@ -34,7 +34,12 @@ namespace ServerTools
         public void Remove(TKey Key)
         {
             lock (LockObject)
-                List.Remove(Key);
+            {
+                if (List.ContainsKey(Key))
+                    List.Remove(Key);
+                else
+                    Console.WriteLine("Entry does not exist in list!");
+            }
         }
 
         public bool TryGetValue(TKey Key, out TValue Value)
