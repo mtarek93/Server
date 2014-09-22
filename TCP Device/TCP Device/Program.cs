@@ -24,7 +24,7 @@ namespace TCP_Device
                 Console.WriteLine("Connecting.....");
                 tcpSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 
-                tcpSocket.Connect("192.168.1.7", 14);
+                tcpSocket.Connect("127.0.0.1", 14);
 
                 Console.WriteLine("Connected");
 
