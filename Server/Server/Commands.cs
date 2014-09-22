@@ -230,44 +230,49 @@ namespace CommandHandler
         }
         public override void Execute(Socket DeviceSocket)
         {
-            //if device is on the database: reconnect.........................................a
             Device D;
-            if (DatabaseHandler.TryGetDevice(SourceID, out D))
+
+            //if device is not already connected
+            if (!Tools.CurrentDeviceList.TryGetValue(SourceID, out D))
             {
-                Console.WriteLine("Name exists in database!");
-                Console.WriteLine("Connection accepted from Device " + D.GetName());
+                //if device is on the database: reconnect.........................................a
+                if (DatabaseHandler.TryGetDevice(SourceID, out D))
+                {
+                    Console.WriteLine("Name exists in database!");
+                    Console.WriteLine("Connection accepted from Device " + D.GetName());
 
-                D.BindSocket(DeviceSocket);
-                D.SetState(Action_State);
+                    D.BindSocket(DeviceSocket);
+                    D.SetState(Action_State);
 
-                //Add device to list and update users' lists
-                Tools.UpdateListAndBroadcast_AddDevice(D);
+                    //Add device to list and update users' lists
+                    Tools.UpdateListAndBroadcast_AddDevice(D);
 
-                D.StartTimer();
-                D.HandleConnection();
-            }
+                    D.StartTimer();
+                    D.HandleConnection();
+                }
 
-            //if not: assign new name, add to database, send NewName command to device.......b
-            else
-            {
-                ushort AssignedName;
-                Console.WriteLine("Name: " + SourceID + " Doesn't exist in Database!");
-                AssignedName = DatabaseHandler.AddNewDevice();
-                Console.WriteLine("New name assigned to Device!");
-                Console.WriteLine("Device Name: " + AssignedName);
+                //if not: assign new name, add to database, send NewName command to device.......b
+                else
+                {
+                    ushort AssignedName;
+                    Console.WriteLine("Name: " + SourceID + " Doesn't exist in Database!");
+                    AssignedName = DatabaseHandler.AddNewDevice();
+                    Console.WriteLine("New name assigned to Device!");
+                    Console.WriteLine("Device Name: " + AssignedName);
 
-                D = new Device(AssignedName, DeviceSocket, Action_State);
+                    D = new Device(AssignedName, DeviceSocket, Action_State);
 
-                //Add device to list and update users' lists
-                Tools.UpdateListAndBroadcast_AddDevice(D);
+                    //Add device to list and update users' lists
+                    Tools.UpdateListAndBroadcast_AddDevice(D);
 
-                //Send NewName message
-                byte[] Message = CreateChangeNameMessage(SourceID, AssignedName);
-                if (!D.Send(Message))
-                    Console.WriteLine("Device.StartConnection (reconnect_ChangeName) :Send failed");
+                    //Send NewName message
+                    byte[] Message = CreateChangeNameMessage(SourceID, AssignedName);
+                    if (!D.Send(Message))
+                        Console.WriteLine("Device.StartConnection (reconnect_ChangeName) :Send failed");
 
-                D.StartTimer();
-                D.HandleConnection();
+                    D.StartTimer();
+                    D.HandleConnection();
+                }
             }
         }
 
