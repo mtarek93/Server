@@ -23,7 +23,7 @@ namespace TCP_Client
 
                 tcpSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 
-                tcpSocket.Connect("192.168.1.2", 14);
+                tcpSocket.Connect("10.40.6.190", 14);
 
                 // use the ipaddress as in the server program
 
