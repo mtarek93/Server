@@ -149,7 +149,7 @@ namespace Clients
         ushort Name;
         byte State;
         Socket Sckt;
-        public static int WDInterval = 5000;                            //Watchdog Interval
+        public static int WDInterval = 200;                            //Watchdog Interval
         System.Timers.Timer T = new System.Timers.Timer(WDInterval);    //Timer
 
         public Device(ushort _name)
@@ -252,7 +252,7 @@ namespace Clients
                 //Get the command length from prefix
                 if (Int32.TryParse(Encoding.GetEncoding(437).GetString(commandLengthBuffer), out commandLength))
                 {
-                    Console.WriteLine("Length = " + commandLength.ToString());
+                    //Console.WriteLine("Length = " + commandLength.ToString());
 
                     //Check for commandLength maximum and create buffer to receive data
                     if (commandLength > MAX_COMMAND_LENGTH)
@@ -298,7 +298,7 @@ namespace Clients
                 if (Receive(ref ReceivedData))
                 {
                     Command = Tools.ByteArrayToString(ReceivedData);
-                    Console.WriteLine("Command received was: " + Command);
+                    //Console.WriteLine("Command received was: " + Command);
                     Cmd = CommandParser.ParseCommand(Command);
                     Cmd.Execute(this.Sckt);
                 }

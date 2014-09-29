@@ -291,7 +291,7 @@ namespace CommandHandler
 
         public override void Execute(Socket DeviceSocket)
         {
-            Console.WriteLine("WatchDog recieved from device: " + SourceID);
+            //Console.WriteLine("WatchDog recieved from device: " + SourceID);
             Device D;
             Tools.CurrentDeviceList.TryGetValue(SourceID, out D);
             D.resetTimer();
