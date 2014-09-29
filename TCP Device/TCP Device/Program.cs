@@ -27,6 +27,7 @@ namespace TCP_Devices
 
                 tcpSocket.Connect("10.7.162.234", 14);
 
+
                 Console.WriteLine("Connected");
 
                 ID = RequestName();
