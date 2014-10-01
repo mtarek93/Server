@@ -98,8 +98,6 @@ namespace Clients
                 else
                 {
                     Console.WriteLine("Wrong format for length prefix!");
-                    this.Sckt.Shutdown(SocketShutdown.Both);
-                    this.Sckt.Close();
                     return false;
                 }
             }
@@ -109,6 +107,15 @@ namespace Clients
                 return false;
             }
         }
+
+        public void Disconnect()
+        {
+            this.Sckt.Shutdown(SocketShutdown.Both);
+            this.Sckt.Close();
+            Tools.CurrentUserList.Remove(Name);
+            Console.WriteLine("User " + Name + " disconnected!");
+        }
+
         public void SendDeviceList()
         {
             if (Tools.CurrentDeviceList.Count == 0)
@@ -137,8 +144,7 @@ namespace Clients
                 }
                 else
                 {
-                    Console.WriteLine("User is disconnected!");
-                    Tools.CurrentUserList.Remove(Name);
+                    this.Disconnect();
                     break;
                 }
             }
@@ -192,11 +198,7 @@ namespace Clients
         void T_Elapsed(object sender, ElapsedEventArgs e)                  //Timer event
         {
             Console.WriteLine(" Watchdog not recieved for device: "+ this.Name);                   //Timer
-            Tools.UpdateListAndBroadcast_RemoveDevice(this);          //Timer
-            this.Sckt.Shutdown(SocketShutdown.Both);
-            this.Sckt.Close();
-            this.StopTimer();
-            Console.WriteLine("Device: " + this.Name + " is disconnected"); //Timer
+            this.Disconnect();
         }
         public void resetTimer()                                          //Timer
         {
@@ -274,8 +276,6 @@ namespace Clients
                 else
                 {
                     Console.WriteLine("Wrong format for length prefix!");
-                    this.Sckt.Shutdown(SocketShutdown.Both);
-                    this.Sckt.Close();
                     return false;
                 }
             }
@@ -284,6 +284,20 @@ namespace Clients
                 Console.WriteLine("Exception in Device.Receive: " + e.Message);
                 return false;
             }
+        }
+
+        public void Disconnect()
+        {
+            try
+            {
+                this.Sckt.Shutdown(SocketShutdown.Both);
+                this.Sckt.Close();
+                Tools.CurrentDeviceList.Remove(Name);
+                this.StopTimer();
+                Console.WriteLine("Device " + Name + " disconnected!");
+            }
+            catch (ObjectDisposedException)
+            { }
         }
 
         public void HandleConnection()
@@ -304,10 +318,8 @@ namespace Clients
                 }
                 else
                 {
-                    Console.WriteLine("Device" + Name + "is disconnected!");
                     //Remove Device from list, stop timer, and update users' lists
-                    Tools.UpdateListAndBroadcast_RemoveDevice(this);
-                    this.StopTimer();
+                    this.Disconnect();
                     break;
                 }
             }
