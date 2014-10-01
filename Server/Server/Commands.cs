@@ -293,16 +293,18 @@ namespace CommandHandler
         {
             //Console.WriteLine("WatchDog recieved from device: " + SourceID);
             Device D;
-            Tools.CurrentDeviceList.TryGetValue(SourceID, out D);
-            D.resetTimer();
-            
-            if (D.GetState() != Action_State)
+            if (Tools.CurrentDeviceList.TryGetValue(SourceID, out D))
             {
-                //Update state of device
-                D.SetState(Action_State);  
+                D.resetTimer();
 
-                //Update current list and update users' lists
-                Tools.UpdateListAndBroadcast_ChangeState(D);
+                if (D.GetState() != Action_State)
+                {
+                    //Update state of device
+                    D.SetState(Action_State);
+
+                    //Update current list and update users' lists
+                    Tools.UpdateListAndBroadcast_ChangeState(D);
+                }
             }
         }
     }
