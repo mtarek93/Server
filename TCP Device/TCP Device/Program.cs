@@ -25,7 +25,7 @@ namespace TCP_Devices
                 Console.WriteLine("Connecting.....");
                 tcpSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 
-                tcpSocket.Connect("192.168.1.6", 14);
+                tcpSocket.Connect("192.168.1.3", 14);
 
 
                 Console.WriteLine("Connected");
@@ -110,7 +110,7 @@ namespace TCP_Devices
                 byte[] Data = Encoding.GetEncoding(437).GetBytes("092," + ID + ",," + Convert.ToInt32(State).ToString()+ ",,");
                 Console.WriteLine("watchdogSent");
                 tcpSocket.Send(Data);
-                Thread.Sleep(100);
+                Thread.Sleep(4000);
             }
         }
 
