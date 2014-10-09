@@ -49,7 +49,7 @@ namespace Server
             {
                 try
                 {
-                    /* Start Listening at the sspecified port */
+                    /* Start Listening at the specified port */
                         Server.Start();
                         Thread T = new Thread(new ParameterizedThreadStart(Tools.AcceptConnection));
                         T.Start(Server.AcceptSocket());

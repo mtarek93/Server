@@ -33,7 +33,6 @@ namespace Clients
         {
             return this.Name;
         }
-
         public void BindSocket(Socket _S)
         {
             this.Sckt = _S;

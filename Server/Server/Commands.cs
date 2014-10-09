@@ -329,6 +329,7 @@ namespace CommandHandler
             Tools.UpdateListAndBroadcast_ChangeState(D);
 
             //Not necessary anymore !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            /*
             //if User is in current users list
             if (Tools.CurrentUserList.TryGetValue(DestinationID, out U))
             {
@@ -343,6 +344,7 @@ namespace CommandHandler
                 Console.WriteLine("Error in DeviceConnection.Device_Acknowledgement_Action: User doesn't exist in database!");
                 Console.WriteLine("Acknowledgement not sent");
             }
+            */
         }
     }
     class Invalid : Command
