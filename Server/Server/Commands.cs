@@ -317,8 +317,8 @@ namespace CommandHandler
 
         public override void Execute(Socket DeviceSocket)
         {
-            User U;
-            string msg;
+            //User U;
+            //string msg;
 
             Device D;
             Tools.CurrentDeviceList.TryGetValue(SourceID, out D);
