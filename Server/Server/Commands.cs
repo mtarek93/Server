@@ -295,16 +295,18 @@ namespace CommandHandler
         {
             //Console.WriteLine("WatchDog recieved from device: " + SourceID);
             Device D;
-            Tools.CurrentDeviceList.TryGetValue(SourceID, out D);
-            D.resetTimer();
-            
-            if (D.GetState() != Action_State)
+            if (Tools.CurrentDeviceList.TryGetValue(SourceID, out D))
             {
-                //Update state of device
-                D.SetState(Action_State);  
+                D.resetTimer();
 
-                //Update current list and update users' lists
-                Tools.UpdateListAndBroadcast_ChangeState(D);
+                if (D.GetState() != Action_State)
+                {
+                    //Update state of device
+                    D.SetState(Action_State);
+
+                    //Update current list and update users' lists
+                    Tools.UpdateListAndBroadcast_ChangeState(D);
+                }
             }
         }
     }
@@ -317,8 +319,8 @@ namespace CommandHandler
 
         public override void Execute(Socket DeviceSocket)
         {
-            User U;
-            string msg;
+            //User U;
+            //string msg;
 
             Device D;
             Tools.CurrentDeviceList.TryGetValue(SourceID, out D);
@@ -329,6 +331,7 @@ namespace CommandHandler
             Tools.UpdateListAndBroadcast_ChangeState(D);
 
             //Not necessary anymore !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            /*
             //if User is in current users list
             if (Tools.CurrentUserList.TryGetValue(DestinationID, out U))
             {
@@ -343,6 +346,7 @@ namespace CommandHandler
                 Console.WriteLine("Error in DeviceConnection.Device_Acknowledgement_Action: User doesn't exist in database!");
                 Console.WriteLine("Acknowledgement not sent");
             }
+            */
         }
     }
     class Invalid : Command

@@ -63,7 +63,6 @@ namespace CommandHandler
             UserName = _UserName;
             Password = _Password;
         }
-
         public Command()
         {
         }

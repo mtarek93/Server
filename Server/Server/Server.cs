@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using Database;
 using CommandHandler;
 using ServerTools;
+using Scheduler;
 
 namespace Server
 {
@@ -42,6 +43,7 @@ namespace Server
             DatabaseHandler.ConnectionString = @"Data Source=(LocalDB)\v11.0;AttachDbFilename=C:\GitHub\Server\Server\Server\Database.mdf;Integrated Security=True;Connect Timeout=30";
            
             CommandParser.InitializeCommandsDictionary();
+            ScheduleHandler.InitializeScheduler();
 
             while (true)
             {

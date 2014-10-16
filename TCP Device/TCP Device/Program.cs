@@ -27,7 +27,6 @@ namespace TCP_Devices
 
                 tcpSocket.Connect("10.7.162.125", 14);
 
-
                 Console.WriteLine("Connected");
 
                 ID = RequestName();
@@ -108,9 +107,9 @@ namespace TCP_Devices
             while (true)
             {
                 byte[] Data = Encoding.GetEncoding(437).GetBytes("092," + ID + ",," + Convert.ToInt32(State).ToString()+ ",,");
-                //Console.WriteLine("watchdogSent");
+                Console.WriteLine("watchdogSent");
                 tcpSocket.Send(Data);
-                Thread.Sleep(100);
+                Thread.Sleep(4000);
             }
         }
 
