@@ -37,6 +37,8 @@ namespace CommandHandler
             else
             {
                 UserSocket.Send(Encoding.GetEncoding(437).GetBytes("4," + Tools.ushortToString(AssignedID) + ",N,,.!"));
+                UserSocket.Shutdown(SocketShutdown.Both);
+                UserSocket.Close();
             }
         }   
     }
@@ -317,8 +319,8 @@ namespace CommandHandler
 
         public override void Execute(Socket DeviceSocket)
         {
-            User U;
-            string msg;
+            //User U;
+            //string msg;
 
             Device D;
             Tools.CurrentDeviceList.TryGetValue(SourceID, out D);
@@ -329,6 +331,7 @@ namespace CommandHandler
             Tools.UpdateListAndBroadcast_ChangeState(D);
 
             //Not necessary anymore !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            /*
             //if User is in current users list
             if (Tools.CurrentUserList.TryGetValue(DestinationID, out U))
             {
@@ -343,6 +346,7 @@ namespace CommandHandler
                 Console.WriteLine("Error in DeviceConnection.Device_Acknowledgement_Action: User doesn't exist in database!");
                 Console.WriteLine("Acknowledgement not sent");
             }
+            */
         }
     }
     class Invalid : Command
