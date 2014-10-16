@@ -37,6 +37,8 @@ namespace CommandHandler
             else
             {
                 UserSocket.Send(Encoding.GetEncoding(437).GetBytes("4," + Tools.ushortToString(AssignedID) + ",N,,.!"));
+                UserSocket.Shutdown(SocketShutdown.Both);
+                UserSocket.Close();
             }
         }   
     }
