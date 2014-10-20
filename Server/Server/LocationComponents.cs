@@ -9,8 +9,8 @@ namespace LocationComponents
 {
     public class Room
     {
-        public int ID;
-        public string Name;
+        public int ID { get; set; }
+        public string Name { get; set; }
         private List<Device> DeviceList = new List<Device>();
 
         public Room(int _ID, string _Name)
@@ -81,8 +81,8 @@ namespace LocationComponents
 
     public class Zone
     {
-        public int ID;
-        public string Name;
+        public int ID { get; set; }
+        public string Name { get; set; }
         private List<Room> RoomList = new List<Room>();
 
         public Zone(int _ID, string _Name)
@@ -155,17 +155,29 @@ namespace LocationComponents
     {
     }
 
+    public class Sector
+    {
+        public int ID { get; set; }
+
+        public Sector(int _ID)
+        {
+            this.ID = _ID;
+        }
+    }
+
     public class Location
     {
         public int xCoordinate { get; set; }
         public int yCoordinate { get; set; }
         public Room locationRoom;
+        public Sector locationSector;
 
-        public Location(int x, int y, Room R)
+        public Location(int x, int y, Room R, Sector S)
         {
             xCoordinate = x;
             yCoordinate = y;
             locationRoom = R;
+            locationSector = S;
         }
 
         public Location(int x, int y)
@@ -173,6 +185,7 @@ namespace LocationComponents
             xCoordinate = x;
             yCoordinate = y;
             locationRoom = null;
+            locationSector = null;
         }
     }
 }
