@@ -17,6 +17,7 @@ namespace Clients
     {
         ushort Name;
         Socket Sckt;
+        public int LoginID { get; set; }
         public Location CurrentLocation;
         //add field to find specific user
 
@@ -28,6 +29,12 @@ namespace Clients
         {
             this.Name = _name;
             this.Sckt = S;
+        }
+        public User(ushort _name, Socket S, int _LoginID)
+        {
+            this.Name = _name;
+            this.Sckt = S;
+            this.LoginID = _LoginID;
         }
         public ushort GetName()
         {
