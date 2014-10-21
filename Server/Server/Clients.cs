@@ -147,6 +147,10 @@ namespace Clients
                     Console.WriteLine("Command Received: " + Tools.ByteArrayToString(ReceivedData));
                     Cmd = CommandParser.ParseCommand(Tools.ByteArrayToString(ReceivedData));
                     Cmd.Execute(Sckt);
+
+                    //TEMPORARY FOR TESTING
+                    Command Test = new User_Locate();
+                    Test.Execute(Sckt);
                 }
                 else
                 {
