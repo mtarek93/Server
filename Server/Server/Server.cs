@@ -20,7 +20,6 @@ namespace Server
             
             const int Port = 14;
             IPAddress ipAd = Tools.GetMyIPAddress();
-            //List<Socket> SocketList = new List<Socket>();
 
             /* Initializes the Listener */
             TcpListener Server = new TcpListener(ipAd, Port);
