@@ -10,12 +10,13 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text.RegularExpressions;
 
-namespace TCP_Device
+namespace TCP_Devices
 {
     public class Client
     {
         static Socket tcpSocket;
         static Thread SendThread, ReceiveThread;
+        static bool State = false;
         public static void Main()
         {
             string ID;
@@ -24,7 +25,8 @@ namespace TCP_Device
                 Console.WriteLine("Connecting.....");
                 tcpSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 
-                tcpSocket.Connect("192.168.1.7", 14);
+                tcpSocket.Connect("192.168.1.3", 14);
+
 
                 Console.WriteLine("Connected");
 
@@ -83,7 +85,15 @@ namespace TCP_Device
             {
                 byte[] Data = null;
                 if (Receive(tcpSocket, ref Data))
+                {
                     Console.WriteLine("Received Command: " + Encoding.GetEncoding(437).GetString(Data));
+                    string[] s = Encoding.GetEncoding(437).GetString(Data).Split(',');
+                    if (s[3] == "0.")
+                        State = false;
+                    else
+                        State = true;
+                    Console.WriteLine("State: " + State.ToString());
+                }
                 else
                 {
                     Console.WriteLine("Disconnected from Server!");
@@ -97,7 +107,7 @@ namespace TCP_Device
             string ID = (string)_ID;
             while (true)
             {
-                byte[] Data = Encoding.GetEncoding(437).GetBytes("092," + ID + ",,1,,");
+                byte[] Data = Encoding.GetEncoding(437).GetBytes("092," + ID + ",," + Convert.ToInt32(State).ToString()+ ",,");
                 Console.WriteLine("watchdogSent");
                 tcpSocket.Send(Data);
                 Thread.Sleep(4000);

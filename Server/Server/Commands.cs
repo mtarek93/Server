@@ -30,13 +30,13 @@ namespace CommandHandler
                 Tools.CurrentUserList.Add(AssignedID, U);
 
                 //Send assignedID, devicelist, and wait for new commands in HandleConnection()
-                U.Send(Encoding.GetEncoding(437).GetBytes("4," + AssignedID.ToString() + ",Y,,.!"));
+                U.Send(Encoding.GetEncoding(437).GetBytes("4," + Tools.ushortToString(AssignedID) + ",Y,,.!"));
                 U.SendDeviceList();
                 U.HandleConnection();
             }
             else
             {
-                UserSocket.Send(Encoding.GetEncoding(437).GetBytes("4," + AssignedID.ToString() + ",N,,.!"));
+                UserSocket.Send(Encoding.GetEncoding(437).GetBytes("4," + Tools.ushortToString(AssignedID) + ",N,,.!"));
             }
         }   
     }
@@ -54,7 +54,7 @@ namespace CommandHandler
             //Check if username exists
             if (DatabaseHandler.UsernameExists(UserName))
             {
-                UserSocket.Send(Encoding.GetEncoding(437).GetBytes("6," + AssignedID.ToString() + ",N,,.!"));
+                UserSocket.Send(Encoding.GetEncoding(437).GetBytes("6," + Tools.ushortToString(AssignedID) + ",N,,.!"));
             }
             else
             {
@@ -66,7 +66,7 @@ namespace CommandHandler
                 Tools.CurrentUserList.Add(AssignedID, U);
 
                 //Send assignedID, devicelist, and wait for new commands in HandleConnection()
-                U.Send(Encoding.GetEncoding(437).GetBytes("6," + AssignedID.ToString() + ",Y,,.!"));
+                U.Send(Encoding.GetEncoding(437).GetBytes("6," + Tools.ushortToString(AssignedID) + ",Y,,.!"));
                 U.SendDeviceList();
                 U.HandleConnection();
             }
@@ -88,13 +88,13 @@ namespace CommandHandler
                 {
                     U.BindSocket(UserSocket);
                     Tools.CurrentUserList.Add(SourceID, U);
-                    U.Send(Encoding.GetEncoding(437).GetBytes("5," + U.GetName().ToString() + ",Y,,.!"));
+                    U.Send(Encoding.GetEncoding(437).GetBytes("5," + Tools.ushortToString(U.GetName()) + ",Y,,.!"));
                     U.SendDeviceList();
                     U.HandleConnection();
                 }
                 else
                 {
-                    UserSocket.Send(Encoding.GetEncoding(437).GetBytes("5," + U.GetName().ToString() + ",N,,.!"));
+                    UserSocket.Send(Encoding.GetEncoding(437).GetBytes("5," + Tools.ushortToString(U.GetName()) + ",N,,.!"));
                 }
             }
             else
@@ -118,7 +118,7 @@ namespace CommandHandler
             {
                 if (DatabaseHandler.UsernameExists(UserName))
                 {
-                    UserSocket.Send(Encoding.GetEncoding(437).GetBytes("7," + U.GetName().ToString() + ",N,,.!"));
+                    UserSocket.Send(Encoding.GetEncoding(437).GetBytes("7," + Tools.ushortToString(U.GetName()) + ",N,,.!"));
                 }
                 else
                 {
@@ -129,7 +129,7 @@ namespace CommandHandler
                     Tools.CurrentUserList.Add(SourceID, U);
 
                     //Send DeviceList, and wait for new commands in HandleConnection()
-                    U.Send(Encoding.GetEncoding(437).GetBytes("7," + U.GetName().ToString() + ",Y,,.!"));
+                    U.Send(Encoding.GetEncoding(437).GetBytes("7," + Tools.ushortToString(U.GetName()) + ",Y,,.!"));
                     U.SendDeviceList();
                     U.HandleConnection();
                 }
@@ -230,44 +230,49 @@ namespace CommandHandler
         }
         public override void Execute(Socket DeviceSocket)
         {
-            //if device is on the database: reconnect.........................................a
             Device D;
-            if (DatabaseHandler.TryGetDevice(SourceID, out D))
+
+            //if device is not already connected
+            if (!Tools.CurrentDeviceList.TryGetValue(SourceID, out D))
             {
-                Console.WriteLine("Name exists in database!");
-                Console.WriteLine("Connection accepted from Device " + D.GetName());
+                //if device is on the database: reconnect.........................................a
+                if (DatabaseHandler.TryGetDevice(SourceID, out D))
+                {
+                    Console.WriteLine("Name exists in database!");
+                    Console.WriteLine("Connection accepted from Device " + D.GetName());
 
-                D.BindSocket(DeviceSocket);
-                D.SetState(Action_State);
+                    D.BindSocket(DeviceSocket);
+                    D.SetState(Action_State);
 
-                //Add device to list and update users' lists
-                Tools.UpdateListAndBroadcast_AddDevice(D);
+                    //Add device to list and update users' lists
+                    Tools.UpdateListAndBroadcast_AddDevice(D);
 
-                D.StartTimer();
-                D.HandleConnection();
-            }
+                    D.StartTimer();
+                    D.HandleConnection();
+                }
 
-            //if not: assign new name, add to database, send NewName command to device.......b
-            else
-            {
-                ushort AssignedName;
-                Console.WriteLine("Name: " + SourceID + " Doesn't exist in Database!");
-                AssignedName = DatabaseHandler.AddNewDevice();
-                Console.WriteLine("New name assigned to Device!");
-                Console.WriteLine("Device Name: " + AssignedName);
+                //if not: assign new name, add to database, send NewName command to device.......b
+                else
+                {
+                    ushort AssignedName;
+                    Console.WriteLine("Name: " + SourceID + " Doesn't exist in Database!");
+                    AssignedName = DatabaseHandler.AddNewDevice();
+                    Console.WriteLine("New name assigned to Device!");
+                    Console.WriteLine("Device Name: " + AssignedName);
 
-                D = new Device(AssignedName, DeviceSocket, Action_State);
+                    D = new Device(AssignedName, DeviceSocket, Action_State);
 
-                //Add device to list and update users' lists
-                Tools.UpdateListAndBroadcast_AddDevice(D);
+                    //Add device to list and update users' lists
+                    Tools.UpdateListAndBroadcast_AddDevice(D);
 
-                //Send NewName message
-                byte[] Message = CreateChangeNameMessage(SourceID, AssignedName);
-                if (!D.Send(Message))
-                    Console.WriteLine("Device.StartConnection (reconnect_ChangeName) :Send failed");
+                    //Send NewName message
+                    byte[] Message = CreateChangeNameMessage(SourceID, AssignedName);
+                    if (!D.Send(Message))
+                        Console.WriteLine("Device.StartConnection (reconnect_ChangeName) :Send failed");
 
-                D.StartTimer();
-                D.HandleConnection();
+                    D.StartTimer();
+                    D.HandleConnection();
+                }
             }
         }
 
@@ -286,18 +291,20 @@ namespace CommandHandler
 
         public override void Execute(Socket DeviceSocket)
         {
-            Console.WriteLine("WatchDog recieved from device: " + SourceID);
+            //Console.WriteLine("WatchDog recieved from device: " + SourceID);
             Device D;
-            Tools.CurrentDeviceList.TryGetValue(SourceID, out D);
-            D.resetTimer();
-            
-            if (D.GetState() != Action_State)
+            if (Tools.CurrentDeviceList.TryGetValue(SourceID, out D))
             {
-                //Update state of device
-                D.SetState(Action_State);  
+                D.resetTimer();
 
-                //Update current list and update users' lists
-                Tools.UpdateListAndBroadcast_ChangeState(D);
+                if (D.GetState() != Action_State)
+                {
+                    //Update state of device
+                    D.SetState(Action_State);
+
+                    //Update current list and update users' lists
+                    Tools.UpdateListAndBroadcast_ChangeState(D);
+                }
             }
         }
     }
@@ -310,8 +317,8 @@ namespace CommandHandler
 
         public override void Execute(Socket DeviceSocket)
         {
-            User U;
-            string msg;
+            //User U;
+            //string msg;
 
             Device D;
             Tools.CurrentDeviceList.TryGetValue(SourceID, out D);
@@ -322,6 +329,7 @@ namespace CommandHandler
             Tools.UpdateListAndBroadcast_ChangeState(D);
 
             //Not necessary anymore !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            /*
             //if User is in current users list
             if (Tools.CurrentUserList.TryGetValue(DestinationID, out U))
             {
@@ -336,6 +344,7 @@ namespace CommandHandler
                 Console.WriteLine("Error in DeviceConnection.Device_Acknowledgement_Action: User doesn't exist in database!");
                 Console.WriteLine("Acknowledgement not sent");
             }
+            */
         }
     }
     class Invalid : Command
