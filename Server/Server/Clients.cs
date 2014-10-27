@@ -63,8 +63,8 @@ namespace Clients
         }
         public bool Receive(ref byte[] Data)
         {
-            const int MAX_COMMAND_LENGTH = 99;
-            byte[] commandLengthBuffer = new byte[2];
+            const int MAX_COMMAND_LENGTH = 999;
+            byte[] commandLengthBuffer = new byte[3];
             int totalBytes = 0, bytesReceived = 0, commandLength = 0;
 
             try
