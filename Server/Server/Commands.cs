@@ -169,12 +169,13 @@ namespace CommandHandler
     }
     class User_Locate : Command
     {
-        static Room R = new Room(1, "TestRoom");
-        static Sector S1 = new Sector(1);
-        static Sector S2 = new Sector(2);
-        static Location L1 = new Location(0, 0, R, S1);
-        static Location L2 = new Location(0, 1, R, S2);
-        static int x = 0;
+        //static Room R = new Room(1, "TestRoom");
+        //static Sector S1 = new Sector(1);
+        //static Sector S2 = new Sector(2);
+        //static Location L1 = new Location(0, 0, R, S1);
+        //static Location L2 = new Location(0, 1, R, S2);
+        //static int x = 0;
+        public List<WifiReading> ReadingsList;
         public User_Locate()
         {
             Type = CommandType.User_Locate;
@@ -186,17 +187,27 @@ namespace CommandHandler
             Tools.CurrentUserList.TryGetValue(SourceID, out U);
             U.CurrentLocation = GetLocation();
             DatabaseHandler.CheckUserActions(U);
+            PrintReadingsList();
         }
 
         private Location GetLocation()
         {
-            if (x == 0)
+            //if (x == 0)
+            //{
+            //    x = 1;
+            //    return L1;
+            //}
+            //x = 0;
+            //return L2;
+            return new Location(4, 2);
+        }
+
+        private void PrintReadingsList()
+        {
+            foreach (WifiReading Reading in ReadingsList)
             {
-                x = 1;
-                return L1;
+                Console.WriteLine(Reading.BSSID + "    " + Reading.RSSI);
             }
-            x = 0;
-            return L2;
         }
     }
     class Device_FirstConnection : Command
