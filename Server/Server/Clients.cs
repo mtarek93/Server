@@ -149,8 +149,8 @@ namespace Clients
                     Cmd.Execute(Sckt);
 
                     //TEMPORARY FOR TESTING
-                    Command Test = new User_Locate();
-                    Test.Execute(Sckt);
+                    //Command Test = new User_Locate();
+                    //Test.Execute(Sckt);
                 }
                 else
                 {

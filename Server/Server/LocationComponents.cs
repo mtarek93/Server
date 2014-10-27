@@ -18,6 +18,7 @@ namespace LocationComponents
             this.RSSI = _RSSI;
         }
     }
+
     public class Room
     {
         public int ID { get; set; }
