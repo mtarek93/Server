@@ -7,6 +7,17 @@ using Clients;
 
 namespace LocationComponents
 {
+    public class WifiReading
+    {
+        public string BSSID { get; set; }
+        public int RSSI { get; set; }
+
+        public WifiReading(string _BSSID, int _RSSI)
+        {
+            this.BSSID = _BSSID;
+            this.RSSI = _RSSI;
+        }
+    }
     public class Room
     {
         public int ID { get; set; }
