@@ -118,19 +118,17 @@ namespace CommandHandler
             }
             else  //LocateMe command
             {
-                Cmd = new User_Locate();
                 string[] SplittedCommand = Command.Split(',');
-                Cmd.SourceID = Convert.ToUInt16(SplittedCommand[0]);
-                int NumberOfAPs = Convert.ToInt32(SplittedCommand[1]);
+                //Cmd.SourceID = Convert.ToUInt16(SplittedCommand[0]);
+                int NumberOfAPs = Convert.ToInt32(SplittedCommand[0]);
+                Cmd = new User_Locate(NumberOfAPs);
                 
                 User_Locate tempCmd = (User_Locate)Cmd;
-                tempCmd.ReadingsList.Capacity = NumberOfAPs;
-                for (int i = 2; i < SplittedCommand.Length - 1; i++)
+                for (int i = 1; i < SplittedCommand.Length - 1; i += 2)
 			    {
                     tempCmd.ReadingsList.Add(new LocationComponents.WifiReading(SplittedCommand[i], Convert.ToInt32(SplittedCommand[i + 1])));
-                    i += 2;
 			    }
-                return Cmd;
+                return tempCmd;
             }
 
             //TODO: add case for invalid command
