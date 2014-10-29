@@ -176,17 +176,19 @@ namespace CommandHandler
         //static Location L2 = new Location(0, 1, R, S2);
         //static int x = 0;
         public List<WifiReading> ReadingsList;
-        public User_Locate()
+
+        public User_Locate(int ListSize)
         {
             Type = CommandType.User_Locate;
+            ReadingsList = new List<WifiReading>(ListSize);
         }
 
         public override void Execute(Socket S)
         {
-            User U;
-            Tools.CurrentUserList.TryGetValue(SourceID, out U);
-            U.CurrentLocation = GetLocation();
-            DatabaseHandler.CheckUserActions(U);
+            //User U;
+            //Tools.CurrentUserList.TryGetValue(SourceID, out U);
+            //U.CurrentLocation = GetLocation();
+            //DatabaseHandler.CheckUserActions(U);
             PrintReadingsList();
         }
 
