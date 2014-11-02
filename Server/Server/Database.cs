@@ -5,7 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Data.SqlClient;
 using Clients;
-
+using LocationComponents;
+using ServerTools;
 
 namespace Database
 {
@@ -15,13 +16,15 @@ namespace Database
         //{
         //}
     }
+
     class DatabaseHandler
     {
-        public static string ConnectionString,
-            LoginTable = "LoginTable", 
-            UsersTable = "UsersTable", 
-            DevicesTable = "DevicesTable", 
-            IDTable = "IDTable";
+        public static string ConnectionString;
+        private const string LoginTable = "LoginTable", 
+                             UsersTable = "UsersTable", 
+                             DevicesTable = "DevicesTable", 
+                             IDTable = "IDTable",
+                             UserActionsTable = "UserActionsTable";
 
         private static object LoginTableLock = new object();
         private static object DbWriteLock = new object();
@@ -50,7 +53,9 @@ namespace Database
                 }
             }
         }
-        public static bool UserIsAuthenticated(string Username, string Password)
+
+        //Returns LoginID if successful and 0 if failed
+        public static int UserIsAuthenticated(string Username, string Password)
         {
             lock (LoginTableLock)
             {
@@ -59,28 +64,26 @@ namespace Database
                     try
                     {
                         Database.Open();
-                        string Query = "SELECT Username, Password FROM " + LoginTable + " WHERE Username = " + "'" + Username + "' " + "AND Password = " + "'" + Password + "';";
+                        string Query = "SELECT Id, Username, Password FROM " + LoginTable + " WHERE Username = " + "'" + Username + "' " + "AND Password = " + "'" + Password + "';";
 
                         using (SqlCommand Command = new SqlCommand(Query, Database))
                         {
                             SqlDataReader Reader = Command.ExecuteReader();
                             if (Reader.Read())
                             {
-                                //Console.WriteLine("Authenticated!");
-                                return true;
+                                return Reader.GetInt32(0);
                             }
 
                             else
                             {
-                                //Console.WriteLine("Please check your credentials and try again.");
-                                return false;
+                                return 0;
                             }
                         }
                     }
                     catch (SqlException e)
                     {
                         Console.WriteLine(e.Message);
-                        return false;
+                        return 0;
                     }
                 }
             }
@@ -283,5 +286,65 @@ namespace Database
                 }
             }
         }
+
+        public static void AddUserAction(int UserID, int DeviceID, int ZoneID, int RoomID, int SectorID, string Action)
+        {
+            using (SqlConnection Database = new SqlConnection(ConnectionString))
+            {
+                try
+                {
+                    Database.Open();
+                    string Query = "INSERT INTO " + UserActionsTable + " (LoginId, DeviceId, Zone, Room, Sector, Action) VALUES (@LoginId, @DeviceId, @Zone, @Room, @Sector, @Action);";
+                    using (SqlCommand Command = new SqlCommand(Query, Database))
+                    {
+                        Command.Parameters.Add(new SqlParameter("@LoginId", UserID));
+                        Command.Parameters.Add(new SqlParameter("@DeviceId", DeviceID));
+                        Command.Parameters.Add(new SqlParameter("@Zone", ZoneID));
+                        Command.Parameters.Add(new SqlParameter("@Room", RoomID));
+                        Command.Parameters.Add(new SqlParameter("@Sector", SectorID));
+                        Command.Parameters.Add(new SqlParameter("@Action", Action));
+                        Command.ExecuteNonQuery();
+                    }
+                    Database.Close();
+                }
+                catch (SqlException e)
+                {
+                    Console.WriteLine(e.Message);
+                }
+            }
+        }
+
+        public static void CheckUserActions(User U)
+        {
+            using (SqlConnection Database = new SqlConnection(ConnectionString))
+            {
+                try
+                {
+                    Database.Open();
+                    string Query = "SELECT DeviceId, Action FROM " + UserActionsTable + " WHERE Room = " + "'" + U.CurrentLocation.locationRoom.ID.ToString() + "' " + "AND Sector = " + "'" + U.CurrentLocation.locationSector.ID.ToString() + "';";
+                    using (SqlCommand Command = new SqlCommand(Query, Database))
+                    {
+                        SqlDataReader Reader = Command.ExecuteReader();
+                        Device D;
+                        
+                        while(Reader.Read())
+                        {
+                            ushort DeviceID = (ushort)Reader.GetInt32(0);
+                            string Action = Reader.GetString(1);
+                            if (Tools.CurrentDeviceList.TryGetValue(DeviceID, out D))
+                                D.SendMagnitude(Convert.ToByte(Action[0]));
+                            else
+                                Console.WriteLine("Automation: Device {0} is not connected!", DeviceID);
+                        }
+                    }
+                    Database.Close();
+                }
+                catch (SqlException e)
+                {
+                    Console.WriteLine(e.Message);
+                }
+            }
+        }
+
     }
 }

@@ -17,6 +17,7 @@ namespace Clients
     {
         ushort Name;
         Socket Sckt;
+        public int LoginID { get; set; }
         public Location CurrentLocation;
         //add field to find specific user
 
@@ -28,6 +29,12 @@ namespace Clients
         {
             this.Name = _name;
             this.Sckt = S;
+        }
+        public User(ushort _name, Socket S, int _LoginID)
+        {
+            this.Name = _name;
+            this.Sckt = S;
+            this.LoginID = _LoginID;
         }
         public ushort GetName()
         {
@@ -56,8 +63,8 @@ namespace Clients
         }
         public bool Receive(ref byte[] Data)
         {
-            const int MAX_COMMAND_LENGTH = 99;
-            byte[] commandLengthBuffer = new byte[2];
+            const int MAX_COMMAND_LENGTH = 999;
+            byte[] commandLengthBuffer = new byte[3];
             int totalBytes = 0, bytesReceived = 0, commandLength = 0;
 
             try
@@ -140,6 +147,10 @@ namespace Clients
                     Console.WriteLine("Command Received: " + Tools.ByteArrayToString(ReceivedData));
                     Cmd = CommandParser.ParseCommand(Tools.ByteArrayToString(ReceivedData));
                     Cmd.Execute(Sckt);
+
+                    //TEMPORARY FOR TESTING
+                    //Command Test = new User_Locate();
+                    //Test.Execute(Sckt);
                 }
                 else
                 {

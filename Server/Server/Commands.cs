@@ -22,11 +22,11 @@ namespace CommandHandler
         {
             //Assign ID to user's device and add to database
             ushort AssignedID = DatabaseHandler.AddNewUser();
-
-            if (DatabaseHandler.UserIsAuthenticated(UserName, Password))
+            int LoginID = DatabaseHandler.UserIsAuthenticated(UserName, Password);
+            if (LoginID > 0)
             {
                 //Add to current list
-                User U = new User(AssignedID, UserSocket);
+                User U = new User(AssignedID, UserSocket, LoginID);
                 Tools.CurrentUserList.Add(AssignedID, U);
 
                 //Send assignedID, devicelist, and wait for new commands in HandleConnection()
@@ -86,8 +86,10 @@ namespace CommandHandler
             //if user's device has connected before
             if (DatabaseHandler.TryGetUser(SourceID, out U))
             {
-                if (DatabaseHandler.UserIsAuthenticated(UserName, Password))
+                int LoginID = DatabaseHandler.UserIsAuthenticated(UserName, Password);
+                if (LoginID > 0)
                 {
+                    U.LoginID = LoginID;
                     U.BindSocket(UserSocket);
                     Tools.CurrentUserList.Add(SourceID, U);
                     U.Send(Encoding.GetEncoding(437).GetBytes("5," + Tools.ushortToString(U.GetName()) + ",Y,,.!"));
@@ -167,27 +169,47 @@ namespace CommandHandler
     }
     class User_Locate : Command
     {
-        public User_Locate()
+        //static Room R = new Room(1, "TestRoom");
+        //static Sector S1 = new Sector(1);
+        //static Sector S2 = new Sector(2);
+        //static Location L1 = new Location(0, 0, R, S1);
+        //static Location L2 = new Location(0, 1, R, S2);
+        //static int x = 0;
+        public List<WifiReading> ReadingsList;
+
+        public User_Locate(int ListSize)
         {
             Type = CommandType.User_Locate;
+            ReadingsList = new List<WifiReading>(ListSize);
         }
 
         public override void Execute(Socket S)
         {
-            User U;
-            Tools.CurrentUserList.TryGetValue(SourceID, out U);
-            Location Loc = GetLocation();
-            if (Loc != U.CurrentLocation)
-            {
-                U.CurrentLocation.locationRoom.TurnOffDevices();
-                U.CurrentLocation = Loc;
-                Loc.locationRoom.TurnOnDevices();
-            }
+            //User U;
+            //Tools.CurrentUserList.TryGetValue(SourceID, out U);
+            //U.CurrentLocation = GetLocation();
+            //DatabaseHandler.CheckUserActions(U);
+            PrintReadingsList();
         }
 
         private Location GetLocation()
         {
-            return new Location(2, 4);
+            //if (x == 0)
+            //{
+            //    x = 1;
+            //    return L1;
+            //}
+            //x = 0;
+            //return L2;
+            return new Location(4, 2);
+        }
+
+        private void PrintReadingsList()
+        {
+            foreach (WifiReading Reading in ReadingsList)
+            {
+                Console.WriteLine(Reading.BSSID + "    " + Reading.RSSI);
+            }
         }
     }
     class Device_FirstConnection : Command

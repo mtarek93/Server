@@ -116,8 +116,22 @@ namespace CommandHandler
                     return Cmd;
                 }
             }
-            else
-                return Cmd;
+            else  //LocateMe command
+            {
+                string[] SplittedCommand = Command.Split(',');
+                //Cmd.SourceID = Convert.ToUInt16(SplittedCommand[0]);
+                int NumberOfAPs = Convert.ToInt32(SplittedCommand[0]);
+                Cmd = new User_Locate(NumberOfAPs);
+                
+                User_Locate tempCmd = (User_Locate)Cmd;
+                for (int i = 1; i < SplittedCommand.Length - 1; i += 2)
+			    {
+                    tempCmd.ReadingsList.Add(new LocationComponents.WifiReading(SplittedCommand[i], Convert.ToInt32(SplittedCommand[i + 1])));
+			    }
+                return tempCmd;
+            }
+
+            //TODO: add case for invalid command
         }
         public static void InitializeCommandsDictionary()
         {
