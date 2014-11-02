@@ -187,9 +187,10 @@ namespace CommandHandler
         {
             //User U;
             //Tools.CurrentUserList.TryGetValue(SourceID, out U);
-            //U.CurrentLocation = GetLocation();
+            U.CurrentLocation = GetLocation();
             //DatabaseHandler.CheckUserActions(U);
             PrintReadingsList();
+            S.Send(Tools.StringToByteArray("2," + U.CurrentLocation.xCoordinate + "," + U.CurrentLocation.yCoordinate + ".!"));
         }
 
         private Location GetLocation()
