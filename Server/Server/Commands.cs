@@ -176,7 +176,7 @@ namespace CommandHandler
         //static Location L2 = new Location(0, 1, R, S2);
         //static int x = 0;
         public List<WifiReading> ReadingsList;
-
+        static Random RandomGen = new Random(2);
         public User_Locate()
         {
             Type = CommandType.User_Locate;
@@ -190,14 +190,15 @@ namespace CommandHandler
 
         public override void Execute(Socket S)
         {
-            //User U;
-            //Tools.CurrentUserList.TryGetValue(SourceID, out U);
-            //U.CurrentLocation = GetLocation();
+            User U;
+            Console.WriteLine(SourceID);
+            Tools.CurrentUserList.TryGetValue(SourceID, out U);
+            U.CurrentLocation = GetLocation();
             //DatabaseHandler.CheckUserActions(U);
             PrintReadingsList();
             //Console.WriteLine(U.CurrentLocation.xCoordinate + U.CurrentLocation.yCoordinate);
-            Location tempLoc = GetLocation();
-            S.Send(Tools.StringToByteArray("2," + tempLoc.xCoordinate + "," + tempLoc.yCoordinate + ".!"));
+            //Location tempLoc = GetLocation();
+            U.Send(Tools.StringToByteArray("2," + U.CurrentLocation.xCoordinate + "," + U.CurrentLocation.yCoordinate + ".!"));
         }
 
         private Location GetLocation()
@@ -209,7 +210,7 @@ namespace CommandHandler
             //}
             //x = 0;
             //return L2;
-            return new Location(4, 2);
+            return new Location(RandomGen.Next(0, 100), RandomGen.Next(0, 100));
         }
 
         private void PrintReadingsList()
