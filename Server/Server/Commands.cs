@@ -196,6 +196,8 @@ namespace CommandHandler
             //DatabaseHandler.CheckUserActions(U);
             PrintReadingsList();
             //Console.WriteLine(U.CurrentLocation.xCoordinate + U.CurrentLocation.yCoordinate);
+            Location tempLoc = GetLocation();
+            S.Send(Tools.StringToByteArray("2," + tempLoc.xCoordinate + "," + tempLoc.yCoordinate + ".!"));
         }
 
         private Location GetLocation()
