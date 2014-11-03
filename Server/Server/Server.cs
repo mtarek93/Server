@@ -33,13 +33,13 @@ namespace Server
             //DatabaseHandler.ConnectionString = @"Data Source=(LocalDB)\v11.0;AttachDbFilename=C:\Users\Michael\Documents\GitHub\Server\Server\Server\Database .mdf;Integrated Security=True;Connect Timeout=30";
             
             //   Mt
-            //DatabaseHandler.ConnectionString = @"Data Source=(LocalDB)\v11.0;AttachDbFilename=C:\Users\Mohamed\Documents\GitHub\Server\Server\Server\Database.mdf;Integrated Security=True;Connect Timeout=30";
+            DatabaseHandler.ConnectionString = @"Data Source=(LocalDB)\v11.0;AttachDbFilename=C:\Users\Mohamed\Documents\GitHub\Server\Server\Server\Database.mdf;Integrated Security=True;Connect Timeout=30";
             
             //   Teefa
             //DatabaseHandler.ConnectionString = @"Data Source=(LocalDB)\v11.0;AttachDbFilename=C:\Users\mosta_000\Documents\GitHub\Server\Server\Server\Database.mdf;Integrated Security=True;Connect Timeout=30";
             
             // Baha2
-            DatabaseHandler.ConnectionString = @"Data Source=(LocalDB)\v11.0;AttachDbFilename=C:\GitHub\Server\Server\Server\Database.mdf;Integrated Security=True;Connect Timeout=30";
+            //DatabaseHandler.ConnectionString = @"Data Source=(LocalDB)\v11.0;AttachDbFilename=C:\GitHub\Server\Server\Server\Database.mdf;Integrated Security=True;Connect Timeout=30";
            
             CommandParser.InitializeCommandsDictionary();
             ScheduleHandler.InitializeScheduler();
