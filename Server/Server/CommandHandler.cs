@@ -119,10 +119,9 @@ namespace CommandHandler
             else if (!String.IsNullOrEmpty(Command))  //LocateMe command
             {
                 string[] SplittedCommand = Command.Split(',');
-                Cmd.SourceID = ServerTools.Tools.StringToUshort(SplittedCommand[0]);
                 int NumberOfAPs = Convert.ToInt32(SplittedCommand[1]);
                 Cmd = new User_Locate(NumberOfAPs);
-
+                Cmd.SourceID = ServerTools.Tools.StringToUshort(SplittedCommand[0]);
                 User_Locate tempCmd = (User_Locate)Cmd;
                 for (int i = 2; i < SplittedCommand.Length - 1; i += 2)
                 {
