@@ -47,6 +47,10 @@ namespace ServerTools
         {
             return Encoding.GetEncoding(437).GetString(BitConverter.GetBytes(Number));
         }
+        public static ushort StringToUshort(string s)
+        {
+            return BitConverter.ToUInt16(Encoding.GetEncoding(437).GetBytes(s), 0);
+        }
         public static byte[] StringToByteArray(string data)
         {
             return Encoding.GetEncoding(437).GetBytes(data);      
@@ -66,8 +70,8 @@ namespace ServerTools
         }
         static bool Receive(Socket S, ref byte[] Data)
         {
-            const int MAX_COMMAND_LENGTH = 99;
-            byte[] commandLengthBuffer = new byte[2];
+            const int MAX_COMMAND_LENGTH = 999;
+            byte[] commandLengthBuffer = new byte[3];
             int totalBytes = 0, bytesReceived = 0, commandLength;
 
             try

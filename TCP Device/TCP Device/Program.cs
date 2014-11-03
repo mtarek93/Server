@@ -25,7 +25,7 @@ namespace TCP_Devices
                 Console.WriteLine("Connecting.....");
                 tcpSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 
-                tcpSocket.Connect("10.40.45.67", 14);
+                tcpSocket.Connect("10.40.34.49", 14);
 
 
                 Console.WriteLine("Connected");
@@ -49,7 +49,7 @@ namespace TCP_Devices
 
         static string RequestName()
         {
-            string Message = "060,,,,,";
+            string Message = "0060,,,,,";
             string Name = "";
             tcpSocket.Send(StringtoByteArray(Message)); 
 
@@ -73,7 +73,7 @@ namespace TCP_Devices
         {
             string ID = (string)_ID;
             byte[] Data = null;
-            string nameString = "081," + ID + ",,,,";
+            string nameString = "0081," + ID + ",,,,";
             Data = Encoding.GetEncoding(437).GetBytes(nameString);
             Console.WriteLine("Transmitting.....");
             tcpSocket.Send(Data);
@@ -107,7 +107,7 @@ namespace TCP_Devices
             string ID = (string)_ID;
             while (true)
             {
-                byte[] Data = Encoding.GetEncoding(437).GetBytes("092," + ID + ",," + Convert.ToInt32(State).ToString()+ ",,");
+                byte[] Data = Encoding.GetEncoding(437).GetBytes("0092," + ID + ",," + Convert.ToInt32(State).ToString()+ ",,");
                 Console.WriteLine("watchdogSent");
                 tcpSocket.Send(Data);
                 Thread.Sleep(4000);

@@ -177,6 +177,11 @@ namespace CommandHandler
         //static int x = 0;
         public List<WifiReading> ReadingsList;
 
+        public User_Locate()
+        {
+            Type = CommandType.User_Locate;
+        }
+
         public User_Locate(int ListSize)
         {
             Type = CommandType.User_Locate;
@@ -190,6 +195,7 @@ namespace CommandHandler
             //U.CurrentLocation = GetLocation();
             //DatabaseHandler.CheckUserActions(U);
             PrintReadingsList();
+            //Console.WriteLine(U.CurrentLocation.xCoordinate + U.CurrentLocation.yCoordinate);
         }
 
         private Location GetLocation()
