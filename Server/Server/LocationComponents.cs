@@ -179,25 +179,18 @@ namespace LocationComponents
 
     public class Location
     {
-        public int xCoordinate { get; set; }
-        public int yCoordinate { get; set; }
+        public double xCoordinate { get; set; }
+        public double yCoordinate { get; set; }
         public Room locationRoom;
         public Sector locationSector;
 
-        public Location(int x, int y, Room R, Sector S)
+        public Location(double x, double y, Room R = null, Sector S = null)
         {
             xCoordinate = x;
             yCoordinate = y;
             locationRoom = R;
             locationSector = S;
         }
-
-        public Location(int x, int y)
-        {
-            xCoordinate = x;
-            yCoordinate = y;
-            locationRoom = null;
-            locationSector = null;
-        }
+             
     }
 }
