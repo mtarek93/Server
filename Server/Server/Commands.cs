@@ -384,6 +384,7 @@ namespace CommandHandler
             List<LocationModel> mappedList = new List<LocationModel>();
             mappedList.Add(locationToModel);
             Location ModelToLocation =  Mapper<LocationModel, Location>.MapTo(_wifiManager.GetLocation(mappedList),new Location(0,0));
+            Console.Write("Location (X,Y) : " + ModelToLocation.X + "," + ModelToLocation.Y);
             return ModelToLocation;
            // return new Location(RandomGen.Next(0, 100), RandomGen.Next(0, 100));
         }
