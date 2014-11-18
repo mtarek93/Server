@@ -9,6 +9,7 @@ using Database;
 using ServerTools;
 using Clients;
 using LocationComponents;
+using WifiLocalization;
 
 namespace CommandHandler
 {
@@ -40,7 +41,7 @@ namespace CommandHandler
                 UserSocket.Shutdown(SocketShutdown.Both);
                 UserSocket.Close();
             }
-        }   
+        }
     }
     class User_FirstConnection_SignUp : Command
     {
@@ -48,7 +49,7 @@ namespace CommandHandler
         {
             Type = CommandType.User_FirstConnection_SignUp;
         }
-        public override void Execute (Socket UserSocket)
+        public override void Execute(Socket UserSocket)
         {
             //Assign ID to user's device and add to database
             ushort AssignedID = DatabaseHandler.AddNewUser();
@@ -167,60 +168,6 @@ namespace CommandHandler
             }
         }
     }
-    class User_Locate : Command
-    {
-        //static Room R = new Room(1, "TestRoom");
-        //static Sector S1 = new Sector(1);
-        //static Sector S2 = new Sector(2);
-        //static Location L1 = new Location(0, 0, R, S1);
-        //static Location L2 = new Location(0, 1, R, S2);
-        //static int x = 0;
-        public List<WifiReading> ReadingsList;
-        static Random RandomGen = new Random(2);
-        public User_Locate()
-        {
-            Type = CommandType.User_Locate;
-        }
-
-        public User_Locate(int ListSize)
-        {
-            Type = CommandType.User_Locate;
-            ReadingsList = new List<WifiReading>(ListSize);
-        }
-
-        public override void Execute(Socket S)
-        {
-            User U;
-            Console.WriteLine(SourceID);
-            Tools.CurrentUserList.TryGetValue(SourceID, out U);
-            U.CurrentLocation = GetLocation();
-            //DatabaseHandler.CheckUserActions(U);
-            PrintReadingsList();
-            //Console.WriteLine(U.CurrentLocation.xCoordinate + U.CurrentLocation.yCoordinate);
-            //Location tempLoc = GetLocation();
-            U.Send(Tools.StringToByteArray("2," + U.CurrentLocation.xCoordinate + "," + U.CurrentLocation.yCoordinate + ".!"));
-        }
-
-        private Location GetLocation()
-        {
-            //if (x == 0)
-            //{
-            //    x = 1;
-            //    return L1;
-            //}
-            //x = 0;
-            //return L2;
-            return new Location(RandomGen.Next(0, 100), RandomGen.Next(0, 100));
-        }
-
-        private void PrintReadingsList()
-        {
-            foreach (WifiReading Reading in ReadingsList)
-            {
-                Console.WriteLine(Reading.BSSID + "    " + Reading.RSSI);
-            }
-        }
-    }
     class Device_FirstConnection : Command
     {
         public Device_FirstConnection()
@@ -315,7 +262,7 @@ namespace CommandHandler
             return Encoding.GetEncoding(437).GetBytes(Message);
         }
     }
-    class Device_WatchDog : Command 
+    class Device_WatchDog : Command
     {
         public Device_WatchDog()
         {
@@ -392,4 +339,62 @@ namespace CommandHandler
             S.Send(Tools.StringToByteArray("Invalid Command!"));
         }
     }
+
+    #region Wifi-Localization (Tee)
+    class User_Locate : Command
+    {
+        private WifiLocalization.Manager _wifiManager = WifiLocalization.Manager.Instance;
+        
+        //static Room R = new Room(1, "TestRoom");
+        //static Sector S1 = new Sector(1);
+        //static Sector S2 = new Sector(2);
+        //static Location L1 = new Location(0, 0, R, S1);
+        //static Location L2 = new Location(0, 1, R, S2);
+        //static int x = 0;
+
+        public List<WifiReading> ReadingsList;
+
+        static Random RandomGen = new Random(2);
+
+        public User_Locate(int ListSize = 0)
+        {
+            GetLocation(); // remove this line
+            Type = CommandType.User_Locate;
+            if (ListSize != 0)
+                ReadingsList = new List<WifiReading>(ListSize);
+        }
+
+        public override void Execute(Socket S)
+        {
+            User U;
+            Console.WriteLine(SourceID);
+            Tools.CurrentUserList.TryGetValue(SourceID, out U);
+            U.CurrentLocation = GetLocation();
+            //DatabaseHandler.CheckUserActions(U);
+            PrintReadingsList();
+            //Console.WriteLine(U.CurrentLocation.xCoordinate + U.CurrentLocation.yCoordinate);
+            //Location tempLoc = GetLocation();
+            U.Send(Tools.StringToByteArray("2," + U.CurrentLocation.X + "," + U.CurrentLocation.Y + ".!"));
+        }
+
+        private Location GetLocation()
+        {
+            Location userLocation = new Location(RandomGen.Next(0, 100), RandomGen.Next(0, 100));
+            LocationModel locationToModel =  Mapper<Location, LocationModel>.MapTo(userLocation, new LocationModel());
+            List<LocationModel> mappedList = new List<LocationModel>();
+            mappedList.Add(locationToModel);
+            Location ModelToLocation =  Mapper<LocationModel, Location>.MapTo(_wifiManager.GetLocation(mappedList),new Location(0,0));
+            return ModelToLocation;
+           // return new Location(RandomGen.Next(0, 100), RandomGen.Next(0, 100));
+        }
+
+        private void PrintReadingsList()
+        {
+            foreach (WifiReading Reading in ReadingsList)
+            {
+                Console.WriteLine(Reading.BSSID + "    " + Reading.RSSI);
+            }
+        }
+    }
+    #endregion
 }

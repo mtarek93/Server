@@ -43,6 +43,7 @@ namespace Server
            
             CommandParser.InitializeCommandsDictionary();
             ScheduleHandler.InitializeScheduler();
+            User_Locate l = new User_Locate();
 
             while (true)
             {
