@@ -2,7 +2,10 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Data.Linq;
+using System.Data.Linq.Mapping;
 using System.Text;
+using System.Reflection;
 //using Excel = Microsoft.Office.Interop.Excel;
 
 namespace WifiLocalization
@@ -128,7 +131,31 @@ namespace WifiLocalization
 
         //    return readData;
         //}
-        
+        public List<LocationModel> DataBaseQuerry(int MapNumber)
+        {
+            
+            List<LocationModel> offlineMapList = new List<LocationModel>();
+            LocationModel offlineMap = new LocationModel();
+            WifiDataContext DatabaseContext = new WifiDataContext();
+
+            //var all = DatabaseContext.OfflineMaps.Select(row => row);
+            for (int i = 1; i <= 3; i++)
+            {
+                
+            
+            var Record = DatabaseContext.OfflineMaps.Where(row => row.ApNumber == (i));
+            foreach (var rss in Record)
+            {
+
+                offlineMap = Mapper<OfflineMap, LocationModel>.MapTo(rss, new LocationModel());
+                offlineMap.DisplayInfo();
+                offlineMapList.Add(offlineMap);
+                
+            }
+
+            }  
+            return offlineMapList; 
+        }
        
     }
 }

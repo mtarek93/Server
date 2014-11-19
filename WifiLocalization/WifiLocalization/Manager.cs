@@ -40,6 +40,7 @@ namespace WifiLocalization
             {
                 cnn.Open();
                 Console.Write("Tee Wifi DB Connection Open ! \n");
+                OfflineList = _implement.DataBaseQuerry(1);
                 cnn.Close();
             }
             catch (Exception ex)

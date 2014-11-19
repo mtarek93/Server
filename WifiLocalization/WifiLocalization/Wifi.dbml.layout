@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ordesignerObjectsDiagram dslVersion="1.0.0.0" absoluteBounds="0, 0, 11, 8.5" name="Wifi">
+  <DataContextMoniker Name="/WifiDataContext" />
+  <nestedChildShapes>
+    <classShape Id="f302a703-6f66-4a27-b725-3ff905b2edfe" absoluteBounds="2.125, 1.375, 2, 2.7324039713541666">
+      <DataClassMoniker Name="/WifiDataContext/OfflineMap" />
+      <nestedChildShapes>
+        <elementListCompartment Id="76407a39-e810-4960-a2c8-466bf7adfe38" absoluteBounds="2.14, 1.835, 1.9700000000000002, 2.1724039713541665" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+  </nestedChildShapes>
+</ordesignerObjectsDiagram>
