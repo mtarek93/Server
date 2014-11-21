@@ -98,7 +98,7 @@ namespace Server.WifiLocalization
 		
 		private float _Y;
 		
-		private int _RSSI;
+		private float _RSSI;
 		
     #region Extensibility Method Definitions
     partial void OnLoaded();
@@ -122,7 +122,7 @@ namespace Server.WifiLocalization
     partial void OnXChanged();
     partial void OnYChanging(float value);
     partial void OnYChanged();
-    partial void OnRSSIChanging(int value);
+    partial void OnRSSIChanging(float value);
     partial void OnRSSIChanged();
     #endregion
 		
@@ -311,8 +311,8 @@ namespace Server.WifiLocalization
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_RSSI", DbType="Int NOT NULL")]
-		public int RSSI
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_RSSI", DbType="Real NOT NULL")]
+		public float RSSI
 		{
 			get
 			{

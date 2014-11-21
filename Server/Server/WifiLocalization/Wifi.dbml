@@ -11,7 +11,7 @@
       <Column Name="MapNumber" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
       <Column Name="X" Type="System.Single" DbType="Real NOT NULL" CanBeNull="false" />
       <Column Name="Y" Type="System.Single" DbType="Real NOT NULL" CanBeNull="false" />
-      <Column Name="RSSI" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="RSSI" Type="System.Single" DbType="Real NOT NULL" CanBeNull="false" />
     </Type>
   </Table>
 </Database>
