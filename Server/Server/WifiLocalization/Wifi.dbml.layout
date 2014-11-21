@@ -2,10 +2,16 @@
 <ordesignerObjectsDiagram dslVersion="1.0.0.0" absoluteBounds="0, 0, 11, 8.5" name="Wifi">
   <DataContextMoniker Name="/WifiDataContext" />
   <nestedChildShapes>
-    <classShape Id="665a9453-9506-402e-aa6f-7abf42cfc633" absoluteBounds="3.375, 1.5, 2, 2.7324039713541666">
+    <classShape Id="665a9453-9506-402e-aa6f-7abf42cfc633" absoluteBounds="1.25, 1.25, 2, 2.7324039713541666">
       <DataClassMoniker Name="/WifiDataContext/OfflineTable" />
       <nestedChildShapes>
-        <elementListCompartment Id="9883ad8d-2632-4d3f-af09-1e9b81f7e04b" absoluteBounds="3.3899999999999997, 1.96, 1.9700000000000002, 2.1724039713541665" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+        <elementListCompartment Id="9883ad8d-2632-4d3f-af09-1e9b81f7e04b" absoluteBounds="1.2649999999999997, 1.71, 1.9700000000000002, 2.1724039713541665" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="28265274-d461-4328-9b23-efa3c689cb39" absoluteBounds="4.25, 1.25, 2, 2.7324039713541666">
+      <DataClassMoniker Name="/WifiDataContext/AverageOfflineTable" />
+      <nestedChildShapes>
+        <elementListCompartment Id="15625617-7e27-414b-9a67-67d7a7ba06d1" absoluteBounds="4.265, 1.71, 1.9700000000000002, 2.1724039713541665" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
       </nestedChildShapes>
     </classShape>
   </nestedChildShapes>

@@ -41,10 +41,10 @@ namespace WifiLocalization
             {
                 cnn.Open();
                 Console.Write("Getting Online Reading From Database ! \n");
-                var list = DatabaseContext.OfflineTables.Where(row => row.LocationNumber == i);
+                var list = DatabaseContext.AverageOfflineTables.Where(row => row.LocationNumber == i);
                 foreach (var item in list)
                 {
-                    online = Mapper<OfflineTable, LocationModel>.MapTo(item, new LocationModel());
+                    online = Mapper<AverageOfflineTable, LocationModel>.MapTo(item, new LocationModel());
                     online.DisplayInfo();
                     onlineList.Add(online);
                 }
