@@ -19,7 +19,7 @@ namespace WifiLocalization
         public int Sector { get; set; }
         public void DisplayInfo()
         {
-            Console.WriteLine(String.Format("BSSID={0}, X={1}, Y={2},  RSSI={3}", this.BSSI, this.X, this.Y, this.RSSI));
+            Console.WriteLine(String.Format("BSSI={0}, X={1}, Y={2},  RSSI={3}", this.ApNumber, this.X, this.Y, this.RSSI));
         }
     }
     public class PropertyModel

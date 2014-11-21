@@ -5,6 +5,7 @@ using System.Linq;
 using System.Data.Linq;
 using System.Text;
 using System.Reflection;
+using Server.WifiLocalization;
 //using Excel = Microsoft.Office.Interop.Excel;
 
 namespace WifiLocalization
@@ -135,24 +136,23 @@ namespace WifiLocalization
             
             List<LocationModel> offlineMapList = new List<LocationModel>();
             LocationModel offlineMap = new LocationModel();
-           // WifiDataContext DatabaseContext = new WifiDataContext();
-
-            //var all = DatabaseContext.OfflineMaps.Select(row => row);
-            for (int i = 1; i <= 3; i++)
-            {
-                
+            WifiDataContext DatabaseContext = new WifiDataContext();
             
-           // var Record = DatabaseContext.OfflineMaps.Where(row => row.ApNumber == (i));
-          ///  foreach (var rss in Record)
-            {
+            //var all = DatabaseContext.OfflineTables.Select(row => row);
+            //for (int i = 1; i <= 3; i++)
+            //{
+            //}
 
-           //     offlineMap = Mapper<OfflineMap, LocationModel>.MapTo(rss, new LocationModel());
-             //   offlineMap.DisplayInfo();
-             //   offlineMapList.Add(offlineMap);
-                
-            }
+                var list = DatabaseContext.OfflineTables.Where(row => row.LocationNumber==1);
+                foreach (var item in list)
+                {
 
-            }  
+                    offlineMap = Mapper<OfflineTable, LocationModel>.MapTo(item, new LocationModel());
+                    offlineMap.DisplayInfo();
+                    offlineMapList.Add(offlineMap);
+
+                }
+  
             return offlineMapList; 
         }
        
