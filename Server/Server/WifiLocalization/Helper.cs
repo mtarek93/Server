@@ -1,5 +1,7 @@
-﻿using System;
+﻿using Server.WifiLocalization;
+using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -27,7 +29,35 @@ namespace WifiLocalization
     }
     public static class Helper
     {
+        public static List<LocationModel> RandomOnlineReadings(int i)
+        {
+            string DBConnectionString = Database.DatabaseHandler.ConnectionString;
+            SqlConnection cnn = new SqlConnection(DBConnectionString);
+            List<LocationModel> onlineList = new List<LocationModel>();
+            LocationModel online = new LocationModel();
+            WifiDataContext DatabaseContext = new WifiDataContext();
 
+            try
+            {
+                cnn.Open();
+                Console.Write("Getting Online Reading From Database ! \n");
+                var list = DatabaseContext.OfflineTables.Where(row => row.LocationNumber == i);
+                foreach (var item in list)
+                {
+                    online = Mapper<OfflineTable, LocationModel>.MapTo(item, new LocationModel());
+                    online.DisplayInfo();
+                    onlineList.Add(online);
+                }
+                
+                cnn.Close();
+            }
+            catch (Exception ex)
+            {
+                Console.Write(ex.Message);
+                Console.Write("Can not open Tee Wifi DB connection ! \n");
+            }
+            return onlineList;
+        }
         //public static Double[] Magnitude(Double[] x, Double[] y)
         //{
         //    int length = x.Length;

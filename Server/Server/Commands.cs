@@ -358,10 +358,11 @@ namespace CommandHandler
 
         public User_Locate(int ListSize = 0)
         {
-            GetLocation(); // remove this line
+            GetLocation(); // remove this line it is here just for testing by Tee
             Type = CommandType.User_Locate;
             if (ListSize != 0)
                 ReadingsList = new List<WifiReading>(ListSize);
+
         }
 
         public override void Execute(Socket S)
@@ -379,14 +380,21 @@ namespace CommandHandler
 
         private Location GetLocation()
         {
-            Location userLocation = new Location(RandomGen.Next(0, 100), RandomGen.Next(0, 100));
-            LocationModel locationToModel =  Mapper<Location, LocationModel>.MapTo(userLocation, new LocationModel());
-            List<LocationModel> mappedList = new List<LocationModel>();
-            mappedList.Add(locationToModel);
-            Location ModelToLocation =  Mapper<LocationModel, Location>.MapTo(_wifiManager.GetLocation(mappedList),new Location(0,0));
+            List<LocationModel> locationModelList = new List<LocationModel>();
+            LocationModel locationModel  = new LocationModel();
+            int i = RandomGen.Next(1,90);
+            locationModelList = Helper.RandomOnlineReadings(i);
+            
+            //foreach (var reading in ReadingsList)
+            //{
+            //    //LocationModel locationModel =  Mapper<Location, LocationModel>.MapTo(reading, new LocationModel());
+            //    //mappedList.Add(locationModel);
+            //} 
+            
+            Location ModelToLocation = Mapper<LocationModel, Location>.MapTo(_wifiManager.GetLocation(locationModelList), new Location(0, 0));
             Console.Write("Location (X,Y) : " + ModelToLocation.X + "," + ModelToLocation.Y);
             return ModelToLocation;
-           // return new Location(RandomGen.Next(0, 100), RandomGen.Next(0, 100));
+     
         }
 
         private void PrintReadingsList()
