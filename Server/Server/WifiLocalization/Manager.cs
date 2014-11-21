@@ -29,6 +29,10 @@ namespace WifiLocalization
 
         List<LocationModel> OfflineList = new List<LocationModel>();
         Implement _implement = Implement.Instance; 
+<<<<<<< HEAD
+=======
+        public string DBConnectionString = Database.DatabaseHandler.ConnectionString;
+>>>>>>> origin/master
         
         public List<LocationModel> ReadOfflineDB(string DBConnectionString)
         {
