@@ -8,17 +8,18 @@ namespace WifiLocalization
     public class LocationModel
     {
         public LocationModel() { }
-        public string BSSID { get; set; }
+        public string BSSI { get; set; }
         public double X { get; set; }
         public double Y { get; set; }
         public int RSSI { get; set; }
-        public int Index { get; set; }
+        public int ApNumber { get; set; }
+        public int LocationNumber { get; set; }
         public int MapNumber { get; set; }
         public int Room { get; set; }
         public int Sector { get; set; }
         public void DisplayInfo()
         {
-            Console.WriteLine(String.Format("x={0}, y={1}", this.X, this.Y));
+            Console.WriteLine(String.Format("BSSID={0}, X={1}, Y={2},  RSSI={3}", this.BSSI, this.X, this.Y, this.RSSI));
         }
     }
     public class PropertyModel
