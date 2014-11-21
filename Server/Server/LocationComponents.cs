@@ -10,9 +10,9 @@ namespace LocationComponents
     public class WifiReading
     {
         public string MAC { get; set; }
-        public int RSSI { get; set; }
+        public double RSSI { get; set; }
 
-        public WifiReading(string _MAC, int _RSSI)
+        public WifiReading(string _MAC, double _RSSI)
         {
             this.MAC = _MAC;
             this.RSSI = _RSSI;

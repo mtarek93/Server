@@ -11,7 +11,7 @@ namespace WifiLocalization
         public string MAC { get; set; }
         public double X { get; set; }
         public double Y { get; set; }
-        public int RSSI { get; set; }
+        public double RSSI { get; set; }
         public int ApNumber { get; set; }
         public int LocationNumber { get; set; }
         public int MapNumber { get; set; }

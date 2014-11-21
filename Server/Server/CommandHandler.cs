@@ -125,7 +125,7 @@ namespace CommandHandler
                 User_Locate tempCmd = (User_Locate)Cmd;
                 for (int i = 2; i < SplittedCommand.Length - 1; i += 2)
                 {
-                    tempCmd.ReadingsList.Add(new LocationComponents.WifiReading(SplittedCommand[i], Convert.ToInt32(SplittedCommand[i + 1])));
+                    tempCmd.ReadingsList.Add(new LocationComponents.WifiReading(SplittedCommand[i], Convert.ToDouble(SplittedCommand[i + 1])));
                 }
                 return tempCmd;
             }
