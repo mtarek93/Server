@@ -7,6 +7,8 @@ using System.Data.SqlClient;
 using Clients;
 using LocationComponents;
 using ServerTools;
+using System.Data.OleDb;
+using System.Data.SqlClient;
 
 namespace Database
 {
@@ -343,6 +345,41 @@ namespace Database
                 {
                     Console.WriteLine(e.Message);
                 }
+            }
+        }
+
+        public static void ExcelToDbTable(string excelFilePath)
+        {
+            //declare variables - edit these based on your particular situation
+            string ssqltable = "OfflineTable";
+            // make sure your sheet name is correct, here sheet name is sheet1, so you can change your sheet name if have different
+            string myexceldataquery = "select Id,BSSI,Room,Sector,LocationNumber,ApNumber,MapNumber,X,Y,RSSI from [ThesisLab$]";
+            try
+            {
+                //create our connection strings
+                string sexcelconnectionstring = @"provider=microsoft.jet.oledb.4.0;data source=" + excelFilePath + ";extended properties=" + "\"excel 8.0;hdr=yes;\"";
+                string ssqlconnectionstring = ConnectionString;
+                //execute a query to erase any previous data from our destination table
+                string sclearsql = "delete from " + ssqltable;
+                SqlConnection sqlconn = new SqlConnection(ssqlconnectionstring);
+                SqlCommand sqlcmd = new SqlCommand(sclearsql, sqlconn);
+                sqlconn.Open();
+                sqlcmd.ExecuteNonQuery();
+                sqlconn.Close();
+                //series of commands to bulk copy data from the excel file into our sql table
+                OleDbConnection oledbconn = new OleDbConnection(sexcelconnectionstring);
+                OleDbCommand oledbcmd = new OleDbCommand(myexceldataquery, oledbconn);
+                oledbconn.Open();
+                OleDbDataReader dr = oledbcmd.ExecuteReader();
+                SqlBulkCopy bulkcopy = new SqlBulkCopy(ssqlconnectionstring);
+                bulkcopy.DestinationTableName = ssqltable;
+                bulkcopy.WriteToServer(dr);
+                oledbconn.Close();
+            }
+            catch (Exception ex)
+            {
+                //handle exception
+                Console.WriteLine("Exception in ExcelToDbTable: " + ex.Message);
             }
         }
 
