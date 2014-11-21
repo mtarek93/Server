@@ -302,7 +302,7 @@ namespace Clients
             {
                 this.Sckt.Shutdown(SocketShutdown.Both);
                 this.Sckt.Close();
-                Tools.CurrentDeviceList.Remove(Name);
+                Tools.UpdateListAndBroadcast_RemoveDevice(this);
                 this.StopTimer();
                 Console.WriteLine("Device " + Name + " disconnected!");
             }
