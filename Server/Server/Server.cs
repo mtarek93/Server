@@ -17,7 +17,7 @@ namespace Server
     {
         public static void Main()
         {
-            
+
             const int Port = 14;
             IPAddress ipAd = Tools.GetMyIPAddress();
 
@@ -31,21 +31,21 @@ namespace Server
 
             //   Miky
             //DatabaseHandler.ConnectionString = @"Data Source=(LocalDB)\v11.0;AttachDbFilename=C:\Users\Michael\Documents\GitHub\Server\Server\Server\Database .mdf;Integrated Security=True;Connect Timeout=30";
-            
+
             //   Mt
             //DatabaseHandler.ConnectionString = @"Data Source=(LocalDB)\v11.0;AttachDbFilename=C:\Users\Mohamed\Documents\GitHub\Server\Server\Server\Database.mdf;Integrated Security=True;Connect Timeout=30";
-            
+
             //   Teefa
             // DatabaseHandler.ConnectionString = @"Data Source=(LocalDB)\v11.0;AttachDbFilename=C:\Users\mosta_000\Documents\GitHub\Server\Server\Server\Database.mdf;Integrated Security=True;Connect Timeout=30";
-        
+
             //   Tee
-            DatabaseHandler.ConnectionString = @"Data Source=(LocalDB)\v11.0;AttachDbFilename=E:\Dropbox\THESIS PROJECT\Thesis II - EENG 491\T2\Database.mdf;Integrated Security=True;Connect Timeout=30";
-         
+            DatabaseHandler.ConnectionString = @"Data Source=(LocalDB)\v11.0;AttachDbFilename=C:\Users\Tarek\Documents\GitHub\Server\Server\Server\Database.mdf;Integrated Security=True;Connect Timeout=30";
+
             //DatabaseHandler.ConnectionString = @"Data Source=(LocalDB)\v11.0;AttachDbFilename=C:\Users\mosta_000\Documents\GitHub\Server\Server\Server\Database.mdf;Integrated Security=True;Connect Timeout=30";
 
             // Baha2
             //DatabaseHandler.ConnectionString = @"Data Source=(LocalDB)\v11.0;AttachDbFilename=C:\GitHub\Server\Server\Server\Database.mdf;Integrated Security=True;Connect Timeout=30";
-           
+
             CommandParser.InitializeCommandsDictionary();
             ScheduleHandler.InitializeScheduler();
             User_Locate l = new User_Locate();
@@ -55,9 +55,9 @@ namespace Server
                 try
                 {
                     /* Start Listening at the specified port */
-                        Server.Start();
-                        Thread T = new Thread(new ParameterizedThreadStart(Tools.AcceptConnection));
-                        T.Start(Server.AcceptSocket());
+                    Server.Start();
+                    Thread T = new Thread(new ParameterizedThreadStart(Tools.AcceptConnection));
+                    T.Start(Server.AcceptSocket());
 
                 }
                 catch (Exception e)
@@ -68,4 +68,4 @@ namespace Server
         }
     }
 }
-    
+
