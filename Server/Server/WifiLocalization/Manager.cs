@@ -29,7 +29,6 @@ namespace WifiLocalization
 
         List<LocationModel> OfflineList = new List<LocationModel>();
         Implement _implement = Implement.Instance; 
-        public string DBConnectionString = @"Data Source=(LocalDB)\v11.0;AttachDbFilename=C:\Users\Tarek\Documents\GitHub\Server\Server\Server\Database.mdf;Integrated Security=True;Connect Timeout=30";
         
         public List<LocationModel> ReadOfflineDB(string DBConnectionString)
         {
