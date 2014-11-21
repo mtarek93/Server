@@ -347,10 +347,10 @@ namespace Database
             }
         }
 
-        public static void ExcelToDbTable(string excelFilePath)
+        public static void ExcelToDbTable(string excelFilePath, string tableName)
         {
             //declare variables - edit these based on your particular situation
-            string ssqltable = "OfflineTable";
+            string ssqltable = tableName;
             // make sure your sheet name is correct, here sheet name is sheet1, so you can change your sheet name if have different
             string myexceldataquery = "select Id,MAC,Room,Sector,LocationNumber,ApNumber,MapNumber,X,Y,RSSI from [ThesisLab$]";
             try
