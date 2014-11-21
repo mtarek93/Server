@@ -7,8 +7,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Server", "Server\Server.csp
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{727311C4-5789-4332-A6BD-4CD9F5D8A22B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WifiLocalization", "..\WifiLocalization\WifiLocalization\WifiLocalization.csproj", "{C6059884-3195-4EC2-8513-3A6B06158533}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -19,10 +17,6 @@ Global
 		{ABF8D3D8-154A-478E-9FF9-A6139942B1CF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{ABF8D3D8-154A-478E-9FF9-A6139942B1CF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{ABF8D3D8-154A-478E-9FF9-A6139942B1CF}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C6059884-3195-4EC2-8513-3A6B06158533}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C6059884-3195-4EC2-8513-3A6B06158533}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C6059884-3195-4EC2-8513-3A6B06158533}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C6059884-3195-4EC2-8513-3A6B06158533}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

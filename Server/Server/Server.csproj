@@ -42,6 +42,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Data.Linq" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -57,25 +58,36 @@
     <Compile Include="Database.cs" />
     <Compile Include="LocationComponents.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
     <Compile Include="Scheduler.cs" />
     <Compile Include="Server.cs" />
     <Compile Include="SynchronizedDictionary.cs" />
     <Compile Include="Tools.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="WifiLocalization\Helper.cs" />
+    <Compile Include="WifiLocalization\IManager.cs" />
+    <Compile Include="WifiLocalization\Implement.cs" />
+    <Compile Include="WifiLocalization\Manager.cs" />
+    <Compile Include="WifiLocalization\ObjectModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Content Include="Quartz Library\Common.Logging.dll" />
     <Content Include="Quartz Library\Quartz.dll" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\WifiLocalization\WifiLocalization\WifiLocalization.csproj">
-      <Project>{c6059884-3195-4ec2-8513-3a6b06158533}</Project>
-      <Name>WifiLocalization</Name>
-    </ProjectReference>
+    <Service Include="{3259AA49-8AA1-44D3-9025-A0B520596A8C}" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

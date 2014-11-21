@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace WifiLocalization.Properties {
+namespace Server.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
@@ -26,11 +26,21 @@ namespace WifiLocalization.Properties {
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.SpecialSettingAttribute(global::System.Configuration.SpecialSetting.ConnectionString)]
-        [global::System.Configuration.DefaultSettingValueAttribute("Data Source=TAREK-PC;Initial Catalog=Wifi;Persist Security Info=True;User ID=sa;P" +
-            "assword=Emeint1")]
+        [global::System.Configuration.DefaultSettingValueAttribute("Data Source=TAREK-PC;Initial Catalog=Wifi;Persist Security Info=True;User ID=sa")]
         public string WifiConnectionString {
             get {
                 return ((string)(this["WifiConnectionString"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.SpecialSettingAttribute(global::System.Configuration.SpecialSetting.ConnectionString)]
+        [global::System.Configuration.DefaultSettingValueAttribute("Data Source=TAREK-PC;Initial Catalog=Wifi;Persist Security Info=True;User ID=sa;P" +
+            "assword=Emeint1")]
+        public string WifiConnectionString1 {
+            get {
+                return ((string)(this["WifiConnectionString1"]));
             }
         }
     }
