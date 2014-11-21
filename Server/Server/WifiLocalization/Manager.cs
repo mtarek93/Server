@@ -29,14 +29,11 @@ namespace WifiLocalization
 
         List<LocationModel> OfflineList = new List<LocationModel>();
         Implement _implement = Implement.Instance; 
-<<<<<<< HEAD
-=======
-        public string DBConnectionString = Database.DatabaseHandler.ConnectionString;
->>>>>>> origin/master
-        
-        public List<LocationModel> ReadOfflineDB(string DBConnectionString)
-        {
 
+        
+        public List<LocationModel> ReadOfflineDB()
+        {
+            string DBConnectionString = Database.DatabaseHandler.ConnectionString;
             SqlConnection cnn = new SqlConnection(DBConnectionString);
 
             try
@@ -56,7 +53,7 @@ namespace WifiLocalization
         public LocationModel GetLocation(List<LocationModel> online)
         {
             if (OfflineList.Count == 0)
-                OfflineList = ReadOfflineDB(DBConnectionString);
+                OfflineList = ReadOfflineDB();
                 return _implement.KNearestNeighbor(online, OfflineList);
         }       
 
