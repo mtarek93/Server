@@ -393,7 +393,7 @@ namespace CommandHandler
         {
             foreach (WifiReading Reading in ReadingsList)
             {
-                Console.WriteLine(Reading.BSSID + "    " + Reading.RSSI);
+                Console.WriteLine(Reading.MAC + "    " + Reading.RSSI);
             }
         }
     }

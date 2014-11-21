@@ -352,7 +352,7 @@ namespace Database
             //declare variables - edit these based on your particular situation
             string ssqltable = "OfflineTable";
             // make sure your sheet name is correct, here sheet name is sheet1, so you can change your sheet name if have different
-            string myexceldataquery = "select Id,BSSI,Room,Sector,LocationNumber,ApNumber,MapNumber,X,Y,RSSI from [ThesisLab$]";
+            string myexceldataquery = "select Id,MAC,Room,Sector,LocationNumber,ApNumber,MapNumber,X,Y,RSSI from [ThesisLab$]";
             try
             {
                 //create our connection strings

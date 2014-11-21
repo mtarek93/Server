@@ -9,12 +9,12 @@ namespace LocationComponents
 {
     public class WifiReading
     {
-        public string BSSID { get; set; }
+        public string MAC { get; set; }
         public int RSSI { get; set; }
 
-        public WifiReading(string _BSSID, int _RSSI)
+        public WifiReading(string _MAC, int _RSSI)
         {
-            this.BSSID = _BSSID;
+            this.MAC = _MAC;
             this.RSSI = _RSSI;
         }
     }

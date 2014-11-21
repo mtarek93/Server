@@ -8,7 +8,7 @@ namespace WifiLocalization
     public class LocationModel
     {
         public LocationModel() { }
-        public string BSSI { get; set; }
+        public string MAC { get; set; }
         public double X { get; set; }
         public double Y { get; set; }
         public int RSSI { get; set; }
@@ -19,7 +19,7 @@ namespace WifiLocalization
         public int Sector { get; set; }
         public void DisplayInfo()
         {
-            Console.WriteLine(String.Format("BSSI={0}, X={1}, Y={2},  RSSI={3}", this.ApNumber, this.X, this.Y, this.RSSI));
+            Console.WriteLine(String.Format("MAC={0}, X={1}, Y={2},  RSSI={3}", this.ApNumber, this.X, this.Y, this.RSSI));
         }
     }
     public class PropertyModel

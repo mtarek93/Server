@@ -3,7 +3,7 @@
   <Table Name="dbo.OfflineTable" Member="OfflineTables">
     <Type Name="OfflineTable">
       <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
-      <Column Name="BSSI" Type="System.String" DbType="NChar(22) NOT NULL" CanBeNull="false" />
+      <Column Name="MAC" Type="System.String" DbType="NChar(22) NOT NULL" CanBeNull="false" />
       <Column Name="Room" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
       <Column Name="Sector" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
       <Column Name="LocationNumber" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />

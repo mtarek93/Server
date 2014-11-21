@@ -2,10 +2,10 @@
 <ordesignerObjectsDiagram dslVersion="1.0.0.0" absoluteBounds="0, 0, 11, 8.5" name="Wifi">
   <DataContextMoniker Name="/WifiDataContext" />
   <nestedChildShapes>
-    <classShape Id="3266d73d-cea2-4e4e-a1d1-54873a0ce008" absoluteBounds="5.25, 1.625, 2, 2.7324039713541666">
+    <classShape Id="d935a5d1-e197-402c-a7b4-140b99e8e2b2" absoluteBounds="3.125, 1.5, 2, 2.7324039713541666">
       <DataClassMoniker Name="/WifiDataContext/OfflineTable" />
       <nestedChildShapes>
-        <elementListCompartment Id="bfef718e-a322-47fa-b777-6398d0e31c7d" absoluteBounds="5.265, 2.085, 1.9700000000000002, 2.1724039713541665" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+        <elementListCompartment Id="f672b35d-c2dc-437c-806d-e740d9788248" absoluteBounds="3.1399999999999997, 1.96, 1.9700000000000002, 2.1724039713541665" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
       </nestedChildShapes>
     </classShape>
   </nestedChildShapes>
