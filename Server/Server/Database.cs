@@ -8,7 +8,6 @@ using Clients;
 using LocationComponents;
 using ServerTools;
 using System.Data.OleDb;
-using System.Data.SqlClient;
 
 namespace Database
 {
