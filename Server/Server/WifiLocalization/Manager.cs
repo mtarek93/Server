@@ -30,7 +30,12 @@ namespace WifiLocalization
         List<LocationModel> OfflineList = new List<LocationModel>();
         Implement _implement = Implement.Instance; 
 
-        
+        public LocationModel GetLocation(List<LocationModel> online)
+        {
+            if (OfflineList.Count == 0)
+                OfflineList = ReadOfflineDB();
+                return _implement.LocalizationAlgorithm(online, OfflineList);
+        }
         public List<LocationModel> ReadOfflineDB()
         {
             string DBConnectionString = Database.DatabaseHandler.ConnectionString;
@@ -50,12 +55,9 @@ namespace WifiLocalization
             }
             return OfflineList;
         }
-        public LocationModel GetLocation(List<LocationModel> online)
+        public LocationModel LocalizationAlgorithm(List<LocationModel> online , List<LocationModel> offlineList)
         {
-            if (OfflineList.Count == 0)
-                OfflineList = ReadOfflineDB();
-                return _implement.KNearestNeighbor(online, OfflineList);
-        }       
-
+            return _implement.LocalizationAlgorithm(online,offlineList);
+        }
     }
 }

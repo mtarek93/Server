@@ -21,6 +21,7 @@ namespace WifiLocalization
         {
             Console.WriteLine(String.Format("MAC={0}, X={1}, Y={2},  RSSI={3}", this.ApNumber, this.X, this.Y, this.RSSI));
         }
+        
     }
     public class PropertyModel
     {

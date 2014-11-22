@@ -345,13 +345,6 @@ namespace CommandHandler
     {
         private WifiLocalization.Manager _wifiManager = WifiLocalization.Manager.Instance;
         
-        //static Room R = new Room(1, "TestRoom");
-        //static Sector S1 = new Sector(1);
-        //static Sector S2 = new Sector(2);
-        //static Location L1 = new Location(0, 0, R, S1);
-        //static Location L2 = new Location(0, 1, R, S2);
-        //static int x = 0;
-
         public List<WifiReading> ReadingsList;
 
         static Random RandomGen = new Random(2);
@@ -379,20 +372,25 @@ namespace CommandHandler
         }
 
         private Location GetLocation()
-        {
+        {  
+            Location ModelToLocation = new Location(0,0);
             List<LocationModel> locationModelList = new List<LocationModel>();
             LocationModel locationModel  = new LocationModel();
-            int i = RandomGen.Next(1,90);
-            locationModelList = Helper.RandomOnlineReadings(i);
-            
-            //foreach (var reading in ReadingsList)
-            //{
-            //    //LocationModel locationModel =  Mapper<Location, LocationModel>.MapTo(reading, new LocationModel());
-            //    //mappedList.Add(locationModel);
-            //} 
-            
-            Location ModelToLocation = Mapper<LocationModel, Location>.MapTo(_wifiManager.GetLocation(locationModelList), new Location(0, 0));
-            Console.Write("Location (X,Y) : " + ModelToLocation.X + "," + ModelToLocation.Y);
+
+            for (int i = 0; i < 10; i++)
+            {
+                locationModelList = Helper.RandomOnlineReadings(i+1);
+
+                //foreach (var reading in ReadingsList)
+                //{
+                //    //LocationModel locationModel =  Mapper<Location, LocationModel>.MapTo(reading, new LocationModel());
+                //    //mappedList.Add(locationModel);
+                //} 
+
+                ModelToLocation = Mapper<LocationModel, Location>.MapTo(_wifiManager.GetLocation(locationModelList), new Location(0, 0));
+                Console.Write("Location "+ (i+1) +": (X,Y) : " + ModelToLocation.X + "," + ModelToLocation.Y+"\n");
+                
+            }
             return ModelToLocation;
      
         }
