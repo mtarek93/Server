@@ -351,7 +351,7 @@ namespace CommandHandler
 
         public User_Locate(int ListSize = 0)
         {
-            GetLocation(); // remove this line it is here just for testing by Tee
+            //GetLocation(); // remove this line it is here just for testing by Tee
             Type = CommandType.User_Locate;
             if (ListSize != 0)
                 ReadingsList = new List<WifiReading>(ListSize);
@@ -361,7 +361,6 @@ namespace CommandHandler
         public override void Execute(Socket S)
         {
             User U;
-            Console.WriteLine(SourceID);
             Tools.CurrentUserList.TryGetValue(SourceID, out U);
             U.CurrentLocation = GetLocation();
             //DatabaseHandler.CheckUserActions(U);
@@ -372,27 +371,26 @@ namespace CommandHandler
         }
 
         private Location GetLocation()
-        {  
-            Location ModelToLocation = new Location(0,0);
+        {
+            Location ModelToLocation;
             List<LocationModel> locationModelList = new List<LocationModel>();
-            LocationModel locationModel  = new LocationModel();
+            LocationModel locationModel;
+            
+            //for (int i = 0; i < 10; i++)
+            //{
+                //locationModelList = Helper.RandomOnlineReadings(i+1);
 
-            for (int i = 0; i < 10; i++)
-            {
-                locationModelList = Helper.RandomOnlineReadings(i+1);
-
-                //foreach (var reading in ReadingsList)
-                //{
-                //    //LocationModel locationModel =  Mapper<Location, LocationModel>.MapTo(reading, new LocationModel());
-                //    //mappedList.Add(locationModel);
-                //} 
+                foreach (var reading in ReadingsList)
+                {
+                    locationModel = Mapper<WifiReading, LocationModel>.MapTo(reading, new LocationModel());
+                    locationModelList.Add(locationModel);
+                } 
 
                 ModelToLocation = Mapper<LocationModel, Location>.MapTo(_wifiManager.GetLocation(locationModelList), new Location(0, 0));
-                Console.Write("Location "+ (i+1) +": (X,Y) : " + ModelToLocation.X + "," + ModelToLocation.Y+"\n");
+                //Console.Write("Location "+ (i+1) +": (X,Y) : " + ModelToLocation.X + "," + ModelToLocation.Y+"\n");
                 
-            }
+            //}
             return ModelToLocation;
-     
         }
 
         private void PrintReadingsList()

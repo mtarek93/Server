@@ -90,7 +90,8 @@ namespace WifiLocalization
                 for (int j = 0; j < online.Count(); j++)
                 {
                     var val = rssVectors.Where(s => String.Equals(s.MAC, Helper.MacFormat(online[j].MAC), StringComparison.CurrentCultureIgnoreCase));
-                    d.RSSI += Math.Pow(Math.Abs(online[j].RSSI) - Math.Abs(val.FirstOrDefault().RSSI), 2);
+                    if (val.Count() != 0)
+                        d.RSSI += Math.Pow(Math.Abs(online[j].RSSI) - Math.Abs(val.FirstOrDefault().RSSI), 2);
                 }
                 var obj = rssVectors.First();
                 d.X = obj.X;
