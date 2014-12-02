@@ -54,5 +54,16 @@ namespace Server.Properties {
                 return ((string)(this["DatabaseConnectionString"]));
             }
         }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.SpecialSettingAttribute(global::System.Configuration.SpecialSetting.ConnectionString)]
+        [global::System.Configuration.DefaultSettingValueAttribute("Data Source=(LocalDB)\\v11.0;Initial Catalog=\"E:\\DROPBOX\\THESIS PROJECT\\THESIS II " +
+            "- EENG 491\\T2\\DATABASE.MDF\";Integrated Security=True;Connect Timeout=30")]
+        public string E__DROPBOX_THESIS_PROJECT_THESIS_II___EENG_491_T2_DATABASE_MDFConnectionString {
+            get {
+                return ((string)(this["E__DROPBOX_THESIS_PROJECT_THESIS_II___EENG_491_T2_DATABASE_MDFConnectionString"]));
+            }
+        }
     }
 }
