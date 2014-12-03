@@ -351,7 +351,7 @@ namespace CommandHandler
 
         public User_Locate(int ListSize = 0)
         {
-            //GetLocation(); // remove this line it is here just for testing by Tee
+            GetLocation(); // remove this line it is here just for testing by Tee
             Type = CommandType.User_Locate;
             if (ListSize != 0)
                 ReadingsList = new List<WifiReading>(ListSize);
@@ -372,14 +372,10 @@ namespace CommandHandler
 
         private Location GetLocation()
         {
-            Location ModelToLocation;
+            Location ModelToLocation = new Location(0,0);
             List<LocationModel> locationModelList = new List<LocationModel>();
-            LocationModel locationModel;
-            
-            //for (int i = 0; i < 10; i++)
-            //{
-                //locationModelList = Helper.RandomOnlineReadings(i+1);
 
+<<<<<<< HEAD
                 foreach (var reading in ReadingsList)
                 {
                     locationModel = Mapper<WifiReading, LocationModel>.MapTo(reading, new LocationModel());
@@ -393,7 +389,27 @@ namespace CommandHandler
                 //Console.Write("Location "+ (i+1) +": (X,Y) : " + ModelToLocation.X + "," + ModelToLocation.Y+"\n");
                 
             //}
+=======
+            #region Testing Region
+            for (int i = 0; i < 10; i++)
+            {
+                locationModelList = Helper.RandomOnlineReadings(i + 1);
+                ModelToLocation = Helper.Mapper<LocationModel, Location>(_wifiManager.GetLocation(locationModelList), new Location(0, 0));
+                Console.Write("Location " + (i + 1) + ": (X,Y) : " + ModelToLocation.X + "," + ModelToLocation.Y + "\n");
+
+            }
+>>>>>>> origin/master
             return ModelToLocation;
+            #endregion
+
+            //foreach (var reading in ReadingsList)
+            //    {
+            //        locationModelList.Add(Helper.Mapper<WifiReading, LocationModel>(reading, new LocationModel()));
+            //    } 
+
+            //    ModelToLocation = Helper.Mapper<LocationModel, Location>(_wifiManager.GetLocation(locationModelList), new Location(0, 0));
+               
+            //return ModelToLocation;
         }
 
         private void PrintReadingsList()

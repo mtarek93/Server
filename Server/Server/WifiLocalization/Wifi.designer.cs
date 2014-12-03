@@ -22,7 +22,7 @@ namespace Server.WifiLocalization
 	using System;
 	
 	
-	[global::System.Data.Linq.Mapping.DatabaseAttribute(Name="Database")]
+	[global::System.Data.Linq.Mapping.DatabaseAttribute(Name="E:\\DROPBOX\\THESIS PROJECT\\THESIS II - EENG 491\\T2\\DATABASE.MDF")]
 	public partial class WifiDataContext : System.Data.Linq.DataContext
 	{
 		
@@ -39,7 +39,7 @@ namespace Server.WifiLocalization
     #endregion
 		
 		public WifiDataContext() : 
-				base(global::Server.Properties.Settings.Default.DatabaseConnectionString, mappingSource)
+				base(global::Server.Properties.Settings.Default.E__DROPBOX_THESIS_PROJECT_THESIS_II___EENG_491_T2_DATABASE_MDFConnectionString, mappingSource)
 		{
 			OnCreated();
 		}
@@ -83,6 +83,14 @@ namespace Server.WifiLocalization
 				return this.GetTable<AverageOfflineTable>();
 			}
 		}
+		
+		public System.Data.Linq.Table<FuzzyThesi> FuzzyThesis
+		{
+			get
+			{
+				return this.GetTable<FuzzyThesi>();
+			}
+		}
 	}
 	
 	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.OfflineTable")]
@@ -109,7 +117,7 @@ namespace Server.WifiLocalization
 		
 		private float _Y;
 		
-		private double _RSSI;
+		private float _RSSI;
 		
     #region Extensibility Method Definitions
     partial void OnLoaded();
@@ -133,7 +141,7 @@ namespace Server.WifiLocalization
     partial void OnXChanged();
     partial void OnYChanging(float value);
     partial void OnYChanged();
-    partial void OnRSSIChanging(double value);
+    partial void OnRSSIChanging(float value);
     partial void OnRSSIChanged();
     #endregion
 		
@@ -323,7 +331,7 @@ namespace Server.WifiLocalization
 		}
 		
 		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_RSSI", DbType="Real NOT NULL")]
-		public double RSSI
+		public float RSSI
 		{
 			get
 			{
@@ -387,7 +395,7 @@ namespace Server.WifiLocalization
 		
 		private float _Y;
 		
-		private double _RSSI;
+		private float _RSSI;
 		
     #region Extensibility Method Definitions
     partial void OnLoaded();
@@ -411,7 +419,7 @@ namespace Server.WifiLocalization
     partial void OnXChanged();
     partial void OnYChanging(float value);
     partial void OnYChanged();
-    partial void OnRSSIChanging(double value);
+    partial void OnRSSIChanging(float value);
     partial void OnRSSIChanged();
     #endregion
 		
@@ -601,7 +609,7 @@ namespace Server.WifiLocalization
 		}
 		
 		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_RSSI", DbType="Real NOT NULL")]
-		public double RSSI
+		public float RSSI
 		{
 			get
 			{
@@ -637,6 +645,105 @@ namespace Server.WifiLocalization
 			if ((this.PropertyChanged != null))
 			{
 				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.FuzzyThesis")]
+	public partial class FuzzyThesi
+	{
+		
+		private int _LocationNumber;
+		
+		private int _LocationWeight;
+		
+		private float _Euc;
+		
+		private float _KNN;
+		
+		private float _WKNN;
+		
+		public FuzzyThesi()
+		{
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_LocationNumber", DbType="Int NOT NULL")]
+		public int LocationNumber
+		{
+			get
+			{
+				return this._LocationNumber;
+			}
+			set
+			{
+				if ((this._LocationNumber != value))
+				{
+					this._LocationNumber = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_LocationWeight", DbType="Int NOT NULL")]
+		public int LocationWeight
+		{
+			get
+			{
+				return this._LocationWeight;
+			}
+			set
+			{
+				if ((this._LocationWeight != value))
+				{
+					this._LocationWeight = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Euc", DbType="Real NOT NULL")]
+		public float Euc
+		{
+			get
+			{
+				return this._Euc;
+			}
+			set
+			{
+				if ((this._Euc != value))
+				{
+					this._Euc = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_KNN", DbType="Real NOT NULL")]
+		public float KNN
+		{
+			get
+			{
+				return this._KNN;
+			}
+			set
+			{
+				if ((this._KNN != value))
+				{
+					this._KNN = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_WKNN", DbType="Real NOT NULL")]
+		public float WKNN
+		{
+			get
+			{
+				return this._WKNN;
+			}
+			set
+			{
+				if ((this._WKNN != value))
+				{
+					this._WKNN = value;
+				}
 			}
 		}
 	}

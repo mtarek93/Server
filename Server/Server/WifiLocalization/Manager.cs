@@ -9,7 +9,7 @@ namespace WifiLocalization
 {
     public class Manager : IManager
     {
-        #region Manager Class Constructor
+        #region Manager class Constructor
         private static Manager _instance;
         private static readonly object lockObject = new object();
         //private Manager() { }
@@ -45,7 +45,7 @@ namespace WifiLocalization
             {
                 cnn.Open();
                 Console.Write("Tee Wifi DB Connection Open ! \n");
-                OfflineList = _implement.DataBaseQuerry(1);
+                OfflineList = Helper.DataBaseQuerry<LocationModel>(1);
                 cnn.Close();
             }
             catch (Exception ex)

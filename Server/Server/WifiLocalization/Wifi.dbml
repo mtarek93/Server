@@ -1,5 +1,5 @@
-﻿<?xml version="1.0" encoding="utf-8"?><Database Name="Database" Class="WifiDataContext" xmlns="http://schemas.microsoft.com/linqtosql/dbml/2007">
-  <Connection Mode="AppSettings" ConnectionString="Data Source=(LocalDB)\v11.0;AttachDbFilename=|DataDirectory|\Database.mdf;Integrated Security=True;Connect Timeout=30" SettingsObjectName="Server.Properties.Settings" SettingsPropertyName="DatabaseConnectionString" Provider="System.Data.SqlClient" />
+﻿<?xml version="1.0" encoding="utf-8"?><Database Name="E:\DROPBOX\THESIS PROJECT\THESIS II - EENG 491\T2\DATABASE.MDF" Class="WifiDataContext" xmlns="http://schemas.microsoft.com/linqtosql/dbml/2007">
+  <Connection Mode="AppSettings" ConnectionString="Data Source=(LocalDB)\v11.0;Initial Catalog=&quot;E:\DROPBOX\THESIS PROJECT\THESIS II - EENG 491\T2\DATABASE.MDF&quot;;Integrated Security=True;Connect Timeout=30" SettingsObjectName="Server.Properties.Settings" SettingsPropertyName="E__DROPBOX_THESIS_PROJECT_THESIS_II___EENG_491_T2_DATABASE_MDFConnectionString" Provider="System.Data.SqlClient" />
   <Table Name="dbo.OfflineTable" Member="OfflineTables">
     <Type Name="OfflineTable">
       <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
@@ -11,7 +11,7 @@
       <Column Name="MapNumber" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
       <Column Name="X" Type="System.Single" DbType="Real NOT NULL" CanBeNull="false" />
       <Column Name="Y" Type="System.Single" DbType="Real NOT NULL" CanBeNull="false" />
-      <Column Name="RSSI" Type="System.Double" DbType="Real NOT NULL" CanBeNull="false" />
+      <Column Name="RSSI" Type="System.Single" DbType="Real NOT NULL" CanBeNull="false" />
     </Type>
   </Table>
   <Table Name="dbo.AverageOfflineTable" Member="AverageOfflineTables">
@@ -25,7 +25,16 @@
       <Column Name="MapNumber" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
       <Column Name="X" Type="System.Single" DbType="Real NOT NULL" CanBeNull="false" />
       <Column Name="Y" Type="System.Single" DbType="Real NOT NULL" CanBeNull="false" />
-      <Column Name="RSSI" Type="System.Double" DbType="Real NOT NULL" CanBeNull="false" />
+      <Column Name="RSSI" Type="System.Single" DbType="Real NOT NULL" CanBeNull="false" />
+    </Type>
+  </Table>
+  <Table Name="dbo.FuzzyThesis" Member="FuzzyThesis">
+    <Type Name="FuzzyThesi">
+      <Column Name="LocationNumber" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="LocationWeight" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="Euc" Type="System.Single" DbType="Real NOT NULL" CanBeNull="false" />
+      <Column Name="KNN" Type="System.Single" DbType="Real NOT NULL" CanBeNull="false" />
+      <Column Name="WKNN" Type="System.Single" DbType="Real NOT NULL" CanBeNull="false" />
     </Type>
   </Table>
 </Database>
