@@ -23,7 +23,7 @@ namespace TCP_Client
 
                 tcpSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 
-                tcpSocket.Connect("192.168.1.4", 14);
+                tcpSocket.Connect("192.168.1.6", 14);
 
                 // use the ipaddress as in the server program
 
@@ -97,6 +97,8 @@ namespace TCP_Client
         {
             int CommandLength = Command.Length;
             if (CommandLength < 10)
+                return "00" + CommandLength.ToString() + Command;
+            else if (CommandLength < 100)
                 return "0" + CommandLength.ToString() + Command;
             else
                 return CommandLength.ToString() + Command;
