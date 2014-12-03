@@ -144,7 +144,7 @@ namespace Clients
             {
                 if (Receive(ref ReceivedData))
                 {
-                    Console.WriteLine("Command Received: " + Tools.ByteArrayToString(ReceivedData));
+                    //Console.WriteLine("Command Received: " + Tools.ByteArrayToString(ReceivedData));
                     Cmd = CommandParser.ParseCommand(Tools.ByteArrayToString(ReceivedData));
                     Cmd.Execute(Sckt);
 
