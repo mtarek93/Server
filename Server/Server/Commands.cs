@@ -364,7 +364,7 @@ namespace CommandHandler
             Tools.CurrentUserList.TryGetValue(SourceID, out U);
             U.CurrentLocation = GetLocation();
             //DatabaseHandler.CheckUserActions(U);
-            PrintReadingsList();
+            //PrintReadingsList();
             //Console.WriteLine(U.CurrentLocation.xCoordinate + U.CurrentLocation.yCoordinate);
             //Location tempLoc = GetLocation();
             U.Send(Tools.StringToByteArray("2," + U.CurrentLocation.X + "," + U.CurrentLocation.Y + ".!"));
@@ -385,8 +385,11 @@ namespace CommandHandler
                     locationModel = Mapper<WifiReading, LocationModel>.MapTo(reading, new LocationModel());
                     locationModelList.Add(locationModel);
                 } 
-
-                ModelToLocation = Mapper<LocationModel, Location>.MapTo(_wifiManager.GetLocation(locationModelList), new Location(0, 0));
+                LocationModel LocMod = _wifiManager.GetLocation(locationModelList);
+                ModelToLocation = Mapper<LocationModel, Location>.MapTo(LocMod, new Location(0, 0));
+                ModelToLocation.locationRoom = new Room(LocMod.Room, "Thesis Lab");
+                ModelToLocation.locationSector = new Sector(LocMod.Sector);
+                Console.WriteLine("Sector = {0}", ModelToLocation.locationSector.ID);
                 //Console.Write("Location "+ (i+1) +": (X,Y) : " + ModelToLocation.X + "," + ModelToLocation.Y+"\n");
                 
             //}
