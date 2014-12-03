@@ -351,7 +351,7 @@ namespace CommandHandler
 
         public User_Locate(int ListSize = 0)
         {
-            GetLocation(); // remove this line it is here just for testing by Tee
+            //GetLocation(); // remove this line it is here just for testing by Tee
             Type = CommandType.User_Locate;
             if (ListSize != 0)
                 ReadingsList = new List<WifiReading>(ListSize);
@@ -363,7 +363,7 @@ namespace CommandHandler
             User U;
             Tools.CurrentUserList.TryGetValue(SourceID, out U);
             U.CurrentLocation = GetLocation();
-            //DatabaseHandler.CheckUserActions(U);
+            DatabaseHandler.CheckUserActions(U);
             //PrintReadingsList();
             //Console.WriteLine(U.CurrentLocation.xCoordinate + U.CurrentLocation.yCoordinate);
             //Location tempLoc = GetLocation();
@@ -374,42 +374,29 @@ namespace CommandHandler
         {
             Location ModelToLocation = new Location(0,0);
             List<LocationModel> locationModelList = new List<LocationModel>();
-
-<<<<<<< HEAD
-                foreach (var reading in ReadingsList)
-                {
-                    locationModel = Mapper<WifiReading, LocationModel>.MapTo(reading, new LocationModel());
-                    locationModelList.Add(locationModel);
-                } 
-                LocationModel LocMod = _wifiManager.GetLocation(locationModelList);
-                ModelToLocation = Mapper<LocationModel, Location>.MapTo(LocMod, new Location(0, 0));
-                ModelToLocation.locationRoom = new Room(LocMod.Room, "Thesis Lab");
-                ModelToLocation.locationSector = new Sector(LocMod.Sector);
-                Console.WriteLine("Sector = {0}", ModelToLocation.locationSector.ID);
-                //Console.Write("Location "+ (i+1) +": (X,Y) : " + ModelToLocation.X + "," + ModelToLocation.Y+"\n");
+            //Console.Write("Location "+ (i+1) +": (X,Y) : " + ModelToLocation.X + "," + ModelToLocation.Y+"\n");
                 
-            //}
-=======
-            #region Testing Region
-            for (int i = 0; i < 10; i++)
-            {
-                locationModelList = Helper.RandomOnlineReadings(i + 1);
-                ModelToLocation = Helper.Mapper<LocationModel, Location>(_wifiManager.GetLocation(locationModelList), new Location(0, 0));
-                Console.Write("Location " + (i + 1) + ": (X,Y) : " + ModelToLocation.X + "," + ModelToLocation.Y + "\n");
-
-            }
->>>>>>> origin/master
-            return ModelToLocation;
-            #endregion
-
-            //foreach (var reading in ReadingsList)
-            //    {
-            //        locationModelList.Add(Helper.Mapper<WifiReading, LocationModel>(reading, new LocationModel()));
-            //    } 
-
+            //#region Testing Region
+            //for (int i = 0; i < 10; i++)
+            //{
+            //    locationModelList = Helper.RandomOnlineReadings(i + 1);
             //    ModelToLocation = Helper.Mapper<LocationModel, Location>(_wifiManager.GetLocation(locationModelList), new Location(0, 0));
-               
-            //return ModelToLocation;
+            //    Console.Write("Location " + (i + 1) + ": (X,Y) : " + ModelToLocation.X + "," + ModelToLocation.Y + "\n");
+
+            //}
+            //#endregion
+
+            foreach (var reading in ReadingsList)
+            {
+                locationModelList.Add(Helper.Mapper<WifiReading, LocationModel>(reading, new LocationModel()));
+            }
+            LocationModel LocMod = _wifiManager.GetLocation(locationModelList);
+            ModelToLocation = Helper.Mapper<LocationModel, Location>(LocMod, new Location(0, 0));
+            ModelToLocation.locationRoom = new Room(LocMod.Room, "Thesis Lab");
+            ModelToLocation.locationSector = new Sector(LocMod.Sector);
+            Console.WriteLine("Sector = {0}, LocationNumber = {1}", ModelToLocation.locationSector.ID, ModelToLocation.LocationNumber);
+
+            return ModelToLocation;
         }
 
         private void PrintReadingsList()

@@ -33,16 +33,16 @@ namespace WifiLocalization
 
             double[] rssWeightSum = new double[offlineList.Count()/3];
             WifiDataContext DatabaseContext = new WifiDataContext();
-            List<List<FuzzyThesi>> Weights = new List<List<FuzzyThesi>>();
+            List<List<FuzzyThesis>> Weights = new List<List<FuzzyThesis>>();
            
            
             for (int i = 0; i < online.Count(); i++)
             {
                  var wList  = DatabaseContext.FuzzyThesis.Where(row => row.LocationNumber == online[i].LocationNumber);
-                 List<FuzzyThesi> W = new List<FuzzyThesi>();
+                 List<FuzzyThesis> W = new List<FuzzyThesis>();
                  foreach (var w in wList)
                  {
-                     W.Add(Helper.Mapper<FuzzyThesi, FuzzyThesi>(w, new FuzzyThesi()));
+                     W.Add(Helper.Mapper<FuzzyThesis, FuzzyThesis>(w, new FuzzyThesis()));
                 
                  }
                  Weights.Add(W);

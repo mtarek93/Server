@@ -183,6 +183,7 @@ namespace LocationComponents
         public double Y { get; set; }
         public Room locationRoom { get; set; }
         public Sector locationSector { get; set; }
+        public int LocationNumber { get; set; }
 
         public Location(double x, double y, Room R = null, Sector S = null)
         {
