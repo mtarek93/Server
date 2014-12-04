@@ -10,6 +10,7 @@ using ServerTools;
 using Clients;
 using LocationComponents;
 using WifiLocalization;
+using System.Data.SqlClient;
 
 namespace CommandHandler
 {
@@ -372,31 +373,49 @@ namespace CommandHandler
 
         private Location GetLocation()
         {
-            Location ModelToLocation = new Location(0,0);
-            List<LocationModel> locationModelList = new List<LocationModel>();
-            //Console.Write("Location "+ (i+1) +": (X,Y) : " + ModelToLocation.X + "," + ModelToLocation.Y+"\n");
-                
-            //#region Testing Region
-            //for (int i = 0; i < 10; i++)
-            //{
-            //    locationModelList = Helper.RandomOnlineReadings(i + 1);
-            //    ModelToLocation = Helper.Mapper<LocationModel, Location>(_wifiManager.GetLocation(locationModelList), new Location(0, 0));
-            //    Console.Write("Location " + (i + 1) + ": (X,Y) : " + ModelToLocation.X + "," + ModelToLocation.Y + "\n");
+            Location ModelToLocation = new Location(0, 0);
+            string DBConnectionString = Database.DatabaseHandler.ConnectionString;
+            SqlConnection cnn = new SqlConnection(DBConnectionString);
 
-            //}
-            //#endregion
-
-            foreach (var reading in ReadingsList)
+            try
             {
-                locationModelList.Add(Helper.Mapper<WifiReading, LocationModel>(reading, new LocationModel()));
-            }
-            LocationModel LocMod = _wifiManager.GetLocation(locationModelList);
-            ModelToLocation = Helper.Mapper<LocationModel, Location>(LocMod, new Location(0, 0));
-            ModelToLocation.locationRoom = new Room(LocMod.Room, "Thesis Lab");
-            ModelToLocation.locationSector = new Sector(LocMod.Sector);
-            Console.WriteLine("Sector = {0}, LocationNumber = {1}", ModelToLocation.locationSector.ID, ModelToLocation.LocationNumber);
+                cnn.Open();
 
+                Console.Write("Tee Wifi DB Connection Open ! \n");
+                List<LocationModel> locationModelList = new List<LocationModel>();
+
+                #region Online Testing Region
+                // for (int i = 0; i < 10; i++)
+                // {
+                    // locationModelList = Implement.Instance.DataBaseQuerry<LocationModel>("OnlineTable", i + 1);
+                    // ModelToLocation = Helper.Mapper<LocationModel, Location>(_wifiManager.GetLocation(locationModelList), new Location(0, 0));
+                    // Console.Write("Location " + (i + 1) + ": (X,Y) : " + ModelToLocation.X + "," + ModelToLocation.Y + "\n");
+
+                // }
+                #endregion
+
+                #region Actual Device Demo Region
+                foreach (var reading in ReadingsList)
+                {
+                   locationModelList.Add(Helper.Mapper<WifiReading, LocationModel>(reading, new LocationModel()));
+                }
+                LocationModel LocMod = _wifiManager.GetLocation(locationModelList);
+                ModelToLocation = Helper.Mapper<LocationModel, Location>(LocMod, new Location(0, 0));
+                ModelToLocation.locationRoom = new Room(LocMod.Room, "Thesis Lab");
+                ModelToLocation.locationSector = new Sector(LocMod.Sector);
+                Console.WriteLine("Sector = {0}, LocationNumber = {1}", ModelToLocation.locationSector.ID, ModelToLocation.LocationNumber);
+                #endregion
+
+                cnn.Close();
+            }
+
+            catch (Exception ex)
+            {
+                Console.Write(ex.Message);
+                Console.Write("Cannot open Tee Wifi DB connection ! \n");
+            }
             return ModelToLocation;
+
         }
 
         private void PrintReadingsList()

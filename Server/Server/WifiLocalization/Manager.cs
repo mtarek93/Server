@@ -12,7 +12,6 @@ namespace WifiLocalization
         #region Manager class Constructor
         private static Manager _instance;
         private static readonly object lockObject = new object();
-        //private Manager() { }
         public static Manager Instance
         {
             get
@@ -38,22 +37,8 @@ namespace WifiLocalization
         }
         public List<LocationModel> ReadOfflineDB()
         {
-            string DBConnectionString = Database.DatabaseHandler.ConnectionString;
-            SqlConnection cnn = new SqlConnection(DBConnectionString);
+            return _implement.DataBaseQuerry<LocationModel>("AverageOfflineTable",1);
 
-            try
-            {
-                cnn.Open();
-                Console.Write("Tee Wifi DB Connection Open ! \n");
-                OfflineList = Helper.DataBaseQuerry<LocationModel>(1);
-                cnn.Close();
-            }
-            catch (Exception ex)
-            {
-                Console.Write(ex.Message);
-                Console.Write("Can not open Tee Wifi DB connection ! \n");
-            }
-            return OfflineList;
         }
         public LocationModel LocalizationAlgorithm(List<LocationModel> online , List<LocationModel> offlineList)
         {
