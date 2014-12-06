@@ -1,17 +1,59 @@
-﻿using Server.WifiLocalization;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Data.SqlClient;
 using System.Linq;
+using System.Net.NetworkInformation;
 using System.Reflection;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace WifiLocalization
 {
     public static class Helper
     {
+
+        internal static string ConnectionStringHandler()
+        {
+            Dictionary<string, string> DeviceMac = new Dictionary<string, string>()
+                    {
+                        { "Miky" , "" }, 
+                        { "MT"   , "" },
+                        { "Teefa", "" }, 
+                        { "Tee"  , "4C: EB: 42: 6F: 82: 09" }, 
+                        { "Bahaa", "" }
+   
+                    };
+
+
+            string s = "";
+            string macAddr = Helper.MacFormat(
+                           (
+                               from nic in NetworkInterface.GetAllNetworkInterfaces()
+                               where nic.OperationalStatus == OperationalStatus.Up
+                               select nic.GetPhysicalAddress().ToString()
+                           ).FirstOrDefault());
+
+            s = DeviceMac.FirstOrDefault(x => x.Value == macAddr).Key;
+            Console.WriteLine("Welcome " + s);
+
+            switch (s)
+            {
+                case "Miky":    // Miky
+                    s = @"Data Source=(LocalDB)\v11.0;AttachDbFilename=C:\Users\Michael\Documents\GitHub\Server\Server\Server\Database .mdf;Integrated Security=True;Connect Timeout=30";
+                    break;
+                case "MT":      // Mt
+                    s = @"Data Source=(LocalDB)\v11.0;AttachDbFilename=C:\Users\Mohamed\Dropbox\THESIS PROJECT\Thesis II - EENG 491\T2\Database.mdf;Integrated Security=True;Connect Timeout=30";
+                    break;
+                case "Teefa":   // Teefa
+                    s = @"Data Source=(LocalDB)\v11.0;AttachDbFilename=C:\Users\mosta_000\Documents\GitHub\Server\Server\Server\Database.mdf;Integrated Security=True;Connect Timeout=30";
+                    break;
+                case "Tee":     // Tee
+                    s = @"Data Source=(LocalDB)\v11.0;AttachDbFilename=E:\Dropbox\THESIS PROJECT\Thesis II - EENG 491\T2\Database.mdf;Integrated Security=True;Connect Timeout=30";
+                    break;
+                case "Bahaa":   // Baha2
+                    s = @"Data Source=(LocalDB)\v11.0;AttachDbFilename=C:\GitHub\Server\Server\Server\Database.mdf;Integrated Security=True;Connect Timeout=30";
+                    break;
+            }
+            return s;
+        }
         internal static typeB Mapper<typeA, typeB>(typeA a, typeB b)
         {
             Type tB = b.GetType();

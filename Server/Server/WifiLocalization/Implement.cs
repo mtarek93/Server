@@ -1,12 +1,7 @@
-﻿using System;
+﻿using Server.WifiLocalization;
+using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
-using System.Data.Linq;
-using System.Text;
-using System.Reflection;
-using Server.WifiLocalization;
-using System.Data.SqlClient;
 
 namespace WifiLocalization
 {
@@ -35,8 +30,8 @@ namespace WifiLocalization
                 Weights.Add(DataBaseQuerry<FuzzyThesis>("FuzzyThesisTable", online[i].LocationNumber));
             }
 
-            return FuzzyAverage(Weights, offlineList);
-            //return FuzzyMaximum(Weights, offlineList);
+           // return FuzzyAverage(Weights, offlineList);
+            return FuzzyMaximum(Weights, offlineList);
 
         }
         private LocationModel FuzzyAverage(List<List<FuzzyThesis>> Weights, List<LocationModel> offlineList)

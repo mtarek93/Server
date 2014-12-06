@@ -1,16 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Net;
-using System.Net.Sockets;
+﻿using Clients;
 using Database;
-using ServerTools;
-using Clients;
 using LocationComponents;
-using WifiLocalization;
+using ServerTools;
+using System;
+using System.Collections.Generic;
 using System.Data.SqlClient;
+using System.Net.Sockets;
+using System.Text;
+using WifiLocalization;
 
 namespace CommandHandler
 {
@@ -352,7 +349,7 @@ namespace CommandHandler
 
         public User_Locate(int ListSize = 0)
         {
-            //GetLocation(); // remove this line it is here just for testing by Tee
+            GetLocation(); // remove this line it is here just for testing by Tee
             Type = CommandType.User_Locate;
             if (ListSize != 0)
                 ReadingsList = new List<WifiReading>(ListSize);
@@ -381,29 +378,29 @@ namespace CommandHandler
             {
                 cnn.Open();
 
-                Console.Write("Tee Wifi DB Connection Open ! \n");
+                Console.WriteLine("Wifi DB Connection Open !");
                 List<LocationModel> locationModelList = new List<LocationModel>();
 
                 #region Online Testing Region
-                // for (int i = 0; i < 10; i++)
-                // {
-                    // locationModelList = Implement.Instance.DataBaseQuerry<LocationModel>("OnlineTable", i + 1);
-                    // ModelToLocation = Helper.Mapper<LocationModel, Location>(_wifiManager.GetLocation(locationModelList), new Location(0, 0));
-                    // Console.Write("Location " + (i + 1) + ": (X,Y) : " + ModelToLocation.X + "," + ModelToLocation.Y + "\n");
+                for (int i = 0; i < 10; i++)
+                {
+                    locationModelList = Implement.Instance.DataBaseQuerry<LocationModel>("OnlineTable", i + 1);
+                    ModelToLocation = Helper.Mapper<LocationModel, Location>(_wifiManager.GetLocation(locationModelList), new Location(0, 0));
+                    Console.Write("Location " + (i + 1) + ": (X,Y) : " + ModelToLocation.X + "," + ModelToLocation.Y + "\n");
 
-                // }
+                }
                 #endregion
 
                 #region Actual Device Demo Region
-                foreach (var reading in ReadingsList)
-                {
-                   locationModelList.Add(Helper.Mapper<WifiReading, LocationModel>(reading, new LocationModel()));
-                }
-                LocationModel LocMod = _wifiManager.GetLocation(locationModelList);
-                ModelToLocation = Helper.Mapper<LocationModel, Location>(LocMod, new Location(0, 0));
-                ModelToLocation.locationRoom = new Room(LocMod.Room, "Thesis Lab");
-                ModelToLocation.locationSector = new Sector(LocMod.Sector);
-                Console.WriteLine("Sector = {0}, LocationNumber = {1}", ModelToLocation.locationSector.ID, ModelToLocation.LocationNumber);
+                //foreach (var reading in ReadingsList)
+                //{
+                //   locationModelList.Add(Helper.Mapper<WifiReading, LocationModel>(reading, new LocationModel()));
+                //}
+                //LocationModel LocMod = _wifiManager.GetLocation(locationModelList);
+                //ModelToLocation = Helper.Mapper<LocationModel, Location>(LocMod, new Location(0, 0));
+                //ModelToLocation.locationRoom = new Room(LocMod.Room, "Thesis Lab");
+                //ModelToLocation.locationSector = new Sector(LocMod.Sector);
+                //Console.WriteLine("Sector = {0}, LocationNumber = {1}", ModelToLocation.locationSector.ID, ModelToLocation.LocationNumber);
                 #endregion
 
                 cnn.Close();
@@ -412,7 +409,7 @@ namespace CommandHandler
             catch (Exception ex)
             {
                 Console.Write(ex.Message);
-                Console.Write("Cannot open Tee Wifi DB connection ! \n");
+                Console.WriteLine("Cannot open Wifi DB connection !");
             }
             return ModelToLocation;
 

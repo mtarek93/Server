@@ -2,22 +2,22 @@
 <ordesignerObjectsDiagram dslVersion="1.0.0.0" absoluteBounds="0, 0, 11, 8.5" name="Wifi">
   <DataContextMoniker Name="/WifiDataContext" />
   <nestedChildShapes>
-    <classShape Id="d31f7a66-b8d6-4d4a-a15b-d75515b4e416" absoluteBounds="0.75, 0.75, 2, 2.7324039713541666">
+    <classShape Id="83cb87f7-5908-4713-9762-3df0baaf297b" absoluteBounds="0.75, 0.75, 2, 2.7324039713541666">
       <DataClassMoniker Name="/WifiDataContext/AverageOfflineTable" />
       <nestedChildShapes>
-        <elementListCompartment Id="6d78a63c-40a3-4413-8ca8-0085c1a1989a" absoluteBounds="0.765, 1.21, 1.9700000000000002, 2.1724039713541665" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+        <elementListCompartment Id="cc24aa8f-050d-41b3-a257-eda6157c1c83" absoluteBounds="0.765, 1.21, 1.9700000000000002, 2.1724039713541665" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
       </nestedChildShapes>
     </classShape>
-    <classShape Id="001aa498-5f81-4df3-a251-c6f2e1b0c62e" absoluteBounds="3.75, 0.75, 2, 1.7708968098958331">
+    <classShape Id="c29fe232-cd9d-4126-a078-c8a1bbf23a05" absoluteBounds="3.75, 0.75, 2, 1.7708968098958331">
       <DataClassMoniker Name="/WifiDataContext/FuzzyThesis" />
       <nestedChildShapes>
-        <elementListCompartment Id="229f6695-c599-440b-9857-a719223d1938" absoluteBounds="3.765, 1.21, 1.9700000000000002, 1.2108968098958333" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+        <elementListCompartment Id="c80c2658-de02-488e-b83a-eeb3f89f1bf8" absoluteBounds="3.765, 1.21, 1.9700000000000002, 1.2108968098958333" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
       </nestedChildShapes>
     </classShape>
-    <classShape Id="f7f37518-06b7-4fcb-9bb9-bef2ac5c826f" absoluteBounds="3.75, 3.75, 2, 2.7324039713541666">
+    <classShape Id="440e95fe-4cf2-499c-a8bd-9e3c504b1e07" absoluteBounds="3.75, 3.75, 2, 2.7324039713541666">
       <DataClassMoniker Name="/WifiDataContext/OfflineTable" />
       <nestedChildShapes>
-        <elementListCompartment Id="1e8d6399-cd6c-49d1-9b5c-936cc2fe0c79" absoluteBounds="3.765, 4.21, 1.9700000000000002, 2.1724039713541665" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+        <elementListCompartment Id="63b7be91-f618-4425-b99b-211c56ccb106" absoluteBounds="3.765, 4.21, 1.9700000000000002, 2.1724039713541665" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
       </nestedChildShapes>
     </classShape>
   </nestedChildShapes>
