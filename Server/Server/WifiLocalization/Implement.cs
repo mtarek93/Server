@@ -1,12 +1,7 @@
-﻿using System;
+﻿using Server.WifiLocalization;
+using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
-using System.Data.Linq;
-using System.Text;
-using System.Reflection;
-using Server.WifiLocalization;
-//using Excel = Microsoft.Office.Interop.Excel;
 
 namespace WifiLocalization
 {
@@ -28,33 +23,55 @@ namespace WifiLocalization
         private static int K = 5;
         private LocationModel FuzzyMethod(List<LocationModel> online, List<LocationModel> offlineList)
         {
-           
-            online = CoordinateToIndex(online, offlineList);
-
-            double[] rssWeightSum = new double[offlineList.Count()/3];
-            WifiDataContext DatabaseContext = new WifiDataContext();
             List<List<FuzzyThesis>> Weights = new List<List<FuzzyThesis>>();
-           
-           
+            online = CoordinateToIndex(online, offlineList);
             for (int i = 0; i < online.Count(); i++)
             {
-                 var wList  = DatabaseContext.FuzzyThesis.Where(row => row.LocationNumber == online[i].LocationNumber);
-                 List<FuzzyThesis> W = new List<FuzzyThesis>();
-                 foreach (var w in wList)
-                 {
-                     W.Add(Helper.Mapper<FuzzyThesis, FuzzyThesis>(w, new FuzzyThesis()));
-                
-                 }
-                 Weights.Add(W);
+                Weights.Add(DataBaseQuerry<FuzzyThesis>("FuzzyThesisTable", online[i].LocationNumber));
             }
+
+           // return FuzzyAverage(Weights, offlineList);
+            return FuzzyMaximum(Weights, offlineList);
+
+        }
+        private LocationModel FuzzyAverage(List<List<FuzzyThesis>> Weights, List<LocationModel> offlineList)
+        {
+            LocationModel Fuzzy = new LocationModel();
+            Fuzzy.X = 0;
+            Fuzzy.Y = 0;
+            double[] sumx = new double[3] { 0, 0, 0 };
+            double[] sumy = new double[3] { 0, 0, 0 };
 
             for (int i = 0; i < Weights.First().Count(); i++)
             {
-                rssWeightSum[i]  = Weights[0][i].Euc + Weights[1][i].KNN + Weights[2][i].WKNN;
-                
+                sumx[0] += Weights[0][i].Euc * offlineList[i].X;
+                sumy[0] += Weights[0][i].Euc * offlineList[i].Y;
+                sumx[1] += Weights[1][i].KNN * offlineList[i].X;
+                sumy[1] += Weights[1][i].KNN * offlineList[i].Y;
+                sumx[2] += Weights[2][i].WKNN * offlineList[i].X;
+                sumy[2] += Weights[2][i].WKNN * offlineList[i].Y;
             }
 
+            for (int s = 0; s < 3; s++)
+            {
+                Fuzzy.X += sumx[s];
+                Fuzzy.Y += sumy[s];
+            }
+
+            Fuzzy.X = Fuzzy.X / 3;
+            Fuzzy.Y = Fuzzy.Y / 3;
+            return Fuzzy;
+        }
+        private LocationModel FuzzyMaximum(List<List<FuzzyThesis>> Weights, List<LocationModel> offlineList)
+        {
+            double[] rssWeightSum = new double[Weights.First().Count()];
+            for (int i = 0; i < Weights.First().Count(); i++)
+            {
+                rssWeightSum[i] = Weights[0][i].Euc + Weights[1][i].KNN + Weights[2][i].WKNN;
+
+            }
             return offlineList[rssWeightSum.ToList().IndexOf(rssWeightSum.Max())];
+
         }
         private List<LocationModel> MinimumDistance(List<LocationModel> online, List<LocationModel> offlineList)
         {
@@ -87,8 +104,6 @@ namespace WifiLocalization
         }
         private List<LocationModel> CoordinateToIndex(List<LocationModel> online, List<LocationModel> offlineList)
         {
-
-
             var Vectors = offlineList.Where(row => row.ApNumber == 1);
 
             for (int i = 0; i < online.Count(); i++)
@@ -116,7 +131,6 @@ namespace WifiLocalization
             }
             return online;
         }
-
         public LocationModel LocalizationAlgorithm(List<LocationModel> online, List<LocationModel> offlineList)
         {
             List<LocationModel> data = MinimumDistance(online, offlineList);
@@ -154,6 +168,45 @@ namespace WifiLocalization
 
 
             return FuzzyMethod(methodsOutput, offlineList);
+        }
+        public List<type> DataBaseQuerry<type>(string p, int i)
+        {
+
+            List<type> ListData = new List<type>();
+            WifiDataContext DatabaseContext = new WifiDataContext();
+
+            if (p == "AverageOfflineTable")
+            {
+                var list = DatabaseContext.AverageOfflineTables.Where(row => row.MapNumber == i);
+
+                foreach (var item in list)
+                    ListData.Add(Helper.Mapper<AverageOfflineTable, type>(item, Activator.CreateInstance<type>()));
+
+            }
+            if (p == "OnlineTable")
+            {
+                var list = DatabaseContext.OfflineTables.Where(row => row.LocationNumber == i && row.MapNumber == 13);
+
+                foreach (var item in list)
+                    ListData.Add(Helper.Mapper<OfflineTable, type>(item, Activator.CreateInstance<type>()));
+
+            }
+            if (p == "FuzzyThesisTable")
+            {
+                var list = DatabaseContext.FuzzyThesis.Where(row => row.LocationNumber == i);
+                foreach (var item in list)
+                    ListData.Add(Helper.Mapper<FuzzyThesis, type>(item, Activator.CreateInstance<type>()));
+
+            }
+            if (p == "OfflineTable")
+            {
+                var list = DatabaseContext.OfflineTables.Where(row => row.MapNumber == i);
+
+                foreach (var item in list)
+                    ListData.Add(Helper.Mapper<OfflineTable, type>(item, Activator.CreateInstance<type>()));
+            }
+
+            return ListData;
         }
     }
 }

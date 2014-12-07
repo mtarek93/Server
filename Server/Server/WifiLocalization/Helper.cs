@@ -1,58 +1,58 @@
-﻿using Server.WifiLocalization;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Data.SqlClient;
 using System.Linq;
+using System.Net.NetworkInformation;
 using System.Reflection;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace WifiLocalization
 {
     public static class Helper
     {
-        internal static List<type> DataBaseQuerry<type>(int MapNumber)
+
+        internal static string ConnectionStringHandler()
         {
+            Dictionary<string, string> DeviceMac = new Dictionary<string, string>()
+                    {
+                        { "Miky" , "" }, 
+                        { "MT"   , "" },
+                        { "Teefa", "" }, 
+                        { "Tee"  , "4C: EB: 42: 6F: 82: 09" }, 
+                        { "Bahaa", "" }
+   
+                    };
 
-            List<type> ListData = new List<type>();
-            WifiDataContext DatabaseContext = new WifiDataContext();
-            var list = DatabaseContext.AverageOfflineTables.Where(row => row.MapNumber == 1);
-            foreach (var item in list)
+
+            string s = "";
+            string macAddr = Helper.MacFormat(
+                           (
+                               from nic in NetworkInterface.GetAllNetworkInterfaces()
+                               where nic.OperationalStatus == OperationalStatus.Up
+                               select nic.GetPhysicalAddress().ToString()
+                           ).FirstOrDefault());
+
+            s = DeviceMac.FirstOrDefault(x => x.Value == macAddr).Key;
+            Console.WriteLine("Welcome " + s);
+
+            switch (s)
             {
-                type Data = Helper.Mapper<AverageOfflineTable, type>(item, Activator.CreateInstance<type>());
-                ListData.Add(Data);
-
+                case "Miky":    // Miky
+                    s = @"Data Source=(LocalDB)\v11.0;AttachDbFilename=C:\Users\Michael\Documents\GitHub\Server\Server\Server\Database .mdf;Integrated Security=True;Connect Timeout=30";
+                    break;
+                case "MT":      // Mt
+                    s = @"Data Source=(LocalDB)\v11.0;AttachDbFilename=C:\Users\Mohamed\Dropbox\THESIS PROJECT\Thesis II - EENG 491\T2\Database.mdf;Integrated Security=True;Connect Timeout=30";
+                    break;
+                case "Teefa":   // Teefa
+                    s = @"Data Source=(LocalDB)\v11.0;AttachDbFilename=C:\Users\mosta_000\Documents\GitHub\Server\Server\Server\Database.mdf;Integrated Security=True;Connect Timeout=30";
+                    break;
+                case "Tee":     // Tee
+                    s = @"Data Source=(LocalDB)\v11.0;AttachDbFilename=E:\Dropbox\THESIS PROJECT\Thesis II - EENG 491\T2\Database.mdf;Integrated Security=True;Connect Timeout=30";
+                    break;
+                case "Bahaa":   // Baha2
+                    s = @"Data Source=(LocalDB)\v11.0;AttachDbFilename=C:\GitHub\Server\Server\Server\Database.mdf;Integrated Security=True;Connect Timeout=30";
+                    break;
             }
-
-            return ListData;
-        }
-        internal static List<LocationModel> RandomOnlineReadings(int i)
-        {
-            string DBConnectionString = Database.DatabaseHandler.ConnectionString;
-            SqlConnection cnn = new SqlConnection(DBConnectionString);
-            List<LocationModel> onlineList = new List<LocationModel>();
-            LocationModel online = new LocationModel();
-            WifiDataContext DatabaseContext = new WifiDataContext();
-
-            try
-            {
-                cnn.Open();
-                var list = DatabaseContext.OfflineTables.Where(row => row.LocationNumber == i && row.MapNumber == 13);
-                foreach (var item in list)
-                {
-                    online = Helper.Mapper<OfflineTable, LocationModel>(item, new LocationModel());
-                    onlineList.Add(online);
-                }
-
-                cnn.Close();
-            }
-            catch (Exception ex)
-            {
-                Console.Write(ex.Message);
-                Console.Write("Can not open Tee Wifi DB connection ! \n");
-            }
-            return onlineList;
+            return s;
         }
         internal static typeB Mapper<typeA, typeB>(typeA a, typeB b)
         {
@@ -78,5 +78,6 @@ namespace WifiLocalization
                 .Select(i => mac.Substring(i * 2, 2)));
             return mac;
         }
+
     }
 }

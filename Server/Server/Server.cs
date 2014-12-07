@@ -1,15 +1,12 @@
+using CommandHandler;
+using Database;
+using Scheduler;
+using ServerTools;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Net.Sockets;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
-using Database;
-using CommandHandler;
-using ServerTools;
-using Scheduler;
+using WifiLocalization;
 
 namespace Server
 {
@@ -28,27 +25,10 @@ namespace Server
             Console.WriteLine("Waiting for a connection.....");
             Thread StatusThread = new Thread(new ThreadStart(Tools.DisplayServerStatus));
             StatusThread.Start();
-
-            //   Miky
-            //DatabaseHandler.ConnectionString = @"Data Source=(LocalDB)\v11.0;AttachDbFilename=C:\Users\Michael\Documents\GitHub\Server\Server\Server\Database .mdf;Integrated Security=True;Connect Timeout=30";
-
-            //   Mt
-            DatabaseHandler.ConnectionString = @"Data Source=(LocalDB)\v11.0;AttachDbFilename=C:\Users\Mohamed\Dropbox\THESIS PROJECT\Thesis II - EENG 491\T2\Database.mdf;Integrated Security=True;Connect Timeout=30";
-
-            //   Teefa
-            //DatabaseHandler.ConnectionString = @"Data Source=(LocalDB)\v11.0;AttachDbFilename=C:\Users\mosta_000\Documents\GitHub\Server\Server\Server\Database.mdf;Integrated Security=True;Connect Timeout=30";
-
-            //   Tee
-            //DatabaseHandler.ConnectionString = @"Data Source=(LocalDB)\v11.0;AttachDbFilename=E:\Dropbox\THESIS PROJECT\Thesis II - EENG 491\T2\Database.mdf;Integrated Security=True;Connect Timeout=30";
-
-            //DatabaseHandler.ConnectionString = @"Data Source=(LocalDB)\v11.0;AttachDbFilename=C:\Users\mosta_000\Documents\GitHub\Server\Server\Server\Database.mdf;Integrated Security=True;Connect Timeout=30";
-
-            // Baha2
-            //DatabaseHandler.ConnectionString = @"Data Source=(LocalDB)\v11.0;AttachDbFilename=C:\GitHub\Server\Server\Server\Database.mdf;Integrated Security=True;Connect Timeout=30";
-
+            DatabaseHandler.ConnectionString = Helper.ConnectionStringHandler();
             CommandParser.InitializeCommandsDictionary();
             ScheduleHandler.InitializeScheduler();
-            //User_Locate l = new User_Locate();
+            User_Locate l = new User_Locate();
 
             while (true)
             {
