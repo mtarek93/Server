@@ -18,7 +18,7 @@ namespace Clients
         ushort Name;
         Socket Sckt;
         public int LoginID { get; set; }
-        public Location CurrentLocation;
+        public Location CurrentLocation = null;
         //add field to find specific user
 
         public User(ushort _name)
@@ -165,7 +165,7 @@ namespace Clients
         ushort Name;
         byte State;
         Socket Sckt;
-        public static int WDInterval = 5000;                            //Watchdog Interval
+        public static int WDInterval = 6000;                            //Watchdog Interval
         System.Timers.Timer T = new System.Timers.Timer(WDInterval);    //Timer
 
         public Device(ushort _name)
