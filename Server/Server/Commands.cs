@@ -362,8 +362,12 @@ namespace CommandHandler
         {
             User U;
             Tools.CurrentUserList.TryGetValue(SourceID, out U);
+            int OldSector = 0;
+            if (U.CurrentLocation != null)
+                OldSector = U.CurrentLocation.locationSector.ID;
             U.CurrentLocation = GetLocation();
-            DatabaseHandler.CheckUserActions(U);
+            if (OldSector != U.CurrentLocation.locationSector.ID)
+                DatabaseHandler.CheckUserActions(U);
             //PrintReadingsList();
             //Console.WriteLine(U.CurrentLocation.xCoordinate + U.CurrentLocation.yCoordinate);
             //Location tempLoc = GetLocation();
@@ -394,7 +398,7 @@ namespace CommandHandler
             ModelToLocation = Helper.Mapper<LocationModel, Location>(LocMod, new Location(0, 0));
             ModelToLocation.locationRoom = new Room(LocMod.Room, "Thesis Lab");
             ModelToLocation.locationSector = new Sector(LocMod.Sector);
-            Console.WriteLine("Sector = {0}, LocationNumber = {1}", ModelToLocation.locationSector.ID, ModelToLocation.LocationNumber);
+            Console.WriteLine("Sector = {0}, LocationNumber = {1}, X = {2}, Y = {3}", ModelToLocation.locationSector.ID, ModelToLocation.LocationNumber, ModelToLocation.X, ModelToLocation.Y);
 
             return ModelToLocation;
         }
